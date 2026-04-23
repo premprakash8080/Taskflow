@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
+import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 
 @Component({
   selector: 'vex-login',

@@ -32,7 +32,7 @@
 
       <div class="flex items-center justify-between">
         <mat-checkbox class="caption" color="primary">Remember Me</mat-checkbox>
-        <a [routerLink]="['/forgot-password']" class="caption">Forgot Password?</a>
+        <a [routerLink]="['/auth/forgot-password']" class="caption">Forgot Password?</a>
       </div>
 
       <button (click)="send()" color="primary" mat-raised-button type="button">
@@ -41,7 +41,7 @@
 
       <p class="text-secondary text-center">
         Don't have an account?<br/>
-        <a [routerLink]="['/register']">Click here to create one</a>
+        <a [routerLink]="['/auth/register']">Click here to create one</a>
       </p>
     </div>
   </div>
