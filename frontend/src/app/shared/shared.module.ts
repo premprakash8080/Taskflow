@@ -30,14 +30,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { SignatureModule } from '@syncfusion/ej2-angular-inputs';
-import { ImageCropperComponent } from 'ngx-image-cropper';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { DocumentEditorContainerModule, DocumentEditorModule, ToolbarService } from '@syncfusion/ej2-angular-documenteditor';
-import { SpreadsheetModule } from '@syncfusion/ej2-angular-spreadsheet';
-import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { MarkdownToHtmlPipe } from 'src/@vex/pipes/markdown.pipe';
+
 import { AddReminderDialogComponent } from './components/add-reminder-dialog/add-reminder-dialog.component';
 import { AddToTenderComponent } from './components/add-to-tender/add-to-tender.component';
 import { AuthenticatorDialogComponent } from './components/authenticator-dialog/authenticator-dialog.component';
@@ -81,8 +75,13 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     RenameDialogComponent,
     AddReminderDialogComponent,
     CustomSpinnerComponent,
-    ConfirmationDialogComponent, 
-    ImageCropperDialogComponent, TemplateOrBuildOwnDialogueComponent, AuthenticatorDialogComponent, EditorSignatureDialogComponent, GoogleMapSuggestionComponent, WarningScreensDialogComponent,
+    ConfirmationDialogComponent,
+    ImageCropperDialogComponent,
+    TemplateOrBuildOwnDialogueComponent,
+    AuthenticatorDialogComponent,
+    EditorSignatureDialogComponent,
+    GoogleMapSuggestionComponent,
+    WarningScreensDialogComponent,
     AIPolicyDialogComponent,
     MarkdownToHtmlPipe,
     DeleteFolderConfirmationDialogComponent,
@@ -98,7 +97,7 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     FileViewersComponent,
     ChooseTemplatesComponent,
     DownloadPdfModeComponent,
-    ConfirmationDialogNewComponent
+    ConfirmationDialogNewComponent,
   ],
   imports: [
     CommonModule,
@@ -123,24 +122,14 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     MatExpansionModule,
     MatAutocompleteModule,
     MatRippleModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     RouterModule,
     MatButtonModule,
     MatSortModule,
     MatButtonToggleModule,
-    MatStepperModule,
     ReactiveFormsModule,
     MatSliderModule,
     MatProgressSpinnerModule,
-    ImageCropperComponent,
-    SignatureModule,
-    NgxMatSelectSearchModule,
-    PdfViewerModule,
-    DocumentEditorModule,
-    DocumentEditorContainerModule,
-    SpreadsheetModule,
-    NgxDocViewerModule
   ],
   exports: [
     FormsModule,
@@ -158,7 +147,7 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     MatFormFieldModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule ,
+    MatNativeDateModule,
     MatRadioModule,
     MatStepperModule,
     MatMenuModule,
@@ -171,7 +160,6 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     MatListModule,
     MatSortModule,
     MatButtonToggleModule,
-    MatStepperModule,
     ReactiveFormsModule,
     PageHeaderComponent,
     PageHeaderToggleButtonComponent,
@@ -181,12 +169,8 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     GoogleMapSuggestionComponent,
     MarkdownToHtmlPipe,
     SafeHtmlPipe,
-    NgxMatSelectSearchModule,
     FileViewersComponent,
-    ChooseTemplatesComponent
+    ChooseTemplatesComponent,
   ],
-  providers: [
-    ToolbarService
-  ]
 })
 export class SharedModule {}

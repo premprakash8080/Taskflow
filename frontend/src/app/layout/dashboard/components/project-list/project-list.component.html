@@ -1,1 +1,22 @@
-<p>project-list works!</p>
+<mat-card class="project-list">
+  <mat-card-header>
+    <mat-card-title>My Projects</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="project-row" *ngFor="let project of projects" (click)="goToProject(project)">
+      <span class="project-dot" [style.background]="project.color"></span>
+      <div class="project-info">
+        <div class="project-name">{{ project.name }}</div>
+        <div class="project-progress-track">
+          <div class="project-progress-fill"
+               [style.width.%]="progressPercent(project)"
+               [style.background]="project.color">
+          </div>
+        </div>
+      </div>
+      <div class="project-status" [style.color]="statusColor(project.status)">
+        {{ progressPercent(project) }}%
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,1 +1,18 @@
-<p>task-board works!</p>
+<mat-card class="task-board">
+  <div class="task-board__header" (click)="toggle()">
+    <mat-icon class="task-board__chevron" [class.rotated]="!expanded">expand_more</mat-icon>
+    <span class="task-board__label">{{ label }}</span>
+    <span class="task-board__count">{{ tasks.length }}</span>
+  </div>
+
+  <div class="task-board__list" *ngIf="expanded">
+    <div *ngIf="tasks.length === 0" class="task-board__empty">
+      No tasks here — you're all caught up!
+    </div>
+    <vex-dashboard-task-item
+      *ngFor="let task of tasks"
+      [task]="task"
+      (complete)="completeTask.emit($event)">
+    </vex-dashboard-task-item>
+  </div>
+</mat-card>

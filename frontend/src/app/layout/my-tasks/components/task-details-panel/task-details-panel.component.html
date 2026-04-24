@@ -1,1 +1,137 @@
-<p>task-details-panel works!</p>
+<div class="detail-panel">
+
+  <!-- Header -->
+  <div class="detail-panel__header">
+    <mat-checkbox
+      [checked]="task.completed"
+      color="primary"
+      (change)="toggleComplete.emit(task.id)">
+      <span class="detail-panel__complete-label">
+        {{ task.completed ? 'Completed' : 'Mark complete' }}
+      </span>
+    </mat-checkbox>
+    <div class="detail-panel__header-actions">
+      <button mat-icon-button matTooltip="More options">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Close" (click)="close.emit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-panel__body">
+
+    <!-- Task name -->
+    <div class="detail-field" *ngIf="!editingName" (click)="startEditName()">
+      <h2 class="detail-panel__title" [class.line-through]="task.completed">
+        {{ task.name }}
+      </h2>
+    </div>
+    <mat-form-field *ngIf="editingName" appearance="outline" class="detail-name-field">
+      <input matInput [(ngModel)]="draftName" (blur)="saveName()" (keydown.enter)="saveName()">
+    </mat-form-field>
+
+    <!-- Meta: assignee + priority + due date -->
+    <div class="detail-meta">
+      <div class="detail-meta__row">
+        <mat-icon class="detail-meta__icon">person_outline</mat-icon>
+        <span class="detail-meta__label">Assignee</span>
+        <div class="detail-meta__value">
+          <ng-container *ngIf="task.assignee; else noAssignee">
+            <img [src]="task.assignee.imgUrl" class="avatar avatar--xs">
+            {{ task.assignee.name }}
+          </ng-container>
+          <ng-template #noAssignee>
+            <span class="detail-meta__placeholder">No assignee</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="detail-meta__row">
+        <mat-icon class="detail-meta__icon">schedule</mat-icon>
+        <span class="detail-meta__label">Due date</span>
+        <span class="detail-meta__value">
+          {{ task.dueDate ? (task.dueDate | date:'MMM d, yyyy') : '—' }}
+        </span>
+      </div>
+
+      <div class="detail-meta__row">
+        <mat-icon class="detail-meta__icon">flag</mat-icon>
+        <span class="detail-meta__label">Priority</span>
+        <div class="detail-meta__value">
+          <span class="priority-badge" [style.background]="priorityColor(task.priority)">
+            {{ priorityLabel(task.priority) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-meta__row" *ngIf="task.projectName">
+        <mat-icon class="detail-meta__icon">folder_open</mat-icon>
+        <span class="detail-meta__label">Project</span>
+        <span class="detail-meta__value">{{ task.projectName }}</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Description -->
+    <div class="detail-section">
+      <h3 class="detail-section__title">Description</h3>
+      <div *ngIf="!editingDesc" class="detail-description" (click)="startEditDesc()">
+        {{ task.description || 'Add a description...' }}
+      </div>
+      <mat-form-field *ngIf="editingDesc" appearance="outline" class="w-full">
+        <textarea matInput [(ngModel)]="draftDesc" rows="4"
+                  (blur)="saveDesc()"></textarea>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Subtasks -->
+    <div class="detail-section" *ngIf="task.subtasks !== undefined">
+      <h3 class="detail-section__title">
+        Subtasks
+        <span class="subtask-progress">
+          {{ completedSubtasks() }}/{{ task.subtasks?.length }}
+        </span>
+      </h3>
+
+      <div class="subtask-row" *ngFor="let sub of task.subtasks">
+        <mat-checkbox
+          [checked]="sub.completed"
+          color="primary"
+          (change)="toggleSubtask(sub)">
+          <span [class.line-through]="sub.completed">{{ sub.name }}</span>
+        </mat-checkbox>
+      </div>
+
+      <!-- Add subtask input -->
+      <mat-form-field appearance="outline" class="subtask-add w-full">
+        <input matInput placeholder="Add a subtask..."
+               [(ngModel)]="newSubtaskName"
+               (keydown.enter)="addSubtask()">
+        <button mat-icon-button matSuffix (click)="addSubtask()" *ngIf="newSubtaskName">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <!-- Comments -->
+    <div class="detail-section" *ngIf="task.comments?.length">
+      <h3 class="detail-section__title">Comments</h3>
+      <div class="comment" *ngFor="let c of task.comments">
+        <img [src]="c.author.imgUrl" class="avatar avatar--sm">
+        <div class="comment__body">
+          <div class="comment__author">
+            {{ c.author.name }}
+            <span class="comment__time">{{ c.createdAt | date:'MMM d' }}</span>
+          </div>
+          <p class="comment__text">{{ c.content }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

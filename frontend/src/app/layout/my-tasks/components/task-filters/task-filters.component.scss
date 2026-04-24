@@ -1,0 +1,19 @@
+.filter-bar {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 16px;
+  color: rgba(0, 0, 0, 0.54);
+  min-width: unset;
+
+  &--active {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+  }
+}

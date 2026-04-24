@@ -1,0 +1,31 @@
+<div class="projects-shell">
+
+  <!-- Project list sidebar -->
+  <div class="projects-sidebar">
+    <div class="projects-sidebar__header">
+      <span class="projects-sidebar__title">Projects</span>
+    </div>
+
+    <div class="projects-sidebar__list">
+      <div
+        *ngFor="let project of projects"
+        class="project-nav-item"
+        [class.project-nav-item--active]="isActive(project.id)"
+        (click)="selectProject(project)">
+        <span class="project-dot" [style.background]="project.color"></span>
+        <span class="project-nav-item__name">{{ project.name }}</span>
+        <span class="project-nav-item__status"
+              [style.color]="statusColor(project.status)"
+              [matTooltip]="project.status | titlecase">
+          <mat-icon inline>circle</mat-icon>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project detail area -->
+  <div class="projects-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

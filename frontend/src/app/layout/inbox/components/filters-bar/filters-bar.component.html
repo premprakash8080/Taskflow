@@ -1,1 +1,10 @@
-<p>filters-bar works!</p>
+<div class="filters-bar">
+  <button
+    *ngFor="let f of filters"
+    mat-button
+    class="filter-chip"
+    [class.filter-chip--active]="activeFilter === f.value"
+    (click)="filterChange.emit(f.value)">
+    {{ f.label }}
+  </button>
+</div>

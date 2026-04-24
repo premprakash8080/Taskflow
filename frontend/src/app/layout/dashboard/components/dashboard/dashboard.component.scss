@@ -1,0 +1,64 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px 24px 0;
+}
+
+.stat-card {
+  padding: 20px 24px;
+  border-radius: 8px;
+  cursor: default;
+
+  &__value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  &__label {
+    margin-top: 6px;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  &--today .stat-card__value { color: #6366f1; }
+  &--overdue .stat-card__value { color: #ef4444; }
+  &--done .stat-card__value { color: #10b981; }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  padding: 16px 24px 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-main {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-sidebar {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mt-4 { margin-top: 16px; }
+
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+}

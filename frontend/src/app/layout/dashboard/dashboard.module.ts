@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { TopbarComponent } from './components/topbar/topbar.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { TaskBoardComponent } from './components/task-board/task-board.component';
 import { TaskItemComponent } from './components/task-item/task-item.component';
@@ -15,17 +14,16 @@ import { CreateTaskModalComponent } from './components/create-task-modal/create-
 @NgModule({
   declarations: [
     DashboardComponent,
-    SidebarComponent,
-    TopbarComponent,
     ProjectListComponent,
     TaskBoardComponent,
     TaskItemComponent,
     ActivityPanelComponent,
-    CreateTaskModalComponent
+    CreateTaskModalComponent,
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    SharedModule,
   ]
 })
 export class DashboardModule { }

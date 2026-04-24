@@ -1,1 +1,19 @@
-<p>activity-panel works!</p>
+<mat-card class="activity-panel">
+  <mat-card-header>
+    <mat-card-title>Recent Activity</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="activity-panel__content">
+    <div class="activity-item" *ngFor="let n of notifications">
+      <div class="activity-item__icon" [style.background]="typeColor(n.type)">
+        <mat-icon>{{ typeIcon(n.type) }}</mat-icon>
+      </div>
+      <div class="activity-item__body">
+        <p class="activity-item__message">{{ n.message }}</p>
+        <span class="activity-item__time">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
+      </div>
+    </div>
+    <div *ngIf="notifications.length === 0" class="activity-panel__empty">
+      No recent activity
+    </div>
+  </mat-card-content>
+</mat-card>

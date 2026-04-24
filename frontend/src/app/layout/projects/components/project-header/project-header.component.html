@@ -1,1 +1,49 @@
-<p>project-header works!</p>
+<div class="project-header">
+
+  <!-- Title row -->
+  <div class="project-header__title-row">
+    <div class="project-header__color" [style.background]="project.color"></div>
+    <h1 class="project-header__name">{{ project.name }}</h1>
+    <span class="status-badge" [style.color]="statusColor(project.status)"
+          [style.border-color]="statusColor(project.status)">
+      {{ statusLabel(project.status) }}
+    </span>
+  </div>
+
+  <!-- Tab nav + actions row -->
+  <div class="project-header__nav-row">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="project-tabs">
+      <a mat-tab-link
+         *ngFor="let v of views"
+         [routerLink]="v.path"
+         routerLinkActive
+         #rla="routerLinkActive"
+         [active]="rla.isActive">
+        <mat-icon class="tab-icon">{{ v.icon }}</mat-icon>
+        {{ v.label }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+    <div class="project-header__actions">
+      <!-- Member avatars -->
+      <div class="avatar-stack">
+        <img *ngFor="let m of project.members | slice:0:4"
+             [src]="m.imgUrl"
+             [matTooltip]="m.name"
+             class="avatar avatar--sm">
+        <span class="avatar-more" *ngIf="project.members.length > 4">
+          +{{ project.members.length - 4 }}
+        </span>
+      </div>
+
+      <button mat-stroked-button>
+        <mat-icon>person_add</mat-icon> Invite
+      </button>
+      <button mat-raised-button color="primary">
+        <mat-icon>add</mat-icon> Add Task
+      </button>
+    </div>
+  </div>
+
+</div>

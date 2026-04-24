@@ -1,1 +1,12 @@
-<p>task-list works!</p>
+<div class="task-list">
+  <vex-my-task-item
+    *ngFor="let task of tasks"
+    [task]="task"
+    (click)="taskSelected.emit(task)"
+    (toggleComplete)="toggleComplete.emit($event)">
+  </vex-my-task-item>
+
+  <div class="task-list__empty" *ngIf="tasks.length === 0">
+    No tasks in this section.
+  </div>
+</div>

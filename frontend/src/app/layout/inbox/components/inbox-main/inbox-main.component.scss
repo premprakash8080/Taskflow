@@ -1,0 +1,38 @@
+.inbox-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.inbox-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  flex: 1;
+  overflow: hidden;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.inbox-list-panel {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.inbox-detail-panel {
+  overflow-y: auto;
+}
+
+.inbox-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(0, 0, 0, 0.38);
+
+  mat-icon { font-size: 56px; width: 56px; height: 56px; margin-bottom: 12px; }
+  h3 { font-size: 16px; margin: 0 0 6px; }
+  p { font-size: 13px; margin: 0; }
+}

@@ -1,0 +1,22 @@
+.my-tasks-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.my-tasks-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.my-tasks-content {
+  overflow-y: auto;
+  padding: 0 24px 24px;
+}
+
+::ng-deep .detail-drawer {
+  width: 420px;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.06);
+}

@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { MyTasksRoutingModule } from './my-tasks-routing.module';
-import { MainComponent } from './components/main/main.component';
 import { MyTasksMainComponent } from './components/my-tasks-main/my-tasks-main.component';
 import { TaskSectionsComponent } from './components/task-sections/task-sections.component';
 import { TaskListComponent } from './components/task-list/task-list.component';
@@ -13,17 +14,18 @@ import { TaskDetailsPanelComponent } from './components/task-details-panel/task-
 
 @NgModule({
   declarations: [
-    MainComponent,
     MyTasksMainComponent,
     TaskSectionsComponent,
     TaskListComponent,
     TaskItemComponent,
     TaskFiltersComponent,
-    TaskDetailsPanelComponent
+    TaskDetailsPanelComponent,
   ],
   imports: [
     CommonModule,
-    MyTasksRoutingModule
+    MyTasksRoutingModule,
+    SharedModule,
+    MatDividerModule,
   ]
 })
 export class MyTasksModule { }

@@ -1,1 +1,29 @@
-<p>task-sections works!</p>
+<div class="task-sections">
+  <div class="task-section" *ngFor="let section of sections">
+
+    <!-- Section header -->
+    <div class="task-section__header" (click)="toggleSection(section)">
+      <mat-icon class="task-section__chevron" [class.rotated]="!section.expanded">
+        chevron_right
+      </mat-icon>
+      <span class="task-section__label">{{ section.label }}</span>
+      <span class="task-section__count">{{ section.tasks.length }}</span>
+    </div>
+
+    <!-- Task list -->
+    <div class="task-section__body" *ngIf="section.expanded">
+      <vex-task-list
+        [tasks]="section.tasks"
+        (taskSelected)="taskSelected.emit($event)"
+        (toggleComplete)="toggleComplete.emit($event)">
+      </vex-task-list>
+    </div>
+
+  </div>
+
+  <!-- Global empty state -->
+  <div class="sections-empty" *ngIf="sections.length > 0 && allSectionsEmpty()">
+    <mat-icon class="sections-empty__icon">task_alt</mat-icon>
+    <p>No tasks match the current filter.</p>
+  </div>
+</div>

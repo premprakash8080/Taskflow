@@ -1,1 +1,13 @@
-<p>inbox-list works!</p>
+<div class="inbox-list">
+  <vex-inbox-item
+    *ngFor="let n of notifications"
+    [notification]="n"
+    [selected]="n.id === selectedId"
+    (click)="select.emit(n)">
+  </vex-inbox-item>
+
+  <div class="inbox-list__empty" *ngIf="notifications.length === 0">
+    <mat-icon>inbox</mat-icon>
+    <p>No notifications here.</p>
+  </div>
+</div>

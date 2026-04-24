@@ -1,1 +1,61 @@
-<p>inbox-detail works!</p>
+<div class="inbox-detail">
+
+  <!-- Notification type header -->
+  <div class="inbox-detail__type-header" [style.background]="typeColor(notification.type) + '15'">
+    <div class="type-icon" [style.background]="typeColor(notification.type)">
+      <mat-icon>{{ typeIcon(notification.type) }}</mat-icon>
+    </div>
+    <div class="type-info">
+      <span class="type-label" [style.color]="typeColor(notification.type)">
+        {{ typeLabel(notification.type) }}
+      </span>
+      <span class="type-time">{{ notification.createdAt | date:'MMMM d, h:mm a' }}</span>
+    </div>
+    <div class="unread-badge" *ngIf="!notification.read">
+      <mat-icon inline>circle</mat-icon> New
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="inbox-detail__body">
+    <h2 class="inbox-detail__title">{{ notification.title }}</h2>
+
+    <!-- Sender -->
+    <div class="inbox-detail__sender">
+      <img [src]="notification.sender.imgUrl" class="avatar avatar--sm">
+      <div>
+        <div class="sender-name">{{ notification.sender.name }}</div>
+        <div class="sender-label">sent this notification</div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="inbox-detail__message">
+      {{ notification.message }}
+    </div>
+
+    <!-- Context card -->
+    <div class="context-card" *ngIf="notification.taskName || notification.projectName">
+      <div class="context-card__row" *ngIf="notification.taskName">
+        <mat-icon>task_alt</mat-icon>
+        <span class="context-card__label">Task</span>
+        <span class="context-card__value">{{ notification.taskName }}</span>
+      </div>
+      <div class="context-card__row" *ngIf="notification.projectName">
+        <mat-icon>folder_open</mat-icon>
+        <span class="context-card__label">Project</span>
+        <span class="context-card__value">{{ notification.projectName }}</span>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="inbox-detail__actions">
+      <button mat-raised-button color="primary" (click)="goToTask()">
+        <mat-icon>open_in_new</mat-icon> View Task
+      </button>
+      <button mat-stroked-button>
+        <mat-icon>archive</mat-icon> Archive
+      </button>
+    </div>
+  </div>
+</div>

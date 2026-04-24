@@ -1,0 +1,127 @@
+.inbox-detail {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__type-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    flex-shrink: 0;
+  }
+
+  &__body {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 20px;
+    color: rgba(0,0,0,0.87);
+    line-height: 1.3;
+  }
+
+  &__sender {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  &__message {
+    font-size: 14px;
+    color: rgba(0,0,0,0.7);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    border-left: 3px solid rgba(0,0,0,0.1);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+}
+
+.type-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { color: white; font-size: 18px; width: 18px; height: 18px; }
+}
+
+.type-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.type-label { font-size: 13px; font-weight: 600; }
+.type-time { font-size: 12px; color: rgba(0,0,0,0.4); }
+
+.unread-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+
+  mat-icon { font-size: 10px; width: 10px; height: 10px; }
+}
+
+.sender-name { font-size: 14px; font-weight: 600; }
+.sender-label { font-size: 12px; color: rgba(0,0,0,0.4); }
+
+.context-card {
+  background: rgba(0,0,0,0.025);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+
+    &:last-child { border-bottom: none; }
+
+    mat-icon { font-size: 18px; color: rgba(0,0,0,0.4); }
+  }
+
+  &__label {
+    font-size: 12px;
+    color: rgba(0,0,0,0.4);
+    width: 60px;
+  }
+
+  &__value {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.72);
+  }
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  &--sm { width: 36px; height: 36px; flex-shrink: 0; }
+}

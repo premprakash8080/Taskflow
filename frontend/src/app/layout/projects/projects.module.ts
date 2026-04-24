@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { MainComponent } from './components/main/main.component';
@@ -21,11 +23,13 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
     ProjectListViewComponent,
     ProjectTimelineComponent,
     ProjectMembersComponent,
-    ProjectSettingsComponent
+    ProjectSettingsComponent,
   ],
   imports: [
     CommonModule,
-    ProjectsRoutingModule
+    ProjectsRoutingModule,
+    SharedModule,
+    DragDropModule,
   ]
 })
 export class ProjectsModule { }

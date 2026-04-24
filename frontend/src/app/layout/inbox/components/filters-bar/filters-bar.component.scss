@@ -1,0 +1,23 @@
+.filters-bar {
+  display: flex;
+  gap: 2px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.filter-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 12px;
+  height: 28px;
+  border-radius: 14px;
+  color: rgba(0,0,0,0.54);
+  min-width: unset;
+
+  &--active {
+    background: rgba(99,102,241,0.1);
+    color: #6366f1;
+  }
+}

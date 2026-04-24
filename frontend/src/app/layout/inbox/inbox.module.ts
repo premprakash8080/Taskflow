@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { InboxRoutingModule } from './inbox-routing.module';
-import { MainComponent } from './components/main/main.component';
 import { InboxMainComponent } from './components/inbox-main/inbox-main.component';
 import { InboxListComponent } from './components/inbox-list/inbox-list.component';
 import { InboxItemComponent } from './components/inbox-item/inbox-item.component';
@@ -13,17 +13,17 @@ import { FiltersBarComponent } from './components/filters-bar/filters-bar.compon
 
 @NgModule({
   declarations: [
-    MainComponent,
     InboxMainComponent,
     InboxListComponent,
     InboxItemComponent,
     InboxDetailComponent,
     ActivityFeedComponent,
-    FiltersBarComponent
+    FiltersBarComponent,
   ],
   imports: [
     CommonModule,
-    InboxRoutingModule
+    InboxRoutingModule,
+    SharedModule,
   ]
 })
 export class InboxModule { }

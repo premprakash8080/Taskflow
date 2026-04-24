@@ -1,1 +1,66 @@
-<p>project-board works!</p>
+<div class="board" cdkDropListGroup>
+
+  <div class="board-column"
+       *ngFor="let col of columns"
+       cdkDropList
+       [id]="col.id"
+       [cdkDropListData]="col.tasks"
+       [cdkDropListConnectedTo]="columnIds"
+       (cdkDropListDropped)="onDrop($event, col)">
+
+    <!-- Column header -->
+    <div class="board-column__header">
+      <div class="board-column__dot" [style.background]="col.color"></div>
+      <span class="board-column__name">{{ col.name }}</span>
+      <span class="board-column__count">{{ col.tasks.length }}</span>
+      <button mat-icon-button class="board-column__add" matTooltip="Add task">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <!-- Task cards -->
+    <div class="board-column__cards">
+      <mat-card
+        class="task-card"
+        *ngFor="let task of col.tasks"
+        cdkDrag
+        [class.task-card--completed]="task.completed">
+
+        <!-- Drag handle -->
+        <div cdkDragHandle class="task-card__drag-handle">
+          <mat-icon>drag_indicator</mat-icon>
+        </div>
+
+        <!-- Priority bar -->
+        <div class="task-card__priority" [style.background]="priorityColor(task.priority)"></div>
+
+        <mat-card-content class="task-card__content">
+          <p class="task-card__name">{{ task.name }}</p>
+
+          <div class="task-card__footer">
+            <div class="task-card__meta">
+              <span class="task-card__due" *ngIf="task.dueDate">
+                <mat-icon inline>schedule</mat-icon>
+                {{ task.dueDate | date:'MMM d' }}
+              </span>
+            </div>
+            <img *ngIf="task.assignee"
+                 [src]="task.assignee.imgUrl"
+                 [matTooltip]="task.assignee.name"
+                 class="avatar avatar--xs">
+          </div>
+        </mat-card-content>
+
+        <!-- Drag placeholder -->
+        <div *cdkDragPlaceholder class="task-card-placeholder"></div>
+      </mat-card>
+
+      <!-- Empty drop zone hint -->
+      <div class="board-column__empty" *ngIf="col.tasks.length === 0">
+        Drop tasks here
+      </div>
+    </div>
+
+  </div>
+
+</div>

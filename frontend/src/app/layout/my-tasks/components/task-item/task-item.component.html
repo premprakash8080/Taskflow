@@ -1,1 +1,37 @@
-<p>task-item works!</p>
+<div class="task-row" [class.task-row--completed]="task.completed">
+
+  <!-- Priority indicator -->
+  <div class="task-row__priority" [style.background]="priorityColor(task.priority)"></div>
+
+  <!-- Checkbox -->
+  <mat-checkbox
+    [checked]="task.completed"
+    color="primary"
+    class="task-row__check"
+    (click)="onCheckboxChange($event)">
+  </mat-checkbox>
+
+  <!-- Main content -->
+  <div class="task-row__body">
+    <span class="task-row__name">{{ task.name }}</span>
+    <div class="task-row__meta" *ngIf="task.projectName || task.dueDate">
+      <span class="meta-tag" *ngIf="task.projectName">
+        <mat-icon inline>folder_open</mat-icon> {{ task.projectName }}
+      </span>
+      <span class="meta-tag"
+            [class.meta-tag--overdue]="isOverdue(task.dueDate)"
+            [class.meta-tag--today]="isDueToday(task.dueDate)"
+            *ngIf="task.dueDate">
+        <mat-icon inline>schedule</mat-icon>
+        {{ task.dueDate | date:'MMM d' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Assignee avatar -->
+  <img *ngIf="task.assignee"
+       [src]="task.assignee.imgUrl"
+       [matTooltip]="task.assignee.name"
+       class="avatar avatar--sm task-row__avatar">
+
+</div>

@@ -1,1 +1,68 @@
-<p>create-task-modal works!</p>
+<h2 mat-dialog-title>Create Task</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <!-- Task name -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Task name</mat-label>
+    <input matInput formControlName="name" placeholder="What needs to be done?" autofocus>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">Task name is required</mat-error>
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"
+              placeholder="Add more detail..."></textarea>
+  </mat-form-field>
+
+  <div class="modal-row">
+    <!-- Assignee -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Assignee</mat-label>
+      <mat-select formControlName="assigneeId">
+        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option *ngFor="let a of assignees" [value]="a.id">
+          {{ a.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Priority -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option *ngFor="let p of priorities" [value]="p">
+          {{ p | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="modal-row">
+    <!-- Due date -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Due date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Project -->
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Project</mat-label>
+      <mat-select formControlName="projectId">
+        <mat-option [value]="null">No project</mat-option>
+        <mat-option *ngFor="let p of projects" [value]="p.id">
+          {{ p.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    Create Task
+  </button>
+</mat-dialog-actions>

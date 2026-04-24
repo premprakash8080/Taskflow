@@ -1,1 +1,56 @@
-<p>dashboard works!</p>
+<div class="dashboard-page">
+
+  <!-- Page header -->
+  <vex-page-header title="Home" [breadcrumbs]="breadcrumbs">
+    <button mat-raised-button color="primary" (click)="openCreateTask()">
+      <mat-icon>add</mat-icon> New Task
+    </button>
+  </vex-page-header>
+
+  <!-- Summary stat cards -->
+  <div class="dashboard-stats">
+    <mat-card class="stat-card">
+      <div class="stat-card__value">{{ incompleteCount }}</div>
+      <div class="stat-card__label">Incomplete</div>
+    </mat-card>
+    <mat-card class="stat-card stat-card--today">
+      <div class="stat-card__value">{{ todayTasks.length }}</div>
+      <div class="stat-card__label">Due Today</div>
+    </mat-card>
+    <mat-card class="stat-card stat-card--overdue">
+      <div class="stat-card__value">{{ overdueTasks.length }}</div>
+      <div class="stat-card__label">Overdue</div>
+    </mat-card>
+    <mat-card class="stat-card stat-card--done">
+      <div class="stat-card__value">{{ completedCount }}</div>
+      <div class="stat-card__label">Completed</div>
+    </mat-card>
+  </div>
+
+  <!-- Main content grid -->
+  <div class="dashboard-grid">
+
+    <!-- Left: task sections -->
+    <div class="dashboard-main">
+      <vex-task-board
+        [tasks]="todayTasks"
+        label="Due Today"
+        (completeTask)="onCompleteTask($event)">
+      </vex-task-board>
+
+      <vex-task-board
+        [tasks]="overdueTasks"
+        label="Overdue"
+        class="mt-4"
+        (completeTask)="onCompleteTask($event)">
+      </vex-task-board>
+    </div>
+
+    <!-- Right: project list + activity -->
+    <div class="dashboard-sidebar">
+      <vex-project-list [projects]="projects"></vex-project-list>
+      <vex-activity-panel class="mt-4"></vex-activity-panel>
+    </div>
+
+  </div>
+</div>

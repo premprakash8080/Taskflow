@@ -1,1 +1,42 @@
-<p>inbox-main works!</p>
+<div class="inbox-page">
+
+  <vex-page-header title="Inbox" [breadcrumbs]="breadcrumbs">
+    <button mat-button *ngIf="unreadCount > 0" (click)="markAllRead()">
+      <mat-icon>done_all</mat-icon> Mark all read
+    </button>
+  </vex-page-header>
+
+  <div class="inbox-layout">
+
+    <!-- Left panel: filters + list -->
+    <div class="inbox-list-panel">
+      <vex-filters-bar
+        [activeFilter]="activeFilter"
+        (filterChange)="onFilterChange($event)">
+      </vex-filters-bar>
+
+      <vex-inbox-list
+        [notifications]="notifications"
+        [selectedId]="selected?.id ?? null"
+        (select)="selectNotification($event)">
+      </vex-inbox-list>
+    </div>
+
+    <!-- Right panel: detail -->
+    <div class="inbox-detail-panel">
+      <vex-inbox-detail
+        *ngIf="selected; else emptyState"
+        [notification]="selected">
+      </vex-inbox-detail>
+
+      <ng-template #emptyState>
+        <div class="inbox-empty">
+          <mat-icon>inbox</mat-icon>
+          <h3>Select a notification</h3>
+          <p>Click on a notification to see details.</p>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+</div>

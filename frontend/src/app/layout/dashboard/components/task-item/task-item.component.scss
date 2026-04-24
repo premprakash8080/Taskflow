@@ -1,0 +1,74 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  transition: background 0.15s;
+
+  &:hover { background: rgba(0,0,0,0.02); }
+  &:last-child { border-bottom: none; }
+
+  &--completed {
+    .task-item__name {
+      text-decoration: line-through;
+      color: rgba(0,0,0,0.35);
+    }
+  }
+
+  &__check { flex-shrink: 0; }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    display: block;
+    font-size: 14px;
+    color: rgba(0,0,0,0.87);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 2px;
+  }
+
+  &__project, &__due {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: rgba(0,0,0,0.42);
+
+    mat-icon { font-size: 12px; width: 12px; height: 12px; }
+  }
+
+  &__due--overdue { color: #ef4444; }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+}
+
+.priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+
+  &--xs { width: 24px; height: 24px; }
+}

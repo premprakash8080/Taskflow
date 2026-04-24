@@ -1,1 +1,28 @@
-<p>inbox-item works!</p>
+<div class="inbox-item"
+     [class.inbox-item--selected]="selected"
+     [class.inbox-item--unread]="!notification.read">
+
+  <!-- Unread indicator -->
+  <div class="inbox-item__unread-dot" *ngIf="!notification.read"></div>
+
+  <!-- Sender avatar with type badge -->
+  <div class="inbox-item__avatar-wrap">
+    <img [src]="notification.sender.imgUrl" class="avatar avatar--sm">
+    <div class="inbox-item__type-badge" [style.background]="typeColor(notification.type)">
+      <mat-icon>{{ typeIcon(notification.type) }}</mat-icon>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="inbox-item__body">
+    <div class="inbox-item__title">{{ notification.title }}</div>
+    <div class="inbox-item__message">{{ notification.message }}</div>
+    <div class="inbox-item__meta">
+      <span *ngIf="notification.projectName" class="inbox-item__project">
+        {{ notification.projectName }}
+      </span>
+      <span class="inbox-item__time">{{ notification.createdAt | date:'MMM d' }}</span>
+    </div>
+  </div>
+
+</div>
