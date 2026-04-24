@@ -121,14 +121,44 @@ export class AppComponent {
     this.navigationService.items = [
       {
         type: 'subheading',
-        label: 'Dashboards',
+        label: 'Overview',
         children: [
           {
             type: 'link',
-            label: 'Analytics',
-            route: '/',
-            icon: 'mat:insights',
+            label: 'Dashboard',
+            route: '/dashboard',
+            icon: 'mat:dashboard',
             routerLinkActiveOptions: { exact: true }
+          },
+          {
+            type: 'link',
+            label: 'Inbox',
+            route: '/inbox',
+            icon: 'mat:inbox'
+          }
+        ]
+      },
+      {
+        type: 'subheading',
+        label: 'Work',
+        children: [
+          {
+            type: 'link',
+            label: 'My Tasks',
+            route: '/my-tasks',
+            icon: 'mat:task'
+          },
+          {
+            type: 'link',
+            label: 'Projects',
+            route: '/projects',
+            icon: 'mat:folder'
+          },
+          {
+            type: 'link',
+            label: 'Portfolios',
+            route: '/portfolios',
+            icon: 'mat:assessment'
           }
         ]
       }
