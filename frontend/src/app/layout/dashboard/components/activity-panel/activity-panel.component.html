@@ -5,7 +5,7 @@
   <mat-card-content class="activity-panel__content">
     <div class="activity-item" *ngFor="let n of notifications">
       <div class="activity-item__icon" [style.background]="typeColor(n.type)">
-        <mat-icon>{{ typeIcon(n.type) }}</mat-icon>
+        <mat-icon [svgIcon]="'mat:' + typeIcon(n.type)"></mat-icon>
       </div>
       <div class="activity-item__body">
         <p class="activity-item__message">{{ n.message }}</p>

@@ -1,61 +1,88 @@
-<div class="inbox-detail">
+<div class="ib-detail">
 
-  <!-- Notification type header -->
-  <div class="inbox-detail__type-header" [style.background]="typeColor(notification.type) + '15'">
-    <div class="type-icon" [style.background]="typeColor(notification.type)">
-      <mat-icon>{{ typeIcon(notification.type) }}</mat-icon>
+  <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+  <div class="ib-detail__header">
+
+    <!-- Type pill -->
+    <div class="ib-detail__type-pill"
+         [style.background]="typeColor(notification.type) + '20'"
+         [style.color]="typeColor(notification.type)">
+      <mat-icon [svgIcon]="'mat:' + typeIcon(notification.type)"></mat-icon>
+      {{ typeLabel(notification.type) }}
     </div>
-    <div class="type-info">
-      <span class="type-label" [style.color]="typeColor(notification.type)">
-        {{ typeLabel(notification.type) }}
-      </span>
-      <span class="type-time">{{ notification.createdAt | date:'MMMM d, h:mm a' }}</span>
-    </div>
-    <div class="unread-badge" *ngIf="!notification.read">
-      <mat-icon inline>circle</mat-icon> New
-    </div>
+
+    <!-- Unread badge -->
+    <span class="ib-detail__new-badge" *ngIf="!notification.read">New</span>
+
+    <!-- Spacer -->
+    <span style="flex:1"></span>
+
+    <!-- Time -->
+    <span class="ib-detail__time">
+      {{ notification.createdAt | date:'MMM d, h:mm a' }}
+    </span>
+
+    <!-- Close -->
+    <button mat-icon-button class="ib-detail__close" (click)="close.emit()" matTooltip="Close">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
   </div>
 
-  <!-- Main content -->
-  <div class="inbox-detail__body">
-    <h2 class="inbox-detail__title">{{ notification.title }}</h2>
+  <!-- ── BODY ───────────────────────────────────────────────────────────── -->
+  <div class="ib-detail__body">
 
-    <!-- Sender -->
-    <div class="inbox-detail__sender">
-      <img [src]="notification.sender.imgUrl" class="avatar avatar--sm">
-      <div>
-        <div class="sender-name">{{ notification.sender.name }}</div>
-        <div class="sender-label">sent this notification</div>
+    <!-- Sender row -->
+    <div class="ib-detail__sender">
+      <img
+        *ngIf="!senderImgError"
+        [src]="notification.sender.imgUrl"
+        class="ib-avatar ib-avatar--md"
+        (error)="senderImgError = true">
+      <div
+        *ngIf="senderImgError"
+        class="ib-avatar ib-avatar--initials ib-avatar--md"
+        [style.background]="avatarColor(notification.sender.id)">
+        {{ initials(notification.sender.name) }}
+      </div>
+      <div class="ib-detail__sender-info">
+        <span class="ib-detail__sender-name">{{ notification.sender.name }}</span>
+        <span class="ib-detail__sender-action">{{ notification.title }}</span>
       </div>
     </div>
 
     <!-- Message -->
-    <div class="inbox-detail__message">
-      {{ notification.message }}
+    <p class="ib-detail__message">{{ notification.message }}</p>
+
+    <!-- Context: task + project -->
+    <div class="ib-detail__context" *ngIf="notification.taskName || notification.projectName">
+      <div class="ib-detail__ctx-row" *ngIf="notification.taskName">
+        <mat-icon svgIcon="mat:check_circle_outline" class="ib-detail__ctx-icon"></mat-icon>
+        <div class="ib-detail__ctx-content">
+          <span class="ib-detail__ctx-label">Task</span>
+          <span class="ib-detail__ctx-value">{{ notification.taskName }}</span>
+        </div>
+      </div>
+      <div class="ib-detail__ctx-row" *ngIf="notification.projectName">
+        <mat-icon svgIcon="mat:folder_open" class="ib-detail__ctx-icon"></mat-icon>
+        <div class="ib-detail__ctx-content">
+          <span class="ib-detail__ctx-label">Project</span>
+          <span class="ib-detail__ctx-value">{{ notification.projectName }}</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Context card -->
-    <div class="context-card" *ngIf="notification.taskName || notification.projectName">
-      <div class="context-card__row" *ngIf="notification.taskName">
-        <mat-icon>task_alt</mat-icon>
-        <span class="context-card__label">Task</span>
-        <span class="context-card__value">{{ notification.taskName }}</span>
-      </div>
-      <div class="context-card__row" *ngIf="notification.projectName">
-        <mat-icon>folder_open</mat-icon>
-        <span class="context-card__label">Project</span>
-        <span class="context-card__value">{{ notification.projectName }}</span>
-      </div>
+    <!-- Actions -->
+    <div class="ib-detail__actions">
+      <button mat-flat-button color="primary" (click)="goToTask()"
+              *ngIf="notification.projectId">
+        <mat-icon svgIcon="mat:open_in_new"></mat-icon>
+        Open task
+      </button>
+      <button mat-button class="ib-btn-ghost">
+        <mat-icon svgIcon="mat:archive"></mat-icon>
+        Archive
+      </button>
     </div>
 
-    <!-- Action buttons -->
-    <div class="inbox-detail__actions">
-      <button mat-raised-button color="primary" (click)="goToTask()">
-        <mat-icon>open_in_new</mat-icon> View Task
-      </button>
-      <button mat-stroked-button>
-        <mat-icon>archive</mat-icon> Archive
-      </button>
-    </div>
   </div>
 </div>

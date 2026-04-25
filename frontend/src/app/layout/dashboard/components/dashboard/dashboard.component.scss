@@ -1,64 +1,402 @@
-.dashboard-page {
+// ─── Home page shell ──────────────────────────────────────────────────────────
+.home-page {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
+  background: var(--background-base);
+  padding: 0 0 32px;
 }
 
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 16px 24px 0;
-}
+// ─── Greeting header ──────────────────────────────────────────────────────────
+.home-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 28px 32px 20px;
+  background: var(--background-foreground);
+  border-bottom: 1px solid var(--foreground-divider);
+  flex-shrink: 0;
 
-.stat-card {
-  padding: 20px 24px;
-  border-radius: 8px;
-  cursor: default;
+  &__date {
+    margin: 0 0 2px;
+    font-size: 12px;
+    color: var(--text-hint);
+    font-weight: 500;
+  }
 
-  &__value {
-    font-size: 32px;
+  &__greeting {
+    margin: 0;
+    font-size: 22px;
     font-weight: 700;
-    line-height: 1;
-    color: rgba(0, 0, 0, 0.87);
+    color: var(--text-color);
+    letter-spacing: -0.3px;
   }
 
-  &__label {
-    margin-top: 6px;
-    font-size: 13px;
-    color: rgba(0, 0, 0, 0.45);
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-
-  &--today .stat-card__value { color: #6366f1; }
-  &--overdue .stat-card__value { color: #ef4444; }
-  &--done .stat-card__value { color: #10b981; }
 }
 
-.dashboard-grid {
+.header-action-btn {
+  font-size: 12px;
+  font-weight: 500;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 10px;
+  border-color: var(--foreground-divider) !important;
+  color: var(--text-secondary);
+  min-width: unset;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; margin-right: 4px; }
+  &:hover { color: var(--text-color); }
+}
+
+// ─── Widget grid ──────────────────────────────────────────────────────────────
+.home-widgets {
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 24px;
-  padding: 16px 24px 24px;
-  flex: 1;
-  min-height: 0;
+  gap: 16px;
+  padding: 20px 32px 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.dashboard-main {
-  overflow-y: auto;
+// ─── Widget base ──────────────────────────────────────────────────────────────
+.widget {
+  background: var(--background-foreground);
+  border-radius: 8px;
+  border: 1px solid var(--foreground-divider);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--foreground-divider);
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  &__link {
+    font-size: 12px;
+    color: rgb(var(--color-primary));
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+
+  &__create-btn {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    height: 28px;
+    line-height: 28px;
+    min-width: unset;
+    padding: 0 8px;
+
+    mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 2px; }
+    &:hover { color: var(--text-color); }
+  }
+
+  &__footer {
+    padding: 8px 16px 12px;
+    border-top: 1px solid var(--foreground-divider);
+  }
+}
+
+// ─── Task tabs ────────────────────────────────────────────────────────────────
+.task-tabs {
   display: flex;
-  flex-direction: column;
+  gap: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--foreground-divider);
 }
 
-.dashboard-sidebar {
-  overflow-y: auto;
+.task-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-hint);
+  cursor: pointer;
+  margin-bottom: -1px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.15s;
+
+  &:hover { color: var(--text-secondary); }
+
+  &--active {
+    color: var(--text-color);
+    border-bottom-color: rgb(var(--color-primary));
+    font-weight: 600;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    // Red badge — semantic "overdue/alert" color, intentionally fixed
+    background: #ef4444;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    line-height: 1;
+  }
 }
 
-.mt-4 { margin-top: 16px; }
+// ─── Task rows ────────────────────────────────────────────────────────────────
+.task-rows {
+  padding: 4px 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
 
-@media (max-width: 900px) {
-  .dashboard-grid { grid-template-columns: 1fr; }
-  .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  min-height: 36px;
+  border-bottom: 1px solid var(--foreground-divider);
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover { background: var(--background-hover); }
+  &:last-child { border-bottom: none; }
+
+  &__name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+
+    &--done {
+      text-decoration: line-through;
+      color: var(--text-hint);
+    }
+  }
+}
+
+// Circle checkbox
+.task-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--foreground-divider);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+  padding: 0;
+
+  mat-icon { font-size: 12px; width: 12px; height: 12px; color: #fff; }
+
+  &:hover { border-color: rgb(var(--color-primary)); }
+
+  // Semantic completion color — always green regardless of theme
+  &--done {
+    background: #10b981;
+    border-color: #10b981;
+  }
+}
+
+// Project colour tag
+.task-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  color: #fff;           // contrast on coloured background — intentionally fixed
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Due date
+.task-due {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-hint);
+  white-space: nowrap;
+
+  // Semantic status colors — intentionally fixed
+  &--overdue { color: #ef4444; }
+  &--today   { color: rgb(var(--color-primary)); font-weight: 600; }
+}
+
+// Assignee avatar
+.task-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid var(--background-foreground);
+}
+
+// Empty state
+.task-rows__empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-hint);
+}
+
+// Add-task row
+.task-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-hint);
+  cursor: pointer;
+  border-top: 1px solid var(--foreground-divider);
+  transition: color 0.15s;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover { color: rgb(var(--color-primary)); }
+}
+
+// ─── Project grid ─────────────────────────────────────────────────────────────
+.project-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--foreground-divider);
+  border-top: 1px solid var(--foreground-divider);
+}
+
+.project-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--background-foreground);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(var(--color-primary), 0.05); }
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;           // contrast on project colour — intentionally fixed
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__type {
+    font-size: 11px;
+    color: var(--text-hint);
+  }
+}
+
+// ─── People section ───────────────────────────────────────────────────────────
+.home-people {
+  margin: 16px 32px 0;
+  background: var(--background-foreground);
+  border-radius: 8px;
+  border: 1px solid var(--foreground-divider);
+  overflow: hidden;
+}
+
+.people-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 8px 8px 12px;
+}
+
+.person-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  min-width: 160px;
+
+  &:hover { background: var(--background-hover); }
+
+  &__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;           // contrast on coloured avatar — intentionally fixed
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  &__role {
+    font-size: 11px;
+    color: var(--text-hint);
+  }
 }

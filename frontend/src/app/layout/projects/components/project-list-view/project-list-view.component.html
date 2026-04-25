@@ -1,87 +1,187 @@
-<div class="list-view">
-  <table mat-table [dataSource]="dataSource" class="list-table" matSort>
+<div class="lv">
 
-    <!-- Checkbox column -->
-    <ng-container matColumnDef="complete">
-      <th mat-header-cell *matHeaderCellDef style="width:48px"></th>
-      <td mat-cell *matCellDef="let task">
-        <mat-checkbox
-          [checked]="task.completed"
-          color="primary"
-          (click)="toggleComplete(task, $event)">
-        </mat-checkbox>
-      </td>
-    </ng-container>
+  <!-- ── Sticky column headers ─────────────────────────────────────────────── -->
+  <div class="lv__col-headers">
 
-    <!-- Name column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Task name</th>
-      <td mat-cell *matCellDef="let task"
-          class="task-name-cell"
-          [class.task-name-cell--done]="task.completed">
-        {{ task.name }}
-      </td>
-    </ng-container>
+    <!-- Check (fixed, not resizable) -->
+    <div class="lv__col lv__col--check"></div>
 
-    <!-- Assignee column -->
-    <ng-container matColumnDef="assignee">
-      <th mat-header-cell *matHeaderCellDef>Assignee</th>
-      <td mat-cell *matCellDef="let task">
-        <div class="assignee-cell" *ngIf="task.assignee">
-          <img [src]="task.assignee.imgUrl"
-               [matTooltip]="task.assignee.name"
-               class="avatar avatar--xs">
-          <span class="assignee-name">{{ task.assignee.name }}</span>
+    <!-- Name -->
+    <div class="lv__col lv__col--name">
+      Task name
+      <div class="lv__resize-handle" (mousedown)="onResizeStart($event, 'name')"></div>
+    </div>
+
+    <!-- Assignee -->
+    <div class="lv__col lv__col--assignee">
+      Assignee
+      <div class="lv__resize-handle" (mousedown)="onResizeStart($event, 'assignee')"></div>
+    </div>
+
+    <!-- Due date -->
+    <div class="lv__col lv__col--due">
+      Due date
+      <div class="lv__resize-handle" (mousedown)="onResizeStart($event, 'due')"></div>
+    </div>
+
+    <!-- Priority -->
+    <div class="lv__col lv__col--priority">
+      Priority
+      <div class="lv__resize-handle" (mousedown)="onResizeStart($event, 'priority')"></div>
+    </div>
+
+    <!-- Status (last column — no right handle needed) -->
+    <div class="lv__col lv__col--status">
+      Status
+    </div>
+
+  </div>
+
+  <!-- ── Scrollable body ───────────────────────────────────────────────────── -->
+  <div class="lv__body">
+
+    <ng-container *ngFor="let section of sections">
+
+      <!-- ── Section header ──────────────────────────────────────────────── -->
+      <div class="lv__section-row" (click)="toggleSection(section)">
+        <mat-icon
+          class="lv__section-chevron"
+          [class.lv__section-chevron--open]="section.expanded"
+          svgIcon="mat:chevron_right">
+        </mat-icon>
+        <span class="lv__section-name">{{ section.name }}</span>
+        <span class="lv__section-count">{{ section.tasks.length }}</span>
+        <button class="lv__section-add"
+                mat-icon-button
+                matTooltip="Add task to {{ section.name }}"
+                (click)="startAddTask(section.id, $event)">
+          <mat-icon svgIcon="mat:add" class="lv__section-add-icon"></mat-icon>
+        </button>
+      </div>
+
+      <ng-container *ngIf="section.expanded">
+
+        <!-- ── Task rows ──────────────────────────────────────────────────── -->
+        <div *ngFor="let task of section.tasks"
+             class="lv__row"
+             [class.lv__row--selected]="selectedTask?.id === task.id"
+             [class.lv__row--done]="task.completed"
+             (click)="selectTask(task)">
+
+          <div class="lv__cell lv__cell--check" (click)="toggleComplete(task, $event)">
+            <div class="lv__complete-btn" [class.lv__complete-btn--done]="task.completed">
+              <mat-icon *ngIf="task.completed" svgIcon="mat:check" class="lv__check-icon"></mat-icon>
+            </div>
+          </div>
+
+          <div class="lv__cell lv__cell--name">
+            <span class="lv__task-name" [class.lv__task-name--done]="task.completed">
+              {{ task.name }}
+            </span>
+          </div>
+
+          <div class="lv__cell lv__cell--assignee">
+            <ng-container *ngIf="task.assignee; else noAssignee">
+              <div class="lv__assignee">
+                <img *ngIf="!avatarError[task.assignee.id]"
+                     [src]="task.assignee.imgUrl"
+                     [matTooltip]="task.assignee.name"
+                     (error)="avatarError[task.assignee.id] = true"
+                     class="lv__avatar">
+                <div *ngIf="avatarError[task.assignee.id]"
+                     class="lv__avatar lv__avatar--initials"
+                     [style.background]="avatarColor(task.assignee.id)"
+                     [matTooltip]="task.assignee.name">
+                  {{ avatarInitials(task.assignee.name) }}
+                </div>
+                <span class="lv__assignee-name">{{ task.assignee.name }}</span>
+              </div>
+            </ng-container>
+            <ng-template #noAssignee>
+              <span class="lv__empty-cell">—</span>
+            </ng-template>
+          </div>
+
+          <div class="lv__cell lv__cell--due"
+               [class.lv__cell--overdue]="isOverdue(task.dueDate) && !task.completed"
+               [class.lv__cell--today]="isToday(task.dueDate) && !task.completed">
+            <ng-container *ngIf="task.dueDate">
+              <mat-icon svgIcon="mat:schedule" class="lv__due-icon"></mat-icon>
+              <span>{{ task.dueDate | date:'MMM d' }}</span>
+            </ng-container>
+            <span *ngIf="!task.dueDate" class="lv__empty-cell">—</span>
+          </div>
+
+          <div class="lv__cell lv__cell--priority">
+            <span *ngIf="task.priority !== 'none'"
+                  class="lv__priority-pill"
+                  [style.background]="priorityColor(task.priority) + '18'"
+                  [style.color]="priorityColor(task.priority)">
+              {{ task.priority | titlecase }}
+            </span>
+            <span *ngIf="task.priority === 'none'" class="lv__empty-cell">—</span>
+          </div>
+
+          <div class="lv__cell lv__cell--status">
+            <span class="lv__status-pill" [ngClass]="statusClass(task.status)">
+              {{ statusLabel(task.status) }}
+            </span>
+          </div>
+
         </div>
-        <span *ngIf="!task.assignee" class="unassigned">—</span>
-      </td>
-    </ng-container>
 
-    <!-- Due Date column -->
-    <ng-container matColumnDef="dueDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Due date</th>
-      <td mat-cell *matCellDef="let task"
-          [class.overdue-cell]="isOverdue(task.dueDate)">
-        <span *ngIf="task.dueDate">
-          <mat-icon inline class="due-icon">schedule</mat-icon>
-          {{ task.dueDate | date:'MMM d' }}
-        </span>
-        <span *ngIf="!task.dueDate">—</span>
-      </td>
-    </ng-container>
-
-    <!-- Priority column -->
-    <ng-container matColumnDef="priority">
-      <th mat-header-cell *matHeaderCellDef>Priority</th>
-      <td mat-cell *matCellDef="let task">
-        <div class="priority-pill" [style.background]="priorityColor(task.priority) + '20'"
-             [style.color]="priorityColor(task.priority)">
-          {{ task.priority | titlecase }}
+        <!-- ── Inline input row ───────────────────────────────────────────── -->
+        <div class="lv__adding-row" *ngIf="addingSection === section.id">
+          <div class="lv__cell lv__cell--check">
+            <div class="lv__complete-btn"></div>
+          </div>
+          <div class="lv__cell lv__cell--name lv__cell--input">
+            <input
+              class="lv__task-input"
+              type="text"
+              placeholder="Task name"
+              [(ngModel)]="newTaskName"
+              (keydown)="onAddTaskKeydown($event)"
+              (blur)="onInputBlur()"
+              appAutofocus>
+            <div class="lv__add-hints">
+              <span class="lv__add-hint">↵ add</span>
+              <span class="lv__add-hint">Esc cancel</span>
+            </div>
+          </div>
         </div>
-      </td>
-    </ng-container>
 
-    <!-- Status column -->
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let task">
-        <div class="status-pill" [ngClass]="'status-pill--' + task.status">
-          {{ task.status | titlecase }}
+        <!-- ── "Add task" trigger row ─────────────────────────────────────── -->
+        <div class="lv__add-row"
+             *ngIf="addingSection !== section.id"
+             (click)="startAddTask(section.id)">
+          <div class="lv__cell lv__cell--check">
+            <mat-icon svgIcon="mat:add" class="lv__add-icon"></mat-icon>
+          </div>
+          <div class="lv__cell lv__cell--name">
+            <span class="lv__add-label">Add task</span>
+          </div>
         </div>
-      </td>
+
+      </ng-container>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-        (click)="selectRow(row)"
-        [class.row--selected]="selectedTask?.id === row.id"
-        class="task-row">
-    </tr>
+    <!-- ── Empty state ─────────────────────────────────────────────────────── -->
+    <div *ngIf="totalTasks === 0 && sections.length > 0 && addingSection === null"
+         class="lv__empty">
+      <div class="lv__empty-graphic">
+        <mat-icon svgIcon="mat:check_circle_outline" class="lv__empty-icon"></mat-icon>
+      </div>
+      <p class="lv__empty-title">No tasks yet</p>
+      <p class="lv__empty-sub">Add your first task to start tracking work in this project.</p>
+      <button mat-flat-button color="primary" class="lv__empty-cta"
+              (click)="startAddTask(sections[0].id)">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        Add task
+      </button>
+    </div>
 
-    <tr class="mat-row no-data-row" *matNoDataRow>
-      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-        No tasks in this project.
-      </td>
-    </tr>
-  </table>
+    <div class="lv__bottom-spacer"></div>
+
+  </div>
 </div>

@@ -1,32 +1,43 @@
-<div class="project-workspace" *ngIf="project">
+<ng-container *ngIf="project; else notFound">
 
-  <vex-project-header [project]="project"></vex-project-header>
+  <div class="pw">
 
-  <mat-drawer-container class="project-body" autosize>
+    <!-- ── Project header (tabs + title) ─────────────────────────── -->
+    <vex-project-header [project]="project"></vex-project-header>
 
-    <mat-drawer #detailDrawer mode="side" position="end" class="project-detail-drawer">
-      <!-- Task detail panel would go here when implemented -->
-      <div class="drawer-placeholder" *ngIf="selectedTask">
-        <div class="drawer-placeholder__header">
-          <button mat-icon-button (click)="closeDetail()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="drawer-placeholder__body">
-          <h3>{{ selectedTask.name }}</h3>
-          <p>{{ selectedTask.description }}</p>
-        </div>
+    <!-- ── Main split: view + optional detail panel ───────────────── -->
+    <div class="pw__body">
+
+      <!-- Active view (list / board / timeline / …) -->
+      <div class="pw__view" [class.pw__view--narrowed]="!!selectedTask">
+        <router-outlet></router-outlet>
       </div>
-    </mat-drawer>
 
-    <mat-drawer-content class="project-content">
-      <router-outlet></router-outlet>
-    </mat-drawer-content>
+      <!-- Task detail panel — flex sibling, always full height -->
+      <aside class="pw__detail" *ngIf="selectedTask" [@slidePanel]>
 
-  </mat-drawer-container>
-</div>
+        <div class="pw__detail-inner">
+          <vex-task-details-panel
+            [task]="selectedTask"
+            (close)="closeDetail()"
+            (taskUpdate)="onTaskUpdate($event)"
+            (toggleComplete)="onToggleComplete($event)">
+          </vex-task-details-panel>
+        </div>
 
-<div class="project-empty" *ngIf="!project">
-  <mat-icon>folder_open</mat-icon>
-  <p>Project not found.</p>
-</div>
+      </aside>
+
+    </div>
+
+  </div>
+
+</ng-container>
+
+<!-- ── Not found ────────────────────────────────────────────────── -->
+<ng-template #notFound>
+  <div class="pw-empty">
+    <mat-icon svgIcon="mat:folder_open" class="pw-empty__icon"></mat-icon>
+    <p class="pw-empty__title">Project not found</p>
+    <p class="pw-empty__sub">This project doesn't exist or has been removed.</p>
+  </div>
+</ng-template>

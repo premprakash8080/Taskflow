@@ -1,6 +1,6 @@
 <mat-card class="task-board">
   <div class="task-board__header" (click)="toggle()">
-    <mat-icon class="task-board__chevron" [class.rotated]="!expanded">expand_more</mat-icon>
+    <mat-icon class="task-board__chevron" [class.rotated]="!expanded" svgIcon="mat:expand_more"></mat-icon>
     <span class="task-board__label">{{ label }}</span>
     <span class="task-board__count">{{ tasks.length }}</span>
   </div>

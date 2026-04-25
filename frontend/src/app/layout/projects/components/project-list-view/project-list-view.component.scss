@@ -1,89 +1,475 @@
-.list-view {
+// ── CSS variable grid — set dynamically on :host by the component ─────────────
+// Default matches the TS defaults so there's no flash before AfterViewInit.
+:host {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
+
+  // Default widths (overridden at runtime via ElementRef.style.setProperty)
+  --lv-grid: 40px 340px 180px 120px 100px 130px;
 }
 
-.list-table {
-  width: 100%;
-  border-collapse: collapse;
+// ── Outer container ───────────────────────────────────────────────────────────
+.lv {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background-foreground);
 }
 
-.task-row {
-  cursor: pointer;
-  transition: background 0.15s;
-
-  &:hover { background: rgba(0, 0, 0, 0.02); }
-
-  &.row--selected { background: rgba(99, 102, 241, 0.06); }
+// ── Sticky column headers ─────────────────────────────────────────────────────
+.lv__col-headers {
+  display: grid;
+  grid-template-columns: var(--lv-grid);
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  background: var(--background-foreground);
+  border-bottom: 1px solid var(--foreground-divider);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+  user-select: none; // prevent text selection while dragging
 }
 
-.task-name-cell {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.87);
+.lv__col {
+  position: relative; // needed for the absolute resize handle
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
 
-  &--done {
-    text-decoration: line-through;
-    color: rgba(0, 0, 0, 0.35);
+  &--check { padding: 0; }
+  &--name  { padding-left: 4px; }
+
+  // Hover: show the resize handle line
+  &:hover .lv__resize-handle { opacity: 1; }
+}
+
+// ── Resize handle ─────────────────────────────────────────────────────────────
+.lv__resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+
+  // Visual indicator line
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    bottom: 15%;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    border-radius: 1px;
+    background: var(--foreground-divider);
+    transition: background 0.15s;
+  }
+
+  &:hover,
+  &:active {
+    opacity: 1;
+
+    &::after {
+      background: rgb(var(--color-primary));
+    }
   }
 }
 
-.assignee-cell {
+// While any resize is active, show the cursor globally
+:host.resizing,
+:host.resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+// ── Scrollable body ───────────────────────────────────────────────────────────
+.lv__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// ── Section header ────────────────────────────────────────────────────────────
+.lv__section-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px 0 12px;
+  height: 36px;
+  background: var(--background-base);
+  border-bottom: 1px solid var(--foreground-divider);
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: var(--background-hover);
+    .lv__section-add { opacity: 1; }
+  }
+}
+
+.lv__section-chevron {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-hint);
+  transform: rotate(0deg);
+  transition: transform 180ms ease;
+  flex-shrink: 0;
+
+  &--open { transform: rotate(90deg); }
+}
+
+.lv__section-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  flex: 1;
+}
+
+.lv__section-count {
+  font-size: 12px;
+  color: var(--text-hint);
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.lv__section-add {
+  opacity: 0;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  transition: opacity 0.15s;
+}
+
+.lv__section-add-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-hint);
+}
+
+// ── Task row — uses the same CSS var as the header ────────────────────────────
+.lv__row {
+  display: grid;
+  grid-template-columns: var(--lv-grid);
+  align-items: center;
+  padding: 0 16px;
+  min-height: 40px;
+  border-bottom: 1px solid var(--foreground-divider);
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: var(--background-hover);
+
+    .lv__complete-btn:not(.lv__complete-btn--done) {
+      border-color: rgb(var(--color-primary));
+      opacity: 1;
+    }
+  }
+
+  &--selected {
+    background: rgba(var(--color-primary), 0.06);
+    &:hover { background: rgba(var(--color-primary), 0.09); }
+  }
+
+  &--done { opacity: 0.55; }
+}
+
+// ── Cells ─────────────────────────────────────────────────────────────────────
+.lv__cell {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  min-height: 40px;
+  overflow: hidden;
+
+  &--check    { padding: 0; justify-content: center; flex-shrink: 0; }
+  &--name     { padding-left: 4px; }
+  &--overdue  { color: #ef4444; }
+  &--today    { color: #f59e0b; }
+  &--input    { padding-left: 4px; }
+}
+
+// ── Complete circle ───────────────────────────────────────────────────────────
+.lv__complete-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--foreground-divider);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.12s, background 0.12s;
+  opacity: 0.5;
+
+  &--done {
+    background: #10b981;
+    border-color: #10b981;
+    opacity: 1;
+  }
+}
+
+.lv__check-icon {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+  color: #fff;
+}
+
+// ── Task name ─────────────────────────────────────────────────────────────────
+.lv__task-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &--done {
+    text-decoration: line-through;
+    color: var(--text-hint);
+  }
+}
+
+// ── Assignee ──────────────────────────────────────────────────────────────────
+.lv__assignee {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
-.assignee-name {
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.72);
-}
-
-.unassigned { color: rgba(0, 0, 0, 0.3); }
-
-.overdue-cell {
-  color: #ef4444;
-  .due-icon { vertical-align: middle; }
-}
-
-.due-icon {
-  font-size: 13px;
-  margin-right: 3px;
-  vertical-align: middle;
-}
-
-.priority-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
-
-  &--todo       { background: #f1f5f9; color: #64748b; }
-  &--in_progress { background: rgba(99,102,241,0.1); color: #6366f1; }
-  &--completed   { background: rgba(16,185,129,0.1); color: #10b981; }
-}
-
-.no-data-row td {
-  text-align: center;
-  padding: 40px;
-  color: rgba(0, 0, 0, 0.38);
-  font-size: 14px;
-}
-
-.avatar {
+.lv__avatar {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
-  &--xs { width: 28px; height: 28px; }
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--initials {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+.lv__assignee-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Due date ──────────────────────────────────────────────────────────────────
+.lv__due-icon {
+  font-size: 13px;
+  width: 13px;
+  height: 13px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+// ── Priority pill ─────────────────────────────────────────────────────────────
+.lv__priority-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// ── Status pill ───────────────────────────────────────────────────────────────
+.lv__status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.status--todo        { background: var(--background-hover); color: var(--text-secondary); }
+  &.status--in_progress { background: rgba(var(--color-primary), 0.1); color: rgb(var(--color-primary)); }
+  &.status--completed   { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+}
+
+// ── Empty cell dash ───────────────────────────────────────────────────────────
+.lv__empty-cell {
+  font-size: 13px;
+  color: var(--text-hint);
+}
+
+// ── "Add task" trigger row ────────────────────────────────────────────────────
+.lv__add-row {
+  display: grid;
+  grid-template-columns: var(--lv-grid);
+  align-items: center;
+  padding: 0 16px;
+  height: 36px;
+  border-bottom: 1px solid var(--foreground-divider);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-hover);
+
+    .lv__add-icon,
+    .lv__add-label {
+      color: rgb(var(--color-primary));
+      opacity: 1;
+    }
+  }
+}
+
+.lv__add-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-hint);
+  opacity: 0.5;
+  transition: color 0.12s, opacity 0.12s;
+}
+
+.lv__add-label {
+  font-size: 13px;
+  color: var(--text-hint);
+  opacity: 0.6;
+  transition: color 0.12s, opacity 0.12s;
+}
+
+// ── Inline add-task row ───────────────────────────────────────────────────────
+.lv__adding-row {
+  display: grid;
+  grid-template-columns: var(--lv-grid);
+  align-items: center;
+  padding: 0 16px;
+  min-height: 40px;
+  border-bottom: 1px solid var(--foreground-divider);
+  background: var(--background-foreground);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  // Input cell spans all columns after the checkbox
+  .lv__cell--input {
+    grid-column: 2 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.lv__task-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  font-family: inherit;
+  padding: 8px 4px;
+
+  &::placeholder { color: var(--text-hint); }
+}
+
+.lv__add-hints {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  padding-left: 8px;
+}
+
+.lv__add-hint {
+  font-size: 11px;
+  color: var(--text-hint);
+  background: var(--background-hover);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.lv__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.lv__empty-graphic {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(var(--color-primary), 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.lv__empty-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: rgb(var(--color-primary));
+  opacity: 0.7;
+}
+
+.lv__empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 8px;
+}
+
+.lv__empty-sub {
+  font-size: 14px;
+  color: var(--text-hint);
+  margin: 0 0 24px;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+.lv__empty-cta {
+  border-radius: 8px;
+  height: 38px;
+  font-size: 14px;
+  padding: 0 20px;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+  }
+}
+
+// ── Bottom spacer ─────────────────────────────────────────────────────────────
+.lv__bottom-spacer {
+  height: 40px;
+  flex-shrink: 0;
 }

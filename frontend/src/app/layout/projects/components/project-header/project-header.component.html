@@ -1,49 +1,58 @@
-<div class="project-header">
+<header class="ph">
 
-  <!-- Title row -->
-  <div class="project-header__title-row">
-    <div class="project-header__color" [style.background]="project.color"></div>
-    <h1 class="project-header__name">{{ project.name }}</h1>
-    <span class="status-badge" [style.color]="statusColor(project.status)"
-          [style.border-color]="statusColor(project.status)">
-      {{ statusLabel(project.status) }}
-    </span>
+  <!-- Top row: title + actions -->
+  <div class="ph__top">
+    <div class="ph__title-group">
+      <span class="ph__color-dot" [style.background]="project.color"></span>
+      <h1 class="ph__title">{{ project.name }}</h1>
+      <button class="ph__status-badge"
+              [style.color]="statusColor(project.status)"
+              [style.border-color]="statusColor(project.status)">
+        <span class="ph__status-dot" [style.background]="statusColor(project.status)"></span>
+        {{ statusLabel(project.status) }}
+      </button>
+    </div>
+
+    <div class="ph__actions">
+      <!-- Member avatar stack -->
+      <div class="ph__avatar-stack">
+        <img *ngFor="let m of (project.members ?? []) | slice:0:4"
+             [src]="m.imgUrl"
+             [matTooltip]="m.name"
+             class="ph__avatar">
+        <span *ngIf="(project.members?.length ?? 0) > 4"
+              class="ph__avatar ph__avatar--more">
+          +{{ (project.members?.length ?? 0) - 4 }}
+        </span>
+      </div>
+
+      <button mat-stroked-button class="ph__invite-btn">
+        <mat-icon svgIcon="mat:person_add"></mat-icon>
+        <span>Share</span>
+      </button>
+
+      <button mat-flat-button color="primary" class="ph__add-btn" (click)="addTask()">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        <span>Add task</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Tab nav + actions row -->
-  <div class="project-header__nav-row">
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="project-tabs">
+  <!-- View tabs -->
+  <div class="ph__tabs">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="ph__tab-bar">
       <a mat-tab-link
          *ngFor="let v of views"
          [routerLink]="v.path"
          routerLinkActive
          #rla="routerLinkActive"
-         [active]="rla.isActive">
-        <mat-icon class="tab-icon">{{ v.icon }}</mat-icon>
+         [active]="rla.isActive"
+         class="ph__tab-link">
+        <mat-icon class="ph__tab-icon" [svgIcon]="v.icon"></mat-icon>
         {{ v.label }}
       </a>
     </nav>
     <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-
-    <div class="project-header__actions">
-      <!-- Member avatars -->
-      <div class="avatar-stack">
-        <img *ngFor="let m of project.members | slice:0:4"
-             [src]="m.imgUrl"
-             [matTooltip]="m.name"
-             class="avatar avatar--sm">
-        <span class="avatar-more" *ngIf="project.members.length > 4">
-          +{{ project.members.length - 4 }}
-        </span>
-      </div>
-
-      <button mat-stroked-button>
-        <mat-icon>person_add</mat-icon> Invite
-      </button>
-      <button mat-raised-button color="primary">
-        <mat-icon>add</mat-icon> Add Task
-      </button>
-    </div>
   </div>
 
-</div>
+</header>

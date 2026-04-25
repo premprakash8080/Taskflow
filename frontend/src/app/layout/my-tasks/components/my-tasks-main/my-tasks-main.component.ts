@@ -3,6 +3,8 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { Task, TaskFilter, TaskSection } from 'src/app/core/models/task.model';
 import { MyTasksService } from '../../service/my-tasks.service';
 
+type ViewTab = 'list' | 'board' | 'calendar' | 'files';
+
 @Component({
   selector: 'vex-my-tasks-main',
   templateUrl: './my-tasks-main.component.html',
@@ -14,7 +16,14 @@ export class MyTasksMainComponent implements OnInit {
   sections: TaskSection[] = [];
   selectedTask: Task | null = null;
   activeFilter: TaskFilter = 'incomplete';
-  breadcrumbs = [{ label: 'My Tasks' }];
+  activeView: ViewTab = 'list';
+
+  viewTabs: { value: ViewTab; label: string; icon: string }[] = [
+    { value: 'list',     label: 'List',     icon: 'view_list' },
+    { value: 'board',    label: 'Board',    icon: 'view_column' },
+    { value: 'calendar', label: 'Calendar', icon: 'calendar_today' },
+    { value: 'files',    label: 'Files',    icon: 'folder_open' },
+  ];
 
   constructor(private myTasksService: MyTasksService) {}
 
@@ -28,9 +37,8 @@ export class MyTasksMainComponent implements OnInit {
     });
   }
 
-  onFilterChange(filter: TaskFilter): void {
-    this.activeFilter = filter;
-    this.loadSections();
+  setView(view: ViewTab): void {
+    this.activeView = view;
   }
 
   selectTask(task: Task): void {

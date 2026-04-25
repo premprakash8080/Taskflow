@@ -1,72 +1,180 @@
+// Host must be block so the inner CSS grid fills the available column width.
+// All colors use Vex CSS custom properties — zero hardcoded values.
+:host {
+  display: block;
+}
+
+// ─── ROW (CSS GRID mirrors .mt-col-headers exactly) ─────────────────────────
 .task-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 90px 150px 90px;
+  padding: 0 24px;
+  min-height: 36px;
+  align-items: center;
+  border-bottom: 1px solid var(--foreground-divider);
+  cursor: pointer;
+  transition: background var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+
+  &:hover {
+    background: var(--background-hover);
+
+    .task-row__type-dot { opacity: 1; }
+  }
+
+  &:last-child { border-bottom: none; }
+
+  &--done {
+    .task-row__name {
+      text-decoration: line-through;
+      color: var(--text-hint);
+    }
+  }
+}
+
+// ─── COL 1: NAME ────────────────────────────────────────────────────────────
+.task-row__name-col {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  min-width: 0;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+// Small priority color dot left of the checkbox
+.task-row__type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.65;
+  transition: opacity var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+}
+
+// Circle checkbox — styled entirely in CSS, no mat-checkbox
+.task-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-hint);
+  background: transparent;
   cursor: pointer;
-  transition: background 0.15s;
-  border-radius: 4px;
-
-  &:hover { background: rgba(99, 102, 241, 0.04); }
-  &:last-child { border-bottom: none; }
-
-  &--completed {
-    .task-row__name {
-      text-decoration: line-through;
-      color: rgba(0, 0, 0, 0.35);
-    }
-  }
-
-  &__priority {
-    width: 3px;
-    height: 36px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  &__check { flex-shrink: 0; }
-
-  &__body {
-    flex: 1;
-    min-width: 0;
-  }
-
-  &__name {
-    display: block;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.87);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 2px;
-  }
-
-  &__avatar { flex-shrink: 0; }
-}
-
-.meta-tag {
-  display: inline-flex;
+  flex-shrink: 0;
+  display: flex;
   align-items: center;
-  gap: 3px;
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  transition: border-color var(--trans-ease-out-duration) var(--trans-ease-out-timing-function),
+              background var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+  padding: 0;
 
-  mat-icon { font-size: 12px; width: 12px; height: 12px; }
+  mat-icon {
+    font-size: 11px;
+    width: 11px;
+    height: 11px;
+    color: white;
+  }
 
-  &--overdue { color: #ef4444; }
-  &--today { color: #6366f1; }
+  &:hover { border-color: var(--text-secondary); }
+
+  &--done {
+    background: rgb(16, 185, 129);   // semantic green — intentionally fixed
+    border-color: rgb(16, 185, 129);
+  }
 }
 
-.avatar {
+.task-row__name {
+  font-size: 13px;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+// ─── COL 2: DUE DATE ────────────────────────────────────────────────────────
+.task-row__due {
+  font-size: 12px;
+  color: var(--text-hint);
+  padding: 0 8px;
+  white-space: nowrap;
+
+  // Semantic overdue/today colors — intentionally fixed
+  &--overdue { color: #ef4444; }
+  &--today   { color: rgb(var(--color-primary)); font-weight: 600; }
+}
+
+// ─── COL 3: ASSIGNEE ────────────────────────────────────────────────────────
+.task-row__assignee {
+  padding: 0 8px;
+}
+
+.assignee-avatar {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
-  &--sm { width: 28px; height: 28px; }
+  display: block;
+  border: 1.5px solid var(--foreground-divider);
+}
+
+.assignee-initials {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.assignee-empty {
+  font-size: 12px;
+  color: var(--text-hint);
+}
+
+// ─── COL 4: PROJECT TAG ─────────────────────────────────────────────────────
+.task-row__project {
+  padding: 0 8px;
+}
+
+.project-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+  opacity: 0.9;
+}
+
+// ─── COL 5: PRIORITY BADGE ──────────────────────────────────────────────────
+.task-row__priority {
+  padding: 0 8px;
+}
+
+.priority-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  // Semantic palette — intentionally fixed; readable in both light + dark
+  &--high   { background: rgba(239, 68,  68,  0.15); color: #dc2626; }
+  &--medium { background: rgba(245, 158, 11,  0.15); color: #d97706; }
+  &--low    { background: rgba(16,  185, 129, 0.15); color: #059669; }
+
+  // "None" must be theme-aware
+  &--none   { background: var(--background-hover); color: var(--text-hint); }
 }

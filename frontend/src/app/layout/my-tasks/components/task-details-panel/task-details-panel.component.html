@@ -12,10 +12,10 @@
     </mat-checkbox>
     <div class="detail-panel__header-actions">
       <button mat-icon-button matTooltip="More options">
-        <mat-icon>more_horiz</mat-icon>
+        <mat-icon svgIcon="mat:more_horiz"></mat-icon>
       </button>
       <button mat-icon-button matTooltip="Close" (click)="close.emit()">
-        <mat-icon>close</mat-icon>
+        <mat-icon svgIcon="mat:close"></mat-icon>
       </button>
     </div>
   </div>
@@ -35,7 +35,7 @@
     <!-- Meta: assignee + priority + due date -->
     <div class="detail-meta">
       <div class="detail-meta__row">
-        <mat-icon class="detail-meta__icon">person_outline</mat-icon>
+        <mat-icon class="detail-meta__icon" svgIcon="mat:person_outline"></mat-icon>
         <span class="detail-meta__label">Assignee</span>
         <div class="detail-meta__value">
           <ng-container *ngIf="task.assignee; else noAssignee">
@@ -49,7 +49,7 @@
       </div>
 
       <div class="detail-meta__row">
-        <mat-icon class="detail-meta__icon">schedule</mat-icon>
+        <mat-icon class="detail-meta__icon" svgIcon="mat:schedule"></mat-icon>
         <span class="detail-meta__label">Due date</span>
         <span class="detail-meta__value">
           {{ task.dueDate ? (task.dueDate | date:'MMM d, yyyy') : '—' }}
@@ -57,7 +57,7 @@
       </div>
 
       <div class="detail-meta__row">
-        <mat-icon class="detail-meta__icon">flag</mat-icon>
+        <mat-icon class="detail-meta__icon" svgIcon="mat:flag"></mat-icon>
         <span class="detail-meta__label">Priority</span>
         <div class="detail-meta__value">
           <span class="priority-badge" [style.background]="priorityColor(task.priority)">
@@ -67,7 +67,7 @@
       </div>
 
       <div class="detail-meta__row" *ngIf="task.projectName">
-        <mat-icon class="detail-meta__icon">folder_open</mat-icon>
+        <mat-icon class="detail-meta__icon" svgIcon="mat:folder_open"></mat-icon>
         <span class="detail-meta__label">Project</span>
         <span class="detail-meta__value">{{ task.projectName }}</span>
       </div>
@@ -113,7 +113,7 @@
                [(ngModel)]="newSubtaskName"
                (keydown.enter)="addSubtask()">
         <button mat-icon-button matSuffix (click)="addSubtask()" *ngIf="newSubtaskName">
-          <mat-icon>add</mat-icon>
+          <mat-icon svgIcon="mat:add"></mat-icon>
         </button>
       </mat-form-field>
     </div>

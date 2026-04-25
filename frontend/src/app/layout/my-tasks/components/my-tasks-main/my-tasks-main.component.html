@@ -1,15 +1,77 @@
-<div class="my-tasks-page">
+<div class="mt-page">
 
-  <vex-page-header title="My Tasks" [breadcrumbs]="breadcrumbs">
-    <vex-task-filters
-      [activeFilter]="activeFilter"
-      (filterChange)="onFilterChange($event)">
-    </vex-task-filters>
-  </vex-page-header>
+  <!-- ── TOP HEADER ── -->
+  <div class="mt-header">
+    <div class="mt-header__title-row">
+      <h1 class="mt-header__title">My tasks</h1>
+      <div class="mt-header__actions">
+        <button mat-button class="mt-btn-ghost">
+          <mat-icon svgIcon="mat:group" class="icon-xs"></mat-icon>
+          Share
+        </button>
+        <button mat-button class="mt-btn-ghost">
+          <mat-icon svgIcon="mat:settings" class="icon-xs"></mat-icon>
+          Customize
+        </button>
+      </div>
+    </div>
 
-  <mat-drawer-container class="my-tasks-body" autosize>
+    <!-- View tabs -->
+    <div class="mt-view-tabs">
+      <button class="mt-view-tab"
+              *ngFor="let t of viewTabs"
+              [class.mt-view-tab--active]="activeView === t.value"
+              (click)="setView(t.value)">
+        <mat-icon [svgIcon]="'mat:' + t.icon" class="icon-xs"></mat-icon>
+        {{ t.label }}
+      </button>
+      <button class="mt-view-tab mt-view-tab--add" matTooltip="Add view">
+        <mat-icon svgIcon="mat:add" class="icon-xs"></mat-icon>
+      </button>
+    </div>
+  </div>
 
-    <mat-drawer #detailDrawer mode="side" position="end" class="detail-drawer">
+  <!-- ── TOOLBAR ── -->
+  <div class="mt-toolbar">
+    <div class="mt-toolbar__left">
+      <button class="mt-toolbar__add-btn" mat-button>
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        Add task
+      </button>
+      <div class="mt-toolbar__sep"></div>
+      <button mat-button class="mt-toolbar__btn">
+        <mat-icon svgIcon="mat:filter_list" class="icon-xs"></mat-icon>
+        Filter
+      </button>
+      <button mat-button class="mt-toolbar__btn">
+        <mat-icon svgIcon="mat:sort" class="icon-xs"></mat-icon>
+        Sort
+      </button>
+      <button mat-button class="mt-toolbar__btn">
+        <mat-icon svgIcon="mat:reorder" class="icon-xs"></mat-icon>
+        Group by
+      </button>
+    </div>
+    <div class="mt-toolbar__right">
+      <button mat-button class="mt-toolbar__btn">
+        <mat-icon svgIcon="mat:get_app" class="icon-xs"></mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── COLUMN HEADERS ── -->
+  <div class="mt-col-headers">
+    <div class="mt-col mt-col--name">Task name</div>
+    <div class="mt-col mt-col--due">Due date</div>
+    <div class="mt-col mt-col--assignee">Assignee</div>
+    <div class="mt-col mt-col--project">Projects</div>
+    <div class="mt-col mt-col--priority">Priority</div>
+  </div>
+
+  <!-- ── CONTENT + DETAIL PANEL ── -->
+  <mat-drawer-container class="mt-body" autosize>
+
+    <mat-drawer #detailDrawer mode="side" position="end" class="mt-detail-drawer">
       <vex-task-details-panel
         *ngIf="selectedTask"
         [task]="selectedTask"
@@ -19,7 +81,7 @@
       </vex-task-details-panel>
     </mat-drawer>
 
-    <mat-drawer-content class="my-tasks-content">
+    <mat-drawer-content class="mt-content">
       <vex-task-sections
         [sections]="sections"
         (taskSelected)="selectTask($event)"

@@ -1,5 +1,134 @@
-<div class="placeholder-view">
-  <mat-icon>settings</mat-icon>
-  <h3>Project Settings</h3>
-  <p>Configure project name, status, privacy, and more.</p>
+<div class="ps" *ngIf="project && form">
+  <form [formGroup]="form" (ngSubmit)="saveChanges()">
+
+    <!-- ── Page title ────────────────────────────────────────────── -->
+    <div class="ps__page-header">
+      <h2 class="ps__page-title">Project settings</h2>
+      <p class="ps__page-sub">Manage name, status, color and other project preferences.</p>
+    </div>
+
+    <!-- ── Section: General ──────────────────────────────────────── -->
+    <div class="ps__section">
+      <h3 class="ps__section-title">General</h3>
+
+      <!-- Project name -->
+      <div class="ps__field">
+        <label class="ps__label">Project name</label>
+        <input class="ps__input"
+               formControlName="name"
+               placeholder="Enter project name"
+               maxlength="100" />
+        <span class="ps__field-hint" *ngIf="form.get('name')?.invalid && form.get('name')?.dirty">
+          Name is required.
+        </span>
+      </div>
+
+      <!-- Description -->
+      <div class="ps__field">
+        <label class="ps__label">Description</label>
+        <textarea class="ps__textarea"
+                  formControlName="description"
+                  rows="3"
+                  placeholder="What is this project about?"></textarea>
+      </div>
+
+      <!-- Status -->
+      <div class="ps__field">
+        <label class="ps__label">Status</label>
+        <div class="ps__status-pills">
+          <button type="button"
+                  class="ps__status-pill"
+                  *ngFor="let s of statusOptions"
+                  [class.ps__status-pill--active]="form.get('status')?.value === s.value"
+                  [style.--pill-color]="s.color"
+                  (click)="form.get('status')!.setValue(s.value); form.markAsDirty()">
+            <span class="ps__status-dot" [style.background]="s.color"></span>
+            {{ s.label }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Due date -->
+      <div class="ps__field">
+        <label class="ps__label">Due date</label>
+        <mat-form-field appearance="outline" class="ps__datepicker">
+          <input matInput [matDatepicker]="picker" formControlName="dueDate"
+                 placeholder="No due date" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- ── Section: Color ────────────────────────────────────────── -->
+    <div class="ps__section">
+      <h3 class="ps__section-title">Project color</h3>
+      <p class="ps__section-sub">Used in the sidebar and across views to identify this project.</p>
+
+      <div class="ps__color-grid">
+        <button type="button"
+                class="ps__color-swatch"
+                *ngFor="let c of colors"
+                [style.background]="c"
+                [class.ps__color-swatch--selected]="selectedColor === c"
+                [matTooltip]="c"
+                (click)="selectColor(c)">
+          <mat-icon *ngIf="selectedColor === c" svgIcon="mat:check"></mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Save bar ──────────────────────────────────────────────── -->
+    <div class="ps__save-bar">
+      <button mat-flat-button
+              color="primary"
+              type="submit"
+              class="ps__save-btn"
+              [disabled]="form.invalid || form.pristine">
+        <mat-icon *ngIf="!saved" svgIcon="mat:save"></mat-icon>
+        <mat-icon *ngIf="saved" svgIcon="mat:check_circle"></mat-icon>
+        {{ saved ? 'Saved!' : 'Save changes' }}
+      </button>
+      <button mat-button type="button" class="ps__cancel-btn"
+              [disabled]="form.pristine"
+              (click)="form.reset({ name: project.name, description: project.description ?? '', status: project.status, color: project.color, dueDate: project.dueDate ?? null })">
+        Discard
+      </button>
+    </div>
+
+    <!-- ── Danger zone ───────────────────────────────────────────── -->
+    <div class="ps__section ps__section--danger">
+      <h3 class="ps__section-title ps__section-title--danger">Danger zone</h3>
+
+      <div class="ps__danger-row">
+        <div class="ps__danger-info">
+          <span class="ps__danger-label">Archive project</span>
+          <span class="ps__danger-desc">Mark as archived. The project stays visible but no longer accepts new tasks.</span>
+        </div>
+        <button type="button" mat-stroked-button class="ps__danger-btn">Archive</button>
+      </div>
+
+      <div class="ps__danger-row">
+        <div class="ps__danger-info">
+          <span class="ps__danger-label">Delete project</span>
+          <span class="ps__danger-desc">Permanently delete this project and all its tasks. This action cannot be undone.</span>
+        </div>
+        <button type="button" mat-flat-button class="ps__delete-btn"
+                (click)="showDeleteConfirm = true">
+          Delete
+        </button>
+      </div>
+
+      <!-- Inline delete confirm -->
+      <div class="ps__delete-confirm" *ngIf="showDeleteConfirm">
+        <mat-icon svgIcon="mat:warning"></mat-icon>
+        <span>Are you sure? This cannot be undone.</span>
+        <button mat-flat-button class="ps__delete-btn" (click)="showDeleteConfirm = false">
+          Yes, delete
+        </button>
+        <button mat-button (click)="showDeleteConfirm = false">Cancel</button>
+      </div>
+    </div>
+
+  </form>
 </div>

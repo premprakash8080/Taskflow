@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Project } from 'src/app/core/models/task.model';
+import { ProjectsService } from '../../service/projects.service';
 
 @Component({
   selector: 'vex-project-header',
@@ -9,12 +10,21 @@ import { Project } from 'src/app/core/models/task.model';
 export class ProjectHeaderComponent {
   @Input() project!: Project;
 
+  constructor(private projectsService: ProjectsService) {}
+
+  addTask(): void {
+    this.projectsService.requestAddTask();
+  }
+
   views = [
-    { path: 'list',     label: 'List',     icon: 'format_list_bulleted' },
-    { path: 'board',    label: 'Board',    icon: 'view_kanban' },
-    { path: 'timeline', label: 'Timeline', icon: 'timeline' },
-    { path: 'members',  label: 'Members',  icon: 'group' },
-    { path: 'settings', label: 'Settings', icon: 'settings' },
+    { path: 'overview',  label: 'Overview',  icon: 'mat:home' },
+    { path: 'list',      label: 'List',      icon: 'mat:view_list' },
+    { path: 'board',     label: 'Board',     icon: 'mat:view_column' },
+    { path: 'timeline',  label: 'Timeline',  icon: 'mat:timeline' },
+    { path: 'calendar',  label: 'Calendar',  icon: 'mat:calendar_month' },
+    { path: 'files',     label: 'Files',     icon: 'mat:attach_file' },
+    { path: 'members',   label: 'Members',   icon: 'mat:group' },
+    { path: 'settings',  label: 'Settings',  icon: 'mat:settings' },
   ];
 
   statusLabel(status: string): string {

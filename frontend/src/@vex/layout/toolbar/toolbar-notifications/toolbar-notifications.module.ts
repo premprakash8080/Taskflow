@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RelativeDateTimeModule } from '../../../pipes/relative-date-time/relative-date-time.module';
 import { RouterModule } from '@angular/router';
 import { MatRippleModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-dropdown/toolbar-notifications-dropdown.component';
 
 
@@ -24,6 +25,7 @@ import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-d
     RelativeDateTimeModule,
     RouterModule,
     MatRippleModule,
+    MatTooltipModule,
   ],
   exports: [ToolbarNotificationsComponent]
 })

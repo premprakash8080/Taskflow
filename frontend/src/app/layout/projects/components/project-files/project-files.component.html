@@ -1,0 +1,224 @@
+<div class="fi">
+
+  <!-- ── Toolbar ───────────────────────────────────────────────────────────── -->
+  <div class="fi__toolbar">
+    <div class="fi__toolbar-left">
+
+      <!-- Search -->
+      <div class="fi__search">
+        <mat-icon svgIcon="mat:search" class="fi__search-icon"></mat-icon>
+        <input class="fi__search-input"
+               type="text"
+               placeholder="Search files…"
+               [(ngModel)]="searchQuery"
+               (ngModelChange)="onSearch()" />
+      </div>
+
+      <!-- Type filters -->
+      <div class="fi__filters">
+        <button class="fi__filter-btn"
+                *ngFor="let f of filters"
+                [class.fi__filter-btn--active]="activeFilter === f.value"
+                (click)="setFilter(f.value)">
+          {{ f.label }}
+        </button>
+      </div>
+
+    </div>
+
+    <div class="fi__toolbar-right">
+      <!-- View toggle -->
+      <div class="fi__view-toggle">
+        <button class="fi__toggle-btn"
+                [class.fi__toggle-btn--active]="viewMode === 'grid'"
+                matTooltip="Grid view"
+                (click)="setViewMode('grid')">
+          <mat-icon svgIcon="mat:grid_view"></mat-icon>
+        </button>
+        <button class="fi__toggle-btn"
+                [class.fi__toggle-btn--active]="viewMode === 'list'"
+                matTooltip="List view"
+                (click)="setViewMode('list')">
+          <mat-icon svgIcon="mat:view_list"></mat-icon>
+        </button>
+      </div>
+
+      <!-- Upload button -->
+      <button mat-flat-button color="primary" class="fi__upload-btn">
+        <mat-icon svgIcon="mat:cloud_upload"></mat-icon>
+        Upload file
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Summary bar ───────────────────────────────────────────────────────── -->
+  <div class="fi__summary">
+    <span class="fi__summary-count">
+      {{ filteredFiles.length }} file{{ filteredFiles.length !== 1 ? 's' : '' }}
+    </span>
+  </div>
+
+  <!-- ── Grid view ─────────────────────────────────────────────────────────── -->
+  <div class="fi__body" *ngIf="filteredFiles.length > 0">
+
+    <!-- Grid -->
+    <div class="fi__grid" *ngIf="viewMode === 'grid'">
+      <div class="fi__card" *ngFor="let file of filteredFiles" [matMenuTriggerFor]="fileMenu">
+
+        <!-- Preview / icon -->
+        <div class="fi__card-preview">
+          <img *ngIf="file.preview"
+               [src]="file.preview"
+               [alt]="file.name"
+               class="fi__card-img" />
+          <div *ngIf="!file.preview"
+               class="fi__card-icon-wrap"
+               [style.background]="fileIconColor(file.type) + '15'">
+            <mat-icon [svgIcon]="fileIcon(file.type)"
+                      [style.color]="fileIconColor(file.type)"
+                      class="fi__card-icon"></mat-icon>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="fi__card-body">
+          <p class="fi__card-name" [title]="file.name">{{ file.name }}</p>
+          <div class="fi__card-meta">
+            <div class="fi__card-avatar" [style.background]="avatarColor(file.uploader.id)">
+              <img [src]="file.uploader.imgUrl" [alt]="file.uploader.name"
+                   class="fi__card-avatar-img"
+                   (error)="$event.target['style'].display='none'" />
+              <span>{{ avatarInitials(file.uploader.name) }}</span>
+            </div>
+            <span class="fi__card-uploader">{{ file.uploader.name }}</span>
+            <span class="fi__card-sep">·</span>
+            <span class="fi__card-time">{{ timeAgo(file.uploadedAt) }}</span>
+          </div>
+          <span class="fi__card-size">{{ file.size }}</span>
+        </div>
+
+        <!-- Context menu -->
+        <mat-menu #fileMenu="matMenu" xPosition="before">
+          <button mat-menu-item>
+            <mat-icon svgIcon="mat:download"></mat-icon>
+            <span>Download</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon svgIcon="mat:open_in_new"></mat-icon>
+            <span>Open in new tab</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon svgIcon="mat:content_copy"></mat-icon>
+            <span>Copy link</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item class="fi__danger-item">
+            <mat-icon svgIcon="mat:delete_outline"></mat-icon>
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+
+      </div>
+    </div>
+
+    <!-- List view -->
+    <div class="fi__list" *ngIf="viewMode === 'list'">
+
+      <!-- Column headers -->
+      <div class="fi__list-header">
+        <span class="fi__list-col fi__list-col--name">Name</span>
+        <span class="fi__list-col fi__list-col--task">Task</span>
+        <span class="fi__list-col fi__list-col--uploader">Uploaded by</span>
+        <span class="fi__list-col fi__list-col--size">Size</span>
+        <span class="fi__list-col fi__list-col--date">Date</span>
+        <span class="fi__list-col fi__list-col--actions"></span>
+      </div>
+
+      <div class="fi__list-row" *ngFor="let file of filteredFiles">
+
+        <!-- Icon + name -->
+        <div class="fi__list-col fi__list-col--name">
+          <div class="fi__list-icon" [style.background]="fileIconColor(file.type) + '15'">
+            <mat-icon [svgIcon]="fileIcon(file.type)"
+                      [style.color]="fileIconColor(file.type)"></mat-icon>
+          </div>
+          <span class="fi__list-name" [title]="file.name">{{ file.name }}</span>
+        </div>
+
+        <!-- Task link -->
+        <div class="fi__list-col fi__list-col--task">
+          <span class="fi__list-task" *ngIf="file.taskName" [title]="file.taskName">
+            {{ file.taskName }}
+          </span>
+          <span class="fi__list-empty" *ngIf="!file.taskName">—</span>
+        </div>
+
+        <!-- Uploader -->
+        <div class="fi__list-col fi__list-col--uploader">
+          <div class="fi__list-avatar" [style.background]="avatarColor(file.uploader.id)">
+            <img [src]="file.uploader.imgUrl" [alt]="file.uploader.name"
+                 class="fi__list-avatar-img"
+                 (error)="$event.target['style'].display='none'" />
+            <span>{{ avatarInitials(file.uploader.name) }}</span>
+          </div>
+          <span class="fi__list-uploader-name">{{ file.uploader.name }}</span>
+        </div>
+
+        <!-- Size -->
+        <div class="fi__list-col fi__list-col--size">
+          <span>{{ file.size }}</span>
+        </div>
+
+        <!-- Date -->
+        <div class="fi__list-col fi__list-col--date">
+          <span>{{ file.uploadedAt | date:'MMM d, yyyy' }}</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="fi__list-col fi__list-col--actions">
+          <button mat-icon-button class="fi__row-more" [matMenuTriggerFor]="listFileMenu">
+            <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+          </button>
+          <mat-menu #listFileMenu="matMenu" xPosition="before">
+            <button mat-menu-item>
+              <mat-icon svgIcon="mat:download"></mat-icon><span>Download</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon svgIcon="mat:content_copy"></mat-icon><span>Copy link</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="fi__danger-item">
+              <mat-icon svgIcon="mat:delete_outline"></mat-icon><span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Empty state ───────────────────────────────────────────────────────── -->
+  <div class="fi__empty" *ngIf="filteredFiles.length === 0">
+    <div class="fi__empty-icon-wrap">
+      <mat-icon svgIcon="mat:cloud_upload"></mat-icon>
+    </div>
+    <p class="fi__empty-title">
+      {{ searchQuery || activeFilter !== 'all' ? 'No files match your filters' : 'No files yet' }}
+    </p>
+    <p class="fi__empty-sub" *ngIf="!searchQuery && activeFilter === 'all'">
+      Upload files or attach them directly from task comments.
+    </p>
+    <button mat-flat-button color="primary" class="fi__empty-btn"
+            *ngIf="!searchQuery && activeFilter === 'all'">
+      <mat-icon svgIcon="mat:cloud_upload"></mat-icon>
+      Upload file
+    </button>
+    <button mat-button class="fi__empty-clear"
+            *ngIf="searchQuery || activeFilter !== 'all'"
+            (click)="searchQuery=''; activeFilter='all'; applyFilter()">
+      Clear filters
+    </button>
+  </div>
+
+</div>

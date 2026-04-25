@@ -12,7 +12,9 @@ import { ProjectListViewComponent } from './components/project-list-view/project
 import { ProjectTimelineComponent } from './components/project-timeline/project-timeline.component';
 import { ProjectMembersComponent } from './components/project-members/project-members.component';
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
-
+import { ProjectOverviewComponent } from './components/project-overview/project-overview.component';
+import { ProjectCalendarComponent } from './components/project-calendar/project-calendar.component';
+import { ProjectFilesComponent } from './components/project-files/project-files.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,9 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
     ProjectTimelineComponent,
     ProjectMembersComponent,
     ProjectSettingsComponent,
+    ProjectOverviewComponent,
+    ProjectCalendarComponent,
+    ProjectFilesComponent,
   ],
   imports: [
     CommonModule,

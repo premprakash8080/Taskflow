@@ -13,6 +13,7 @@ export class ToolbarNotificationsComponent implements OnInit {
   @ViewChild('originRef', { static: true, read: ElementRef }) originRef: ElementRef;
 
   dropdownOpen: boolean;
+  unreadCount = 5; // matches the unread notifications in the dropdown
 
   constructor(private popover: PopoverService,
               private cd: ChangeDetectorRef) {}

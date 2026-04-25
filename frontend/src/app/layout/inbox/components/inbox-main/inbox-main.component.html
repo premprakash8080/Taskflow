@@ -1,42 +1,73 @@
-<div class="inbox-page">
+<div class="ib-page">
 
-  <vex-page-header title="Inbox" [breadcrumbs]="breadcrumbs">
-    <button mat-button *ngIf="unreadCount > 0" (click)="markAllRead()">
-      <mat-icon>done_all</mat-icon> Mark all read
-    </button>
-  </vex-page-header>
-
-  <div class="inbox-layout">
-
-    <!-- Left panel: filters + list -->
-    <div class="inbox-list-panel">
-      <vex-filters-bar
-        [activeFilter]="activeFilter"
-        (filterChange)="onFilterChange($event)">
-      </vex-filters-bar>
-
-      <vex-inbox-list
-        [notifications]="notifications"
-        [selectedId]="selected?.id ?? null"
-        (select)="selectNotification($event)">
-      </vex-inbox-list>
+  <!-- ── PAGE HEADER ─────────────────────────────────────────────────────── -->
+  <div class="ib-header">
+    <h1 class="ib-header__title">Inbox</h1>
+    <div class="ib-header__actions">
+      <button mat-button class="ib-btn-ghost" *ngIf="unreadCount > 0" (click)="markAllRead()">
+        <mat-icon svgIcon="mat:done_all" class="icon-sm"></mat-icon>
+        Mark all read
+      </button>
+      <button mat-button class="ib-btn-ghost">
+        <mat-icon svgIcon="mat:settings" class="icon-sm"></mat-icon>
+        Manage notifications
+      </button>
     </div>
-
-    <!-- Right panel: detail -->
-    <div class="inbox-detail-panel">
-      <vex-inbox-detail
-        *ngIf="selected; else emptyState"
-        [notification]="selected">
-      </vex-inbox-detail>
-
-      <ng-template #emptyState>
-        <div class="inbox-empty">
-          <mat-icon>inbox</mat-icon>
-          <h3>Select a notification</h3>
-          <p>Click on a notification to see details.</p>
-        </div>
-      </ng-template>
-    </div>
-
   </div>
+
+  <!-- ── BODY: full-width list + right-side overlay drawer ──────────────── -->
+  <mat-drawer-container class="ib-body" autosize>
+
+    <!-- RIGHT OVERLAY PANEL — slides in over the list on item click -->
+    <mat-drawer
+      #detailDrawer
+      mode="over"
+      position="end"
+      class="ib-detail-drawer"
+      (closed)="onDrawerClosed()">
+      <vex-inbox-detail
+        *ngIf="selected"
+        [notification]="selected"
+        (close)="detailDrawer.close()">
+      </vex-inbox-detail>
+    </mat-drawer>
+
+    <!-- FULL-WIDTH LIST (default state) -->
+    <mat-drawer-content class="ib-list-col">
+
+      <!-- Filter tabs -->
+      <div class="ib-tabs">
+        <button
+          class="ib-tab"
+          *ngFor="let tab of tabs"
+          [class.ib-tab--active]="activeFilter === tab.value"
+          (click)="setTab(tab.value)">
+          {{ tab.label }}
+          <span class="ib-tab__unread" *ngIf="tab.value === 'all' && unreadCount > 0">
+            {{ unreadCount }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Notification list with time-based groups -->
+      <div class="ib-list-scroll">
+        <ng-container *ngFor="let group of groupedNotifications">
+          <div class="ib-group-label">{{ group.label }}</div>
+          <vex-inbox-item
+            *ngFor="let n of group.items"
+            [notification]="n"
+            [selected]="n.id === selected?.id"
+            (click)="selectItem(n)">
+          </vex-inbox-item>
+        </ng-container>
+
+        <div class="ib-list-empty" *ngIf="groupedNotifications.length === 0">
+          <mat-icon svgIcon="mat:done_all"></mat-icon>
+          <p>You're all caught up!</p>
+        </div>
+      </div>
+
+    </mat-drawer-content>
+
+  </mat-drawer-container>
 </div>

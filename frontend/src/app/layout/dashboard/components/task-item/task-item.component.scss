@@ -1,18 +1,23 @@
+:host {
+  display: block;
+}
+
 .task-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--foreground-divider);
   transition: background 0.15s;
+  cursor: pointer;
 
-  &:hover { background: rgba(0,0,0,0.02); }
+  &:hover { background: var(--background-hover); }
   &:last-child { border-bottom: none; }
 
   &--completed {
     .task-item__name {
       text-decoration: line-through;
-      color: rgba(0,0,0,0.35);
+      color: var(--text-hint);
     }
   }
 
@@ -26,7 +31,7 @@
   &__name {
     display: block;
     font-size: 14px;
-    color: rgba(0,0,0,0.87);
+    color: var(--text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -39,16 +44,18 @@
     margin-top: 2px;
   }
 
-  &__project, &__due {
+  &__project,
+  &__due {
     display: flex;
     align-items: center;
     gap: 3px;
     font-size: 11px;
-    color: rgba(0,0,0,0.42);
+    color: var(--text-hint);
 
     mat-icon { font-size: 12px; width: 12px; height: 12px; }
   }
 
+  // Semantic status colors — intentionally fixed across themes
   &__due--overdue { color: #ef4444; }
 
   &__right {
@@ -68,7 +75,8 @@
 .avatar {
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
+  // Use foreground color so the border blends with the card background in both themes
+  border: 2px solid var(--background-foreground);
 
   &--xs { width: 24px; height: 24px; }
 }

@@ -1,37 +1,66 @@
-<div class="task-row" [class.task-row--completed]="task.completed">
+<div class="task-row" [class.task-row--done]="task.completed">
 
-  <!-- Priority indicator -->
-  <div class="task-row__priority" [style.background]="priorityColor(task.priority)"></div>
-
-  <!-- Checkbox -->
-  <mat-checkbox
-    [checked]="task.completed"
-    color="primary"
-    class="task-row__check"
-    (click)="onCheckboxChange($event)">
-  </mat-checkbox>
-
-  <!-- Main content -->
-  <div class="task-row__body">
-    <span class="task-row__name">{{ task.name }}</span>
-    <div class="task-row__meta" *ngIf="task.projectName || task.dueDate">
-      <span class="meta-tag" *ngIf="task.projectName">
-        <mat-icon inline>folder_open</mat-icon> {{ task.projectName }}
-      </span>
-      <span class="meta-tag"
-            [class.meta-tag--overdue]="isOverdue(task.dueDate)"
-            [class.meta-tag--today]="isDueToday(task.dueDate)"
-            *ngIf="task.dueDate">
-        <mat-icon inline>schedule</mat-icon>
-        {{ task.dueDate | date:'MMM d' }}
-      </span>
+  <!-- Col 1: Name -->
+  <div class="task-row__name-col">
+    <!-- Priority dot indicator -->
+    <div class="task-row__type-dot"
+         [style.background]="typeColor(task.priority)">
     </div>
+
+    <!-- Circle checkbox -->
+    <button class="task-circle"
+            [class.task-circle--done]="task.completed"
+            (click)="onCheckboxChange($event)"
+            [matTooltip]="task.completed ? 'Mark incomplete' : 'Mark complete'">
+      <mat-icon svgIcon="mat:check" *ngIf="task.completed"></mat-icon>
+    </button>
+
+    <!-- Task name text -->
+    <span class="task-row__name">{{ task.name }}</span>
   </div>
 
-  <!-- Assignee avatar -->
-  <img *ngIf="task.assignee"
-       [src]="task.assignee.imgUrl"
-       [matTooltip]="task.assignee.name"
-       class="avatar avatar--sm task-row__avatar">
+  <!-- Col 2: Due date -->
+  <div class="task-row__due"
+       [class.task-row__due--overdue]="isOverdue(task.dueDate)"
+       [class.task-row__due--today]="isDueToday(task.dueDate)">
+    <ng-container *ngIf="task.dueDate">
+      {{ task.dueDate | date:'MMM d' }}
+    </ng-container>
+  </div>
+
+  <!-- Col 3: Assignee -->
+  <div class="task-row__assignee">
+    <ng-container *ngIf="task.assignee; else noAssignee">
+      <img *ngIf="!avatarError"
+           [src]="task.assignee.imgUrl"
+           [matTooltip]="task.assignee.name"
+           class="assignee-avatar"
+           (error)="avatarError = true">
+      <div *ngIf="avatarError"
+           class="assignee-initials"
+           [style.background]="projectColor(task.assignee.id)"
+           [matTooltip]="task.assignee.name">
+        {{ task.assignee.name | slice:0:1 }}
+      </div>
+    </ng-container>
+    <ng-template #noAssignee>
+      <span class="assignee-empty">—</span>
+    </ng-template>
+  </div>
+
+  <!-- Col 4: Project tag -->
+  <div class="task-row__project">
+    <span class="project-tag" *ngIf="task.projectName"
+          [style.background]="projectColor(task.projectId)">
+      {{ task.projectName | slice:0:14 }}
+    </span>
+  </div>
+
+  <!-- Col 5: Priority badge -->
+  <div class="task-row__priority">
+    <span class="priority-badge" [class]="'priority-badge--' + task.priority">
+      {{ task.priority | titlecase }}
+    </span>
+  </div>
 
 </div>

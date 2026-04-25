@@ -1,5 +1,101 @@
-<div class="placeholder-view">
-  <mat-icon>timeline</mat-icon>
-  <h3>Timeline View</h3>
-  <p>Timeline view is coming soon. Use List or Board view for now.</p>
+<div class="tl" *ngIf="sections.length > 0; else emptyState">
+
+  <!-- ── Sticky top header ─────────────────────────────────────────── -->
+  <div class="tl__head">
+    <div class="tl__head-left">
+      <button mat-button class="tl__today-btn" (click)="scrollToToday()">
+        <mat-icon svgIcon="mat:today"></mat-icon>
+        Today
+      </button>
+    </div>
+    <div class="tl__head-dates" #headerDates>
+      <div class="tl__dates-inner" [style.width.px]="totalWidthPx">
+        <!-- Month strips -->
+        <div class="tl__months">
+          <div class="tl__month-cell" *ngFor="let m of monthSpans" [style.width.px]="m.widthPx">
+            {{ m.label }}
+          </div>
+        </div>
+        <!-- Day numbers -->
+        <div class="tl__days">
+          <div class="tl__day-cell"
+               *ngFor="let d of days"
+               [style.width.px]="dayW"
+               [class.tl__day-cell--today]="d.isToday"
+               [class.tl__day-cell--weekend]="d.isWeekend">
+            {{ d.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Body ──────────────────────────────────────────────────────── -->
+  <div class="tl__body">
+
+    <!-- Left name panel -->
+    <div class="tl__names">
+      <ng-container *ngFor="let section of sections">
+        <div class="tl__section-row" (click)="toggleSection(section)">
+          <mat-icon class="tl__chevron" [class.tl__chevron--open]="section.expanded"
+                    svgIcon="mat:chevron_right"></mat-icon>
+          <span class="tl__section-label">{{ section.label }}</span>
+          <span class="tl__section-count">{{ section.bars.length }}</span>
+        </div>
+        <ng-container *ngIf="section.expanded">
+          <div class="tl__name-row" *ngFor="let bar of section.bars">
+            <span class="tl__task-dot" [style.background]="bar.color"></span>
+            <span class="tl__task-name" [title]="bar.label">{{ bar.label }}</span>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <!-- Right Gantt grid -->
+    <div class="tl__grid-wrap" #scrollPane>
+      <div class="tl__grid" [style.width.px]="totalWidthPx">
+
+        <!-- Today vertical line -->
+        <div class="tl__today-line" [style.left.px]="todayLeftPx + dayW / 2"></div>
+
+        <!-- Background columns -->
+        <div class="tl__bg-cols">
+          <div class="tl__bg-col"
+               *ngFor="let d of days"
+               [style.width.px]="dayW"
+               [class.tl__bg-col--weekend]="d.isWeekend"
+               [class.tl__bg-col--today]="d.isToday"></div>
+        </div>
+
+        <!-- Rows -->
+        <ng-container *ngFor="let section of sections">
+          <div class="tl__section-spacer"></div>
+          <ng-container *ngIf="section.expanded">
+            <div class="tl__bar-row" *ngFor="let bar of section.bars">
+              <div class="tl__bar"
+                   [style.left.px]="bar.leftPx"
+                   [style.width.px]="bar.widthPx"
+                   [style.background]="bar.color"
+                   [matTooltip]="bar.task.name + (bar.task.dueDate ? ' · Due ' + (bar.task.dueDate | date:'MMM d') : '')"
+                   matTooltipPosition="above">
+                <span class="tl__bar-label">{{ bar.label }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<ng-template #emptyState>
+  <div class="tl__empty">
+    <div class="tl__empty-graphic">
+      <mat-icon svgIcon="mat:timeline"></mat-icon>
+    </div>
+    <h3 class="tl__empty-title">Plan your project timeline</h3>
+    <p class="tl__empty-desc">Add tasks with due dates to see them appear on the Gantt timeline.</p>
+  </div>
+</ng-template>

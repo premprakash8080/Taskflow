@@ -1,9 +1,9 @@
+// All colors resolved from Vex CSS custom properties.
 .task-list {
-  border-top: 1px solid rgba(0,0,0,0.06);
-
   &__empty {
-    padding: 12px 16px;
-    font-size: 13px;
-    color: rgba(0,0,0,0.38);
+    padding: 10px 24px 10px 56px;
+    font-size: 12px;
+    color: var(--text-hint);
+    border-bottom: 1px solid var(--foreground-divider);
   }
 }

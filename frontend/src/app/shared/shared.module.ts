@@ -14,6 +14,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -57,6 +58,8 @@ import { TopupAicreditsComponent } from './components/topup-aicredits/topup-aicr
 import { DeleteFolderConfirmationDialogComponent } from './components/delete-folder-confirmation-dialog/delete-folder-confirmation-dialog.component';
 import { DeleteRoleDialogComponent } from './components/delete-role-dialog/delete-role-dialog.component';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { AutofocusDirective } from './directives/autofocus.directive';
+import { TaskDetailsPanelComponent } from 'src/app/layout/my-tasks/components/task-details-panel/task-details-panel.component';
 import { BlockBuilderSignatureDialogueComponent } from './components/block-builder-signature-dialogue/block-builder-signature-dialogue.component';
 import { DragDropFilesComponent } from './components/drag-drop-files/drag-drop-files.component';
 import { FileViewersComponent } from './components/file-viewers/file-viewers.component';
@@ -98,6 +101,8 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     ChooseTemplatesComponent,
     DownloadPdfModeComponent,
     ConfirmationDialogNewComponent,
+    TaskDetailsPanelComponent,
+    AutofocusDirective,
   ],
   imports: [
     CommonModule,
@@ -130,6 +135,7 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     ReactiveFormsModule,
     MatSliderModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
   ],
   exports: [
     FormsModule,
@@ -165,12 +171,15 @@ import { ConfirmationDialogNewComponent } from './components/confirmation-dialog
     PageHeaderToggleButtonComponent,
     MatSliderModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
     CustomSpinnerComponent,
     GoogleMapSuggestionComponent,
     MarkdownToHtmlPipe,
     SafeHtmlPipe,
     FileViewersComponent,
     ChooseTemplatesComponent,
+    TaskDetailsPanelComponent,
+    AutofocusDirective,
   ],
 })
 export class SharedModule {}

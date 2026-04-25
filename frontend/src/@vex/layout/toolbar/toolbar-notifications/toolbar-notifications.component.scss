@@ -1,0 +1,38 @@
+.notif-btn {
+  position: relative;
+  color: var(--text-secondary);
+
+  &:hover {
+    color: var(--text-color);
+    background: var(--background-hover);
+  }
+
+  &.active {
+    color: var(--text-color);
+    background: var(--background-hover);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.notif-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  // Semantic alert/notification red — intentionally fixed across themes
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
+}

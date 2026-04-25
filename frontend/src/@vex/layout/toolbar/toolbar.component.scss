@@ -6,13 +6,89 @@
   white-space: nowrap;
   width: 100%;
   z-index: var(--toolbar-z-index);
+  border-bottom: 1px solid var(--foreground-divider);
 }
 
 .toolbar {
   height: var(--toolbar-height);
+  padding: 0 8px;
+  gap: 8px;
 }
 
-a {
-  color: var(--toolbar-color);
-  text-decoration: none;
+// ─── Hamburger ───────────────────────────────────────────────────────────────
+.toolbar__hamburger {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--text-color);
+    background: var(--background-hover);
+  }
+}
+
+// ─── Search bar ──────────────────────────────────────────────────────────────
+.toolbar__search-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  min-width: 0;
+}
+
+.toolbar__search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 540px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 20px;
+  border: 1px solid var(--foreground-divider);
+  background: var(--background-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  outline: none;
+
+  &:hover {
+    border-color: var(--text-hint);
+    background: var(--background-hover);
+  }
+
+  &:focus {
+    border-color: rgb(var(--color-primary));
+    background: var(--background-hover);
+  }
+}
+
+.toolbar__search-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-hint);
+  flex-shrink: 0;
+}
+
+.toolbar__search-placeholder {
+  font-size: 14px;
+  color: var(--text-hint);
+  flex: 1;
+  text-align: left;
+}
+
+// ─── Help button ─────────────────────────────────────────────────────────────
+.toolbar__help-btn {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--text-color);
+    background: var(--background-hover);
+  }
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
 }

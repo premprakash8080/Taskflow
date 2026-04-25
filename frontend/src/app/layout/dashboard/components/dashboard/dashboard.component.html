@@ -1,56 +1,154 @@
-<div class="dashboard-page">
+<div class="home-page">
 
-  <!-- Page header -->
-  <vex-page-header title="Home" [breadcrumbs]="breadcrumbs">
-    <button mat-raised-button color="primary" (click)="openCreateTask()">
-      <mat-icon>add</mat-icon> New Task
-    </button>
-  </vex-page-header>
-
-  <!-- Summary stat cards -->
-  <div class="dashboard-stats">
-    <mat-card class="stat-card">
-      <div class="stat-card__value">{{ incompleteCount }}</div>
-      <div class="stat-card__label">Incomplete</div>
-    </mat-card>
-    <mat-card class="stat-card stat-card--today">
-      <div class="stat-card__value">{{ todayTasks.length }}</div>
-      <div class="stat-card__label">Due Today</div>
-    </mat-card>
-    <mat-card class="stat-card stat-card--overdue">
-      <div class="stat-card__value">{{ overdueTasks.length }}</div>
-      <div class="stat-card__label">Overdue</div>
-    </mat-card>
-    <mat-card class="stat-card stat-card--done">
-      <div class="stat-card__value">{{ completedCount }}</div>
-      <div class="stat-card__label">Completed</div>
-    </mat-card>
+  <!-- Greeting header -->
+  <div class="home-header">
+    <div class="home-header__left">
+      <p class="home-header__date">{{ today | date:'EEEE, MMMM d' }}</p>
+      <h1 class="home-header__greeting">{{ greeting }}, premprakash.y</h1>
+    </div>
+    <div class="home-header__actions">
+      <button mat-stroked-button class="header-action-btn">
+        <mat-icon svgIcon="mat:view_list" inline></mat-icon>
+        No tasks
+      </button>
+      <button mat-stroked-button class="header-action-btn">
+        <mat-icon svgIcon="mat:check_circle_outline" inline></mat-icon>
+        0 tasks completed
+      </button>
+      <button mat-stroked-button class="header-action-btn">
+        <mat-icon svgIcon="mat:group" inline></mat-icon>
+        0 collaborators
+      </button>
+      <button mat-icon-button matTooltip="Customize">
+        <mat-icon svgIcon="mat:settings" class="icon-sm"></mat-icon>
+      </button>
+    </div>
   </div>
 
-  <!-- Main content grid -->
-  <div class="dashboard-grid">
+  <!-- Main two-column widget area -->
+  <div class="home-widgets">
 
-    <!-- Left: task sections -->
-    <div class="dashboard-main">
-      <vex-task-board
-        [tasks]="todayTasks"
-        label="Due Today"
-        (completeTask)="onCompleteTask($event)">
-      </vex-task-board>
+    <!-- LEFT: My Tasks widget -->
+    <div class="widget widget--tasks">
+      <div class="widget__header">
+        <span class="widget__title">My tasks</span>
+        <a class="widget__link" (click)="goToMyTasks()">Go to My tasks</a>
+      </div>
 
-      <vex-task-board
-        [tasks]="overdueTasks"
-        label="Overdue"
-        class="mt-4"
-        (completeTask)="onCompleteTask($event)">
-      </vex-task-board>
+      <!-- Filter tabs -->
+      <div class="task-tabs">
+        <button class="task-tab" [class.task-tab--active]="activeTab === 'upcoming'"
+                (click)="setTab('upcoming')">Upcoming</button>
+        <button class="task-tab" [class.task-tab--active]="activeTab === 'overdue'"
+                (click)="setTab('overdue')">
+          Overdue
+          <span class="task-tab__badge" *ngIf="overdueCount > 0">{{ overdueCount }}</span>
+        </button>
+        <button class="task-tab" [class.task-tab--active]="activeTab === 'completed'"
+                (click)="setTab('completed')">Completed</button>
+      </div>
+
+      <!-- Task rows -->
+      <div class="task-rows">
+        <div class="task-row" *ngFor="let task of filteredTasks">
+
+          <!-- Circle checkbox -->
+          <button class="task-circle"
+                  [class.task-circle--done]="task.completed"
+                  (click)="completeTask(task.id, $event)"
+                  [matTooltip]="task.completed ? 'Mark incomplete' : 'Mark complete'">
+            <mat-icon svgIcon="mat:check" *ngIf="task.completed"></mat-icon>
+          </button>
+
+          <!-- Task name -->
+          <span class="task-row__name" [class.task-row__name--done]="task.completed">
+            {{ task.name }}
+          </span>
+
+          <!-- Project tag -->
+          <span class="task-tag" *ngIf="task.projectName"
+                [style.background]="tagColor(task.projectId)">
+            {{ task.projectName | slice:0:12 }}
+          </span>
+
+          <!-- Due date -->
+          <span class="task-due"
+                [class.task-due--overdue]="isOverdue(task.dueDate)"
+                [class.task-due--today]="isToday(task.dueDate)"
+                *ngIf="task.dueDate">
+            {{ task.dueDate | date:'MMM d' }}
+          </span>
+
+          <!-- Assignee avatar -->
+          <img *ngIf="task.assignee" [src]="task.assignee.imgUrl"
+               [matTooltip]="task.assignee.name"
+               class="task-avatar">
+        </div>
+
+        <!-- Empty state -->
+        <div class="task-rows__empty" *ngIf="filteredTasks.length === 0">
+          <span>No {{ activeTab }} tasks</span>
+        </div>
+      </div>
+
+      <!-- Add task row -->
+      <div class="task-add-row" (click)="openCreateTask()">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        <span>Add task</span>
+      </div>
     </div>
 
-    <!-- Right: project list + activity -->
-    <div class="dashboard-sidebar">
-      <vex-project-list [projects]="projects"></vex-project-list>
-      <vex-activity-panel class="mt-4"></vex-activity-panel>
+    <!-- RIGHT: Projects widget -->
+    <div class="widget widget--projects">
+      <div class="widget__header">
+        <span class="widget__title">Projects</span>
+        <button mat-button class="widget__create-btn" (click)="goToProject(projects[0])">
+          <mat-icon svgIcon="mat:add"></mat-icon>
+          Create project
+        </button>
+      </div>
+
+      <!-- Project grid -->
+      <div class="project-grid">
+        <div class="project-tile" *ngFor="let p of projects" (click)="goToProject(p)">
+          <div class="project-tile__icon" [style.background]="p.color">
+            {{ projectInitials(p.name) }}
+          </div>
+          <div class="project-tile__info">
+            <span class="project-tile__name">{{ p.name }}</span>
+            <span class="project-tile__type">Project</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget__footer">
+        <a class="widget__link" routerLink="/projects">Show all projects</a>
+      </div>
     </div>
 
   </div>
+
+  <!-- People section -->
+  <div class="home-people">
+    <div class="widget__header">
+      <span class="widget__title">People</span>
+      <button mat-button class="widget__create-btn">
+        <mat-icon svgIcon="mat:group"></mat-icon>
+        Browse teams
+      </button>
+    </div>
+
+    <div class="people-grid">
+      <div class="person-card" *ngFor="let person of people">
+        <div class="person-card__avatar" [style.background]="person.color">
+          {{ person.initials }}
+        </div>
+        <div class="person-card__info">
+          <span class="person-card__name">{{ person.name }}</span>
+          <span class="person-card__role">{{ person.role }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

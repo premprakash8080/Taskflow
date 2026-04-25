@@ -8,10 +8,10 @@
   gap: 12px;
   padding: 10px 16px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--foreground-divider);
   transition: background 0.15s;
 
-  &:hover { background: rgba(0,0,0,0.02); }
+  &:hover { background: var(--background-hover); }
   &:last-child { border-bottom: none; }
 }
 
@@ -30,7 +30,7 @@
 .project-name {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(0,0,0,0.8);
+  color: var(--text-color);
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -39,7 +39,7 @@
 
 .project-progress-track {
   height: 4px;
-  background: rgba(0,0,0,0.08);
+  background: var(--background-hover);
   border-radius: 2px;
   overflow: hidden;
 }

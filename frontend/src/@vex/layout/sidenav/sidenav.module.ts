@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { SidenavComponent } from './sidenav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SidenavItemModule } from './sidenav-item/sidenav-item.module';
@@ -10,12 +11,14 @@ import { MatRippleModule } from '@angular/material/core';
 import { UserMenuModule } from '../../components/user-menu/user-menu.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SearchModalComponent } from '../../components/search-modal/search-modal.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
   declarations: [SidenavComponent],
   imports: [
     CommonModule,
+    RouterModule,
     MatToolbarModule,
     SidenavItemModule,
     ScrollbarModule,
@@ -23,6 +26,7 @@ import { SearchModalComponent } from '../../components/search-modal/search-modal
     MatIconModule,
     MatDialogModule,
     MatRippleModule,
+    MatTooltipModule,
     UserMenuModule,
 
     SearchModalComponent

@@ -13,8 +13,10 @@
       <div class="board-column__dot" [style.background]="col.color"></div>
       <span class="board-column__name">{{ col.name }}</span>
       <span class="board-column__count">{{ col.tasks.length }}</span>
-      <button mat-icon-button class="board-column__add" matTooltip="Add task">
-        <mat-icon>add</mat-icon>
+      <button mat-icon-button class="board-column__add"
+              matTooltip="Add task"
+              (click)="startAddTask(col.id, $event)">
+        <mat-icon svgIcon="mat:add"></mat-icon>
       </button>
     </div>
 
@@ -24,14 +26,13 @@
         class="task-card"
         *ngFor="let task of col.tasks"
         cdkDrag
-        [class.task-card--completed]="task.completed">
+        [class.task-card--completed]="task.completed"
+        (click)="selectTask(task)">
 
-        <!-- Drag handle -->
         <div cdkDragHandle class="task-card__drag-handle">
-          <mat-icon>drag_indicator</mat-icon>
+          <mat-icon svgIcon="mat:drag_indicator"></mat-icon>
         </div>
 
-        <!-- Priority bar -->
         <div class="task-card__priority" [style.background]="priorityColor(task.priority)"></div>
 
         <mat-card-content class="task-card__content">
@@ -40,7 +41,7 @@
           <div class="task-card__footer">
             <div class="task-card__meta">
               <span class="task-card__due" *ngIf="task.dueDate">
-                <mat-icon inline>schedule</mat-icon>
+                <mat-icon svgIcon="mat:schedule" inline></mat-icon>
                 {{ task.dueDate | date:'MMM d' }}
               </span>
             </div>
@@ -51,15 +52,37 @@
           </div>
         </mat-card-content>
 
-        <!-- Drag placeholder -->
         <div *cdkDragPlaceholder class="task-card-placeholder"></div>
       </mat-card>
 
-      <!-- Empty drop zone hint -->
-      <div class="board-column__empty" *ngIf="col.tasks.length === 0">
+      <!-- Empty drop zone hint (only when not adding) -->
+      <div class="board-column__empty"
+           *ngIf="col.tasks.length === 0 && addingColId !== col.id">
         Drop tasks here
       </div>
     </div>
+
+    <!-- Inline add-task input -->
+    <div class="board-column__add-input" *ngIf="addingColId === col.id">
+      <input class="board-column__input"
+             [(ngModel)]="newTaskName"
+             placeholder="Task name"
+             (keydown)="onAddKeydown($event)"
+             (blur)="commitAddTask()"
+             appAutofocus />
+      <div class="board-column__input-hints">
+        <span>↵ add</span>
+        <span>Esc cancel</span>
+      </div>
+    </div>
+
+    <!-- Add task trigger row (shown when input is closed) -->
+    <button class="board-column__add-row"
+            *ngIf="addingColId !== col.id"
+            (click)="startAddTask(col.id, $event)">
+      <mat-icon svgIcon="mat:add"></mat-icon>
+      Add task
+    </button>
 
   </div>
 

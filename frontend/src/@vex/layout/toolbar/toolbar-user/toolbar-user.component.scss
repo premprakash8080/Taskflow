@@ -1,0 +1,32 @@
+.user-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+
+  &:hover,
+  &.active {
+    box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.35);
+  }
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgb(var(--color-primary));
+  // White text for contrast on the primary color — intentionally fixed
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+}

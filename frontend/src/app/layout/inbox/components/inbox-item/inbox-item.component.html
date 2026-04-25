@@ -1,27 +1,44 @@
-<div class="inbox-item"
-     [class.inbox-item--selected]="selected"
-     [class.inbox-item--unread]="!notification.read">
+<div class="ib-item"
+     [class.ib-item--selected]="selected"
+     [class.ib-item--unread]="!notification.read">
 
-  <!-- Unread indicator -->
-  <div class="inbox-item__unread-dot" *ngIf="!notification.read"></div>
+  <!-- Unread indicator dot (left edge) -->
+  <div class="ib-item__unread-dot" *ngIf="!notification.read"></div>
 
-  <!-- Sender avatar with type badge -->
-  <div class="inbox-item__avatar-wrap">
-    <img [src]="notification.sender.imgUrl" class="avatar avatar--sm">
-    <div class="inbox-item__type-badge" [style.background]="typeColor(notification.type)">
-      <mat-icon>{{ typeIcon(notification.type) }}</mat-icon>
+  <!-- Avatar + type badge -->
+  <div class="ib-item__avatar-wrap">
+    <img
+      *ngIf="!avatarError"
+      [src]="notification.sender.imgUrl"
+      [alt]="notification.sender.name"
+      class="ib-item__avatar ib-item__avatar--img"
+      (error)="avatarError = true">
+    <div
+      *ngIf="avatarError"
+      class="ib-item__avatar ib-item__avatar--initials"
+      [style.background]="avatarColor(notification.sender.id)">
+      {{ initials(notification.sender.name) }}
+    </div>
+    <!-- Type icon badge -->
+    <div class="ib-item__type-badge" [style.background]="typeColor(notification.type)">
+      <mat-icon [svgIcon]="'mat:' + typeIcon(notification.type)"></mat-icon>
     </div>
   </div>
 
   <!-- Content -->
-  <div class="inbox-item__body">
-    <div class="inbox-item__title">{{ notification.title }}</div>
-    <div class="inbox-item__message">{{ notification.message }}</div>
-    <div class="inbox-item__meta">
-      <span *ngIf="notification.projectName" class="inbox-item__project">
+  <div class="ib-item__body">
+    <div class="ib-item__top">
+      <span class="ib-item__sender">{{ notification.sender.name }}</span>
+      <span class="ib-item__time">{{ formatTime(notification.createdAt) }}</span>
+    </div>
+    <div class="ib-item__action">{{ notification.title }}</div>
+    <div class="ib-item__sub" *ngIf="notification.taskName || notification.projectName">
+      <span class="ib-item__task-name" *ngIf="notification.taskName">
+        {{ notification.taskName }}
+      </span>
+      <span class="ib-item__project-tag" *ngIf="notification.projectName">
         {{ notification.projectName }}
       </span>
-      <span class="inbox-item__time">{{ notification.createdAt | date:'MMM d' }}</span>
     </div>
   </div>
 

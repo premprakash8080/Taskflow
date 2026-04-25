@@ -1,5 +1,107 @@
-<div class="placeholder-view">
-  <mat-icon>group</mat-icon>
-  <h3>Members</h3>
-  <p>Manage project members and permissions here.</p>
+<div class="pm">
+
+  <!-- ── Page header ──────────────────────────────────────────────── -->
+  <div class="pm__header">
+    <div class="pm__header-left">
+      <h2 class="pm__title">Members</h2>
+      <span class="pm__count">{{ members.length }}</span>
+    </div>
+    <button mat-flat-button color="primary" class="pm__invite-btn" (click)="toggleInvite()">
+      <mat-icon svgIcon="mat:person_add"></mat-icon>
+      Invite members
+    </button>
+  </div>
+
+  <!-- ── Invite bar ────────────────────────────────────────────────── -->
+  <div class="pm__invite-bar" *ngIf="showInvite">
+    <mat-icon svgIcon="mat:mail_outline" class="pm__invite-bar-icon"></mat-icon>
+    <input class="pm__invite-input"
+           type="email"
+           placeholder="Enter email address..."
+           [(ngModel)]="inviteEmail"
+           (keydown.enter)="sendInvite()"
+           appAutofocus />
+    <button mat-flat-button color="primary" class="pm__invite-send"
+            [disabled]="!inviteEmail.trim()"
+            (click)="sendInvite()">
+      Send invite
+    </button>
+    <button mat-icon-button class="pm__invite-close" (click)="toggleInvite()">
+      <mat-icon svgIcon="mat:close"></mat-icon>
+    </button>
+  </div>
+
+  <!-- ── Column headers ────────────────────────────────────────────── -->
+  <div class="pm__col-headers">
+    <span class="pm__col-name">Name</span>
+    <span class="pm__col-role">Role</span>
+    <span class="pm__col-tasks">Tasks assigned</span>
+    <span class="pm__col-actions"></span>
+  </div>
+
+  <!-- ── Member rows ───────────────────────────────────────────────── -->
+  <div class="pm__list">
+    <div class="pm__row" *ngFor="let m of members">
+
+      <!-- Avatar + name -->
+      <div class="pm__member-cell">
+        <div class="pm__avatar" [style.background]="avatarColor(m.assignee.id)">
+          <img *ngIf="m.assignee.imgUrl"
+               [src]="m.assignee.imgUrl"
+               [alt]="m.assignee.name"
+               class="pm__avatar-img"
+               (error)="$event.target['style'].display='none'" />
+          <span class="pm__avatar-initials">{{ avatarInitials(m.assignee.name) }}</span>
+        </div>
+        <div class="pm__member-info">
+          <span class="pm__member-name">{{ m.assignee.name }}</span>
+          <span class="pm__member-tasks-sub">
+            {{ m.completedCount }} / {{ m.taskCount }} tasks completed
+          </span>
+        </div>
+      </div>
+
+      <!-- Role badge -->
+      <div class="pm__role-cell">
+        <span class="pm__role-badge" [style.color]="roleColor(m.role)"
+              [style.background]="roleColor(m.role) + '1a'">
+          {{ m.role }}
+        </span>
+      </div>
+
+      <!-- Task count + mini progress -->
+      <div class="pm__tasks-cell">
+        <span class="pm__tasks-num">{{ m.taskCount }}</span>
+        <div class="pm__tasks-bar" *ngIf="m.taskCount > 0">
+          <div class="pm__tasks-fill"
+               [style.width.%]="(m.completedCount / m.taskCount) * 100"
+               [style.background]="avatarColor(m.assignee.id)"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="pm__actions-cell">
+        <button mat-icon-button
+                [matMenuTriggerFor]="memberMenu"
+                class="pm__more-btn"
+                [disabled]="m.role === 'Owner'"
+                [matTooltip]="m.role === 'Owner' ? 'Project owner cannot be removed' : ''">
+          <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+        </button>
+        <mat-menu #memberMenu="matMenu" xPosition="before">
+          <button mat-menu-item disabled>
+            <mat-icon svgIcon="mat:swap_horiz"></mat-icon>
+            <span>Change role</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item class="pm__danger-item" (click)="removeMember(m)">
+            <mat-icon svgIcon="mat:person_remove"></mat-icon>
+            <span>Remove from project</span>
+          </button>
+        </mat-menu>
+      </div>
+
+    </div>
+  </div>
+
 </div>

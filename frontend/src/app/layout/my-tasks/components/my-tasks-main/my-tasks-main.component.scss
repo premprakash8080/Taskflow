@@ -1,22 +1,231 @@
-.my-tasks-page {
+// ─── VARIABLES ──────────────────────────────────────────────────────────────
+// ALL colors resolved from Vex CSS custom properties.
+// These automatically flip between light and dark as the user switches themes.
+//   --background-base      → page bg  (light gray / dark bg)
+//   --background-foreground→ card bg  (white / dark card)
+//   --background-hover     → subtle hover tint (rgba black/white 4%)
+//   --foreground-divider   → border   (rgba black/white 12%)
+//   --text-color           → primary text
+//   --text-secondary       → secondary text
+//   --text-hint            → muted / placeholder text
+//   --color-primary        → brand accent (stored as "R, G, B")
+
+// Small icon utility (used in view tabs and toolbar buttons)
+.icon-xs {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+// ─── HOST ───────────────────────────────────────────────────────────────────
+:host {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: var(--background-base);
   overflow: hidden;
 }
 
-.my-tasks-body {
+// ─── PAGE WRAPPER ───────────────────────────────────────────────────────────
+.mt-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--background-base);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+// ─── HEADER ─────────────────────────────────────────────────────────────────
+.mt-header {
+  flex-shrink: 0;
+  background: var(--background-foreground);
+  padding: 20px 24px 0;
+  border-bottom: 1px solid var(--foreground-divider);
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.mt-btn-ghost {
+  color: var(--text-secondary) !important;
+  font-size: 13px;
+  font-weight: 500;
+  height: 30px;
+  line-height: 30px;
+  min-width: unset;
+  padding: 0 10px;
+
+  mat-icon { margin-right: 4px; }
+
+  &:hover {
+    color: var(--text-color) !important;
+    background: var(--background-hover) !important;
+  }
+}
+
+// ─── VIEW TABS ──────────────────────────────────────────────────────────────
+.mt-view-tabs {
+  display: flex;
+  align-items: center;
+}
+
+.mt-view-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-hint);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+  white-space: nowrap;
+
+  mat-icon { font-size: 15px; width: 15px; height: 15px; }
+
+  &:hover { color: var(--text-secondary); }
+
+  &--active {
+    color: var(--text-color);
+    border-bottom-color: rgb(var(--color-primary));
+  }
+
+  &--add {
+    color: var(--text-hint);
+    padding: 8px;
+  }
+}
+
+// ─── TOOLBAR ────────────────────────────────────────────────────────────────
+.mt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 24px;
+  background: var(--background-foreground);
+  border-bottom: 1px solid var(--foreground-divider);
+  flex-shrink: 0;
+
+  &__left, &__right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  &__add-btn {
+    color: var(--text-secondary) !important;
+    font-size: 12px;
+    font-weight: 500;
+    height: 28px;
+    line-height: 28px;
+    min-width: unset;
+    padding: 0 10px;
+    border: 1px solid var(--foreground-divider) !important;
+    border-radius: 5px;
+
+    mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 4px; }
+
+    &:hover {
+      background: var(--background-hover) !important;
+      color: var(--text-color) !important;
+    }
+  }
+
+  &__sep {
+    width: 1px;
+    height: 20px;
+    background: var(--foreground-divider);
+    margin: 0 6px;
+  }
+
+  &__btn {
+    color: var(--text-hint) !important;
+    font-size: 12px;
+    font-weight: 500;
+    height: 28px;
+    line-height: 28px;
+    min-width: unset;
+    padding: 0 8px;
+
+    mat-icon { font-size: 15px; width: 15px; height: 15px; margin-right: 3px; }
+
+    &:hover {
+      color: var(--text-secondary) !important;
+      background: var(--background-hover) !important;
+    }
+  }
+}
+
+// ─── COLUMN HEADERS ─────────────────────────────────────────────────────────
+.mt-col-headers {
+  display: grid;
+  grid-template-columns: 1fr 110px 90px 150px 90px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--foreground-divider);
+  background: var(--background-foreground);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.mt-col {
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &--name { padding-left: 56px; }
+}
+
+// ─── CONTENT BODY ───────────────────────────────────────────────────────────
+.mt-body {
   flex: 1;
   overflow: hidden;
+
+  // Let mat-drawer-container inherit the page background
+  ::ng-deep .mat-drawer-container {
+    background: transparent !important;
+  }
+
+  ::ng-deep .mat-drawer-content {
+    background: transparent !important;
+  }
 }
 
-.my-tasks-content {
+.mt-content {
+  height: 100%;
   overflow-y: auto;
-  padding: 0 24px 24px;
+  background: var(--background-base);
 }
 
-::ng-deep .detail-drawer {
+// ─── DETAIL DRAWER ──────────────────────────────────────────────────────────
+::ng-deep .mt-detail-drawer {
   width: 420px;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.06);
+  background: var(--background-foreground) !important;
+  border-left: 1px solid var(--foreground-divider) !important;
+  box-shadow: none !important;
 }

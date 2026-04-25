@@ -14,7 +14,7 @@ const routes: Routes = [
       { path: 'dashboard',  loadChildren: () => import('./layout/dashboard/dashboard.module').then(m => m.DashboardModule) },
       { path: 'inbox',      loadChildren: () => import('./layout/inbox/inbox.module').then(m => m.InboxModule) },
       { path: 'my-tasks',   loadChildren: () => import('./layout/my-tasks/my-tasks.module').then(m => m.MyTasksModule) },
-      { path: 'projects',   loadChildren: () => import('./layout/projects/projects.module').then(m => m.ProjectsModule) },
+      { path: 'projects',   loadChildren: () => import('./layout/projects/projects.module').then(m => m.ProjectsModule), data: { scrollDisabled: true } },
       { path: 'portfolios', loadChildren: () => import('./layout/portfolios/portfolios.module').then(m => m.PortfoliosModule) },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]

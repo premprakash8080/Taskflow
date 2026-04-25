@@ -1,0 +1,535 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background-base);
+}
+
+.ov {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 0 48px;
+}
+
+// ── Stats strip ───────────────────────────────────────────────────────────────
+.ov__stats-strip {
+  display: flex;
+  gap: 1px;
+  background: var(--foreground-divider);
+  border-bottom: 1px solid var(--foreground-divider);
+  flex-shrink: 0;
+}
+
+.ov__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 24px;
+  background: var(--background-foreground);
+  flex: 1;
+
+  &--ring {
+    gap: 16px;
+    position: relative;
+  }
+}
+
+// Progress ring
+.ov__ring {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.ov__ring-bg {
+  fill: none;
+  stroke: var(--foreground-divider);
+  stroke-width: 6;
+}
+
+.ov__ring-fill {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.ov__ring-center {
+  position: absolute;
+  left: 24px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ov__ring-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.ov__stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+  // Semantic status colors — intentionally fixed
+  &--red    { background: rgba(239, 68, 68, 0.12); mat-icon { color: #ef4444; } }
+  &--amber  { background: rgba(245, 158, 11, 0.12); mat-icon { color: #f59e0b; } }
+  &--primary { background: rgba(var(--color-primary), 0.1); mat-icon { color: rgb(var(--color-primary)); } }
+}
+
+.ov__stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ov__stat-label {
+  font-size: 11px;
+  color: var(--text-hint);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ov__stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-color);
+
+  &--red { color: #ef4444; }
+}
+
+// ── Two-column body ───────────────────────────────────────────────────────────
+.ov__body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  padding: 24px 32px 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ov__main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
+.ov__section {
+  background: var(--background-foreground);
+  border: 1px solid var(--foreground-divider);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.ov__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.ov__section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.ov__edit-btn {
+  font-size: 12px;
+  color: var(--text-hint);
+  height: 28px;
+  padding: 0 8px;
+  min-width: unset;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; margin-right: 4px; }
+  &:hover { color: var(--text-color); }
+}
+
+.ov__brief-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ov__brief-empty {
+  font-size: 13px;
+  color: var(--text-hint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1.5px dashed var(--foreground-divider);
+  border-radius: 8px;
+  margin: 0;
+  transition: border-color 0.15s;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover { border-color: rgb(var(--color-primary)); color: rgb(var(--color-primary)); }
+}
+
+.ov__brief-input {
+  width: 100%;
+  border: 1px solid var(--foreground-divider);
+  border-radius: 8px;
+  background: var(--background-base);
+  color: var(--text-color);
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  padding: 10px 12px;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus { border-color: rgb(var(--color-primary)); }
+  &::placeholder { color: var(--text-hint); }
+}
+
+.ov__brief-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ov__save-btn {
+  height: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0 14px;
+}
+
+.ov__cancel-btn {
+  height: 30px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+// ── Status update composer ────────────────────────────────────────────────────
+.ov__update-composer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--foreground-divider);
+}
+
+.ov__update-input-wrap {
+  flex: 1;
+  border: 1px solid var(--foreground-divider);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--background-base);
+  transition: border-color 0.15s;
+
+  &:focus-within { border-color: rgb(var(--color-primary)); }
+}
+
+.ov__update-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.5;
+  padding: 10px 14px 6px;
+  resize: none;
+  box-sizing: border-box;
+
+  &::placeholder { color: var(--text-hint); }
+}
+
+.ov__update-composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px 8px;
+}
+
+.ov__post-btn {
+  height: 28px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0 14px;
+}
+
+// ── Update avatar ─────────────────────────────────────────────────────────────
+.ov__update-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  // White on coloured avatar — intentionally fixed
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ov__update-avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+// ── Update items ──────────────────────────────────────────────────────────────
+.ov__updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ov__update-item {
+  display: flex;
+  gap: 12px;
+}
+
+.ov__update-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ov__update-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.ov__update-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.ov__update-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.ov__update-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ov__update-time {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+.ov__update-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.ov__updates-empty {
+  font-size: 13px;
+  color: var(--text-hint);
+  text-align: center;
+  padding: 16px;
+}
+
+// ── Sidebar widgets ───────────────────────────────────────────────────────────
+.ov__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ov__widget {
+  background: var(--background-foreground);
+  border: 1px solid var(--foreground-divider);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.ov__widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.ov__widget-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.ov__widget-count {
+  font-size: 11px;
+  background: var(--background-hover);
+  color: var(--text-hint);
+  padding: 1px 7px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+// Member list
+.ov__member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ov__member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ov__member-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ov__member-avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.ov__member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ov__member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.ov__member-role {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+// Key dates
+.ov__date-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--foreground-divider);
+
+  &:last-child { border-bottom: none; }
+}
+
+.ov__date-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-hint);
+  flex-shrink: 0;
+}
+
+.ov__date-label {
+  font-size: 11px;
+  color: var(--text-hint);
+  display: block;
+}
+
+.ov__date-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+  display: block;
+}
+
+// Task breakdown bar
+.ov__breakdown-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--background-hover);
+  overflow: hidden;
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.ov__breakdown-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+
+  &--done    { background: #10b981; }
+  &--active  { background: rgb(var(--color-primary)); }
+  &--overdue { background: #ef4444; }
+}
+
+.ov__breakdown-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ov__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+.ov__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--done    { background: #10b981; }
+  &--active  { background: rgb(var(--color-primary)); }
+  &--overdue { background: #ef4444; }
+}

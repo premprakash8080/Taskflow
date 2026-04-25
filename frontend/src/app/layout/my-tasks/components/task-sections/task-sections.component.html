@@ -1,29 +1,39 @@
-<div class="task-sections">
+<div class="sections-wrap">
   <div class="task-section" *ngFor="let section of sections">
 
-    <!-- Section header -->
-    <div class="task-section__header" (click)="toggleSection(section)">
-      <mat-icon class="task-section__chevron" [class.rotated]="!section.expanded">
-        chevron_right
+    <!-- Section header row -->
+    <div class="section-header" (click)="toggleSection(section)">
+      <mat-icon class="section-header__chevron"
+                [class.rotated]="!section.expanded"
+                svgIcon="mat:chevron_right">
       </mat-icon>
-      <span class="task-section__label">{{ section.label }}</span>
-      <span class="task-section__count">{{ section.tasks.length }}</span>
+      <span class="section-header__label">{{ section.label }}</span>
+      <span class="section-header__count" *ngIf="section.tasks.length">{{ section.tasks.length }}</span>
     </div>
 
-    <!-- Task list -->
-    <div class="task-section__body" *ngIf="section.expanded">
+    <!-- Task rows -->
+    <div class="section-body" *ngIf="section.expanded">
       <vex-task-list
         [tasks]="section.tasks"
         (taskSelected)="taskSelected.emit($event)"
         (toggleComplete)="toggleComplete.emit($event)">
       </vex-task-list>
+
+      <!-- Add task inline -->
+      <div class="section-add-row">
+        <div class="section-add-row__indent"></div>
+        <button mat-button class="section-add-btn">
+          <mat-icon svgIcon="mat:add"></mat-icon>
+          Add task
+        </button>
+      </div>
     </div>
 
   </div>
 
-  <!-- Global empty state -->
+  <!-- All-empty state -->
   <div class="sections-empty" *ngIf="sections.length > 0 && allSectionsEmpty()">
-    <mat-icon class="sections-empty__icon">task_alt</mat-icon>
+    <mat-icon svgIcon="mat:done_outline" class="sections-empty__icon"></mat-icon>
     <p>No tasks match the current filter.</p>
   </div>
 </div>

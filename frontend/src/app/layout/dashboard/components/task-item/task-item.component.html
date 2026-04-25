@@ -10,12 +10,12 @@
     <span class="task-item__name">{{ task.name }}</span>
     <div class="task-item__meta">
       <span class="task-item__project" *ngIf="task.projectName">
-        <mat-icon inline>folder_open</mat-icon> {{ task.projectName }}
+        <mat-icon svgIcon="mat:folder_open" inline></mat-icon> {{ task.projectName }}
       </span>
       <span class="task-item__due"
             [class.task-item__due--overdue]="isOverdue(task.dueDate)"
             *ngIf="task.dueDate">
-        <mat-icon inline>schedule</mat-icon>
+        <mat-icon svgIcon="mat:schedule" inline></mat-icon>
         {{ task.dueDate | date:'MMM d' }}
       </span>
     </div>

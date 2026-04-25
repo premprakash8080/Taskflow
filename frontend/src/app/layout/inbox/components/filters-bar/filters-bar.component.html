@@ -1,10 +1,3 @@
-<div class="filters-bar">
-  <button
-    *ngFor="let f of filters"
-    mat-button
-    class="filter-chip"
-    [class.filter-chip--active]="activeFilter === f.value"
-    (click)="filterChange.emit(f.value)">
-    {{ f.label }}
-  </button>
-</div>
+<!-- FiltersBarComponent is no longer used.
+     Filters are rendered inline in InboxMainComponent as tab buttons. -->
+<ng-container></ng-container>

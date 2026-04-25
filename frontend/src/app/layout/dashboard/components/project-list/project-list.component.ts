@@ -13,7 +13,7 @@ export class ProjectListComponent {
   constructor(private router: Router) {}
 
   goToProject(project: Project): void {
-    this.router.navigate(['/projects', project.id, 'list']);
+    this.router.navigate(['/projects', project.id, 'overview']);
   }
 
   progressPercent(project: Project): number {

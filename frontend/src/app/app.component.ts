@@ -116,51 +116,64 @@ export class AppComponent {
     });
 
     /**
-     * Add your own routes here
+     * Asana-style navigation: flat top links, then project section
      */
     this.navigationService.items = [
       {
+        type: 'link',
+        label: 'Home',
+        route: '/dashboard',
+        icon: 'mat:home',
+        routerLinkActiveOptions: { exact: true }
+      },
+      {
+        type: 'link',
+        label: 'My Tasks',
+        route: '/my-tasks',
+        icon: 'mat:check_circle_outline'
+      },
+      {
+        type: 'link',
+        label: 'Inbox',
+        route: '/inbox',
+        icon: 'mat:inbox',
+        badge: { value: '3', bgClass: 'bg-primary', textClass: 'text-primary-contrast' }
+      },
+      {
         type: 'subheading',
-        label: 'Overview',
+        label: 'My Projects',
         children: [
           {
             type: 'link',
-            label: 'Dashboard',
-            route: '/dashboard',
-            icon: 'mat:dashboard',
-            routerLinkActiveOptions: { exact: true }
+            label: 'Website Redesign',
+            route: '/projects/proj-1/board',
+            icon: 'mat:fiber_manual_record'
           },
           {
             type: 'link',
-            label: 'Inbox',
-            route: '/inbox',
-            icon: 'mat:inbox'
+            label: 'Mobile App',
+            route: '/projects/proj-2/board',
+            icon: 'mat:fiber_manual_record'
+          },
+          {
+            type: 'link',
+            label: 'Marketing Campaign',
+            route: '/projects/proj-3/board',
+            icon: 'mat:fiber_manual_record'
+          },
+          {
+            type: 'link',
+            label: 'API Integration',
+            route: '/projects/proj-4/board',
+            icon: 'mat:fiber_manual_record'
           }
         ]
       },
       {
-        type: 'subheading',
-        label: 'Work',
-        children: [
-          {
-            type: 'link',
-            label: 'My Tasks',
-            route: '/my-tasks',
-            icon: 'mat:task'
-          },
-          {
-            type: 'link',
-            label: 'Projects',
-            route: '/projects',
-            icon: 'mat:folder'
-          },
-          {
-            type: 'link',
-            label: 'Portfolios',
-            route: '/portfolios',
-            icon: 'mat:assessment'
-          }
-        ]
+        type: 'link',
+        label: 'Portfolios',
+        route: '/portfolios',
+        icon: 'mat:assessment'
       }
     ];
   }

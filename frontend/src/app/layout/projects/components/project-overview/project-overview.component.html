@@ -1,0 +1,264 @@
+<div class="ov" *ngIf="project">
+
+  <!-- ══ Top stats strip ═══════════════════════════════════════════════════ -->
+  <div class="ov__stats-strip">
+
+    <!-- Progress ring -->
+    <div class="ov__stat-card ov__stat-card--ring">
+      <svg class="ov__ring" viewBox="0 0 88 88">
+        <circle class="ov__ring-bg"  cx="44" cy="44" r="36" />
+        <circle class="ov__ring-fill"
+                cx="44" cy="44" r="36"
+                transform="rotate(-90 44 44)"
+                [style.stroke-dasharray]="progressDash"
+                [style.stroke]="statusColor(project.status)" />
+      </svg>
+      <div class="ov__ring-center">
+        <span class="ov__ring-pct">{{ progressPct }}%</span>
+      </div>
+      <div class="ov__stat-info">
+        <span class="ov__stat-label">Progress</span>
+        <span class="ov__stat-value">{{ completedCount }} / {{ totalCount }} tasks</span>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="ov__stat-card">
+      <div class="ov__stat-icon" [style.background]="statusColor(project.status) + '20'">
+        <mat-icon svgIcon="mat:flag" [style.color]="statusColor(project.status)"></mat-icon>
+      </div>
+      <div class="ov__stat-info">
+        <span class="ov__stat-label">Status</span>
+        <span class="ov__stat-value" [style.color]="statusColor(project.status)">
+          {{ statusLabel(project.status) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Overdue -->
+    <div class="ov__stat-card">
+      <div class="ov__stat-icon ov__stat-icon--red">
+        <mat-icon svgIcon="mat:warning_amber"></mat-icon>
+      </div>
+      <div class="ov__stat-info">
+        <span class="ov__stat-label">Overdue</span>
+        <span class="ov__stat-value" [class.ov__stat-value--red]="overdueCount > 0">
+          {{ overdueCount }} task{{ overdueCount !== 1 ? 's' : '' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Due soon -->
+    <div class="ov__stat-card">
+      <div class="ov__stat-icon ov__stat-icon--amber">
+        <mat-icon svgIcon="mat:schedule"></mat-icon>
+      </div>
+      <div class="ov__stat-info">
+        <span class="ov__stat-label">Due this week</span>
+        <span class="ov__stat-value">{{ dueSoonCount }} task{{ dueSoonCount !== 1 ? 's' : '' }}</span>
+      </div>
+    </div>
+
+    <!-- Due date -->
+    <div class="ov__stat-card" *ngIf="project.dueDate">
+      <div class="ov__stat-icon ov__stat-icon--primary">
+        <mat-icon svgIcon="mat:event"></mat-icon>
+      </div>
+      <div class="ov__stat-info">
+        <span class="ov__stat-label">Due date</span>
+        <span class="ov__stat-value">{{ project.dueDate | date:'MMM d, yyyy' }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ Two-column body ═══════════════════════════════════════════════════ -->
+  <div class="ov__body">
+
+    <!-- Left column -->
+    <div class="ov__main">
+
+      <!-- Project brief -->
+      <section class="ov__section">
+        <div class="ov__section-header">
+          <h3 class="ov__section-title">Project brief</h3>
+          <button mat-button class="ov__edit-btn"
+                  *ngIf="!editingBrief"
+                  (click)="startEditBrief()">
+            <mat-icon svgIcon="mat:edit"></mat-icon>
+            Edit
+          </button>
+        </div>
+
+        <ng-container *ngIf="!editingBrief">
+          <p class="ov__brief-text" *ngIf="project.description">{{ project.description }}</p>
+          <p class="ov__brief-empty" *ngIf="!project.description"
+             (click)="startEditBrief()">
+            <mat-icon svgIcon="mat:edit"></mat-icon>
+            Add a project brief to help your team understand the goals…
+          </p>
+        </ng-container>
+
+        <ng-container *ngIf="editingBrief">
+          <textarea class="ov__brief-input"
+                    rows="4"
+                    placeholder="Describe the goals, scope, and context of this project…"
+                    [(ngModel)]="briefDraft"
+                    appAutofocus>
+          </textarea>
+          <div class="ov__brief-actions">
+            <button mat-flat-button color="primary" class="ov__save-btn" (click)="saveBrief()">Save</button>
+            <button mat-button class="ov__cancel-btn" (click)="cancelBrief()">Cancel</button>
+          </div>
+        </ng-container>
+      </section>
+
+      <!-- Status updates -->
+      <section class="ov__section">
+        <h3 class="ov__section-title">Status updates</h3>
+
+        <!-- New update input -->
+        <div class="ov__update-composer">
+          <div class="ov__update-avatar" [style.background]="avatarColor('u1')">
+            <img src="assets/img/demo/1.jpg" alt="Me"
+                 class="ov__update-avatar-img"
+                 (error)="$event.target['style'].display='none'" />
+            <span>DS</span>
+          </div>
+          <div class="ov__update-input-wrap">
+            <textarea class="ov__update-input"
+                      rows="2"
+                      placeholder="Post a status update…"
+                      [(ngModel)]="newUpdateBody">
+            </textarea>
+            <div class="ov__update-composer-footer">
+              <span class="ov__update-status-chip"
+                    [style.color]="statusColor(project.status)"
+                    [style.background]="statusColor(project.status) + '18'">
+                <span class="ov__update-status-dot"
+                      [style.background]="statusColor(project.status)"></span>
+                {{ statusLabel(project.status) }}
+              </span>
+              <button mat-flat-button color="primary"
+                      class="ov__post-btn"
+                      [disabled]="!newUpdateBody.trim()"
+                      (click)="postUpdate()">
+                Post update
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Updates list -->
+        <div class="ov__updates-list">
+          <div class="ov__update-item" *ngFor="let u of statusUpdates">
+            <div class="ov__update-avatar" [style.background]="avatarColor(u.author.id)">
+              <img [src]="u.author.imgUrl" [alt]="u.author.name"
+                   class="ov__update-avatar-img"
+                   (error)="$event.target['style'].display='none'" />
+              <span>{{ avatarInitials(u.author.name) }}</span>
+            </div>
+            <div class="ov__update-content">
+              <div class="ov__update-meta">
+                <span class="ov__update-author">{{ u.author.name }}</span>
+                <span class="ov__update-status-chip"
+                      [style.color]="statusColor(u.status)"
+                      [style.background]="statusColor(u.status) + '18'">
+                  <span class="ov__update-status-dot" [style.background]="statusColor(u.status)"></span>
+                  {{ statusLabel(u.status) }}
+                </span>
+                <span class="ov__update-time">{{ timeAgo(u.createdAt) }}</span>
+              </div>
+              <p class="ov__update-body">{{ u.body }}</p>
+            </div>
+          </div>
+
+          <div class="ov__updates-empty" *ngIf="statusUpdates.length === 0">
+            No status updates yet. Post the first one above.
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="ov__sidebar">
+
+      <!-- Team members -->
+      <div class="ov__widget">
+        <div class="ov__widget-header">
+          <span class="ov__widget-title">Team members</span>
+          <span class="ov__widget-count">{{ (project.members?.length ?? 0) }}</span>
+        </div>
+        <div class="ov__member-list">
+          <div class="ov__member-row" *ngFor="let m of (project.members ?? []); let i = index">
+            <div class="ov__member-avatar" [style.background]="avatarColor(m.id)">
+              <img [src]="m.imgUrl" [alt]="m.name"
+                   class="ov__member-avatar-img"
+                   (error)="$event.target['style'].display='none'" />
+              <span>{{ avatarInitials(m.name) }}</span>
+            </div>
+            <div class="ov__member-info">
+              <span class="ov__member-name">{{ m.name }}</span>
+              <span class="ov__member-role">{{ i === 0 ? 'Owner' : 'Member' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key dates -->
+      <div class="ov__widget">
+        <div class="ov__widget-header">
+          <span class="ov__widget-title">Key dates</span>
+        </div>
+        <div class="ov__date-row">
+          <mat-icon svgIcon="mat:calendar_today" class="ov__date-icon"></mat-icon>
+          <div>
+            <span class="ov__date-label">Created</span>
+            <span class="ov__date-value">{{ project.createdAt | date:'MMM d, yyyy' }}</span>
+          </div>
+        </div>
+        <div class="ov__date-row" *ngIf="project.dueDate">
+          <mat-icon svgIcon="mat:event" class="ov__date-icon"></mat-icon>
+          <div>
+            <span class="ov__date-label">Due</span>
+            <span class="ov__date-value">{{ project.dueDate | date:'MMM d, yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task breakdown -->
+      <div class="ov__widget">
+        <div class="ov__widget-header">
+          <span class="ov__widget-title">Task breakdown</span>
+        </div>
+        <div class="ov__breakdown-bar">
+          <div class="ov__breakdown-fill ov__breakdown-fill--done"
+               [style.width.%]="progressPct"
+               matTooltip="Completed"></div>
+          <div class="ov__breakdown-fill ov__breakdown-fill--active"
+               [style.width.%]="totalCount > 0 ? ((totalCount - completedCount - overdueCount) / totalCount) * 100 : 0"
+               matTooltip="In progress"></div>
+          <div class="ov__breakdown-fill ov__breakdown-fill--overdue"
+               [style.width.%]="totalCount > 0 ? (overdueCount / totalCount) * 100 : 0"
+               matTooltip="Overdue"></div>
+        </div>
+        <div class="ov__breakdown-legend">
+          <span class="ov__legend-item">
+            <span class="ov__legend-dot ov__legend-dot--done"></span>
+            Completed ({{ completedCount }})
+          </span>
+          <span class="ov__legend-item">
+            <span class="ov__legend-dot ov__legend-dot--overdue"></span>
+            Overdue ({{ overdueCount }})
+          </span>
+          <span class="ov__legend-item">
+            <span class="ov__legend-dot ov__legend-dot--active"></span>
+            Remaining ({{ totalCount - completedCount }})
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

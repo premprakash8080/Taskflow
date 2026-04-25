@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'vex-portfolios-main',
   template: `
     <div class="portfolios-placeholder">
-      <mat-icon>assessment</mat-icon>
+      <mat-icon svgIcon="mat:assessment"></mat-icon>
       <h2>Portfolios</h2>
       <p>Track progress across multiple projects in one place.</p>
     </div>

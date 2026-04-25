@@ -1,38 +1,199 @@
-.inbox-page {
+// All colors use Vex CSS custom properties — zero hardcoded values.
+
+.icon-sm {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+// ─── HOST ────────────────────────────────────────────────────────────────────
+:host {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  background: var(--background-base);
 }
 
-.inbox-layout {
-  display: grid;
-  grid-template-columns: 360px 1fr;
+// ─── PAGE WRAPPER ────────────────────────────────────────────────────────────
+.ib-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--text-color);
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+.ib-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  flex-shrink: 0;
+  background: var(--background-foreground);
+  border-bottom: 1px solid var(--foreground-divider);
+
+  &__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+}
+
+.ib-btn-ghost {
+  color: var(--text-secondary) !important;
+  font-size: 13px;
+  font-weight: 500;
+  height: 32px;
+  min-width: unset;
+  padding: 0 10px;
+
+  mat-icon { margin-right: 4px; }
+
+  &:hover {
+    color: var(--text-color) !important;
+    background: var(--background-hover) !important;
+  }
+}
+
+// ─── BODY (drawer container fills the rest of the page height) ───────────────
+.ib-body {
   flex: 1;
   overflow: hidden;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+  // Drawer container must be transparent so the list background shows through
+  &.mat-drawer-container {
+    background: transparent !important;
+  }
+
+  ::ng-deep .mat-drawer-container {
+    background: transparent !important;
+  }
+
+  ::ng-deep .mat-drawer-content {
+    // Flex column so tabs + scroll work correctly
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: var(--background-foreground) !important;
+  }
 }
 
-.inbox-list-panel {
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+// ─── RIGHT OVERLAY DRAWER ────────────────────────────────────────────────────
+::ng-deep .ib-detail-drawer {
+  width: 50%;
+  min-width: 460px;
+  max-width: 640px;
+  background: var(--background-foreground) !important;
+  border-left: 1px solid var(--foreground-divider) !important;
+  // Intentional directional shadow — not a theme color
+  box-shadow: -6px 0 32px rgba(0, 0, 0, 0.14) !important;
+}
+
+// ─── FULL-WIDTH LIST ─────────────────────────────────────────────────────────
+.ib-list-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--background-foreground);
 }
 
-.inbox-detail-panel {
+// ─── FILTER TABS ─────────────────────────────────────────────────────────────
+.ib-tabs {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--foreground-divider);
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.ib-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-hint);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  transition: color var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+
+  &:hover { color: var(--text-secondary); }
+
+  &--active {
+    color: var(--text-color);
+    border-bottom-color: rgb(var(--color-primary));
+  }
+
+  &__unread {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: rgb(var(--color-primary));
+    color: rgb(var(--color-primary-contrast));
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+  }
+}
+
+// ─── LIST SCROLL ─────────────────────────────────────────────────────────────
+.ib-list-scroll {
+  flex: 1;
   overflow-y: auto;
 }
 
-.inbox-empty {
+// ─── TIME GROUP LABEL ────────────────────────────────────────────────────────
+.ib-group-label {
+  padding: 12px 16px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  position: sticky;
+  top: 0;
+  background: var(--background-foreground);
+  z-index: 1;
+}
+
+// ─── EMPTY STATE ─────────────────────────────────────────────────────────────
+.ib-list-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: rgba(0, 0, 0, 0.38);
+  padding: 80px 24px;
+  color: var(--text-hint);
 
-  mat-icon { font-size: 56px; width: 56px; height: 56px; margin-bottom: 12px; }
-  h3 { font-size: 16px; margin: 0 0 6px; }
-  p { font-size: 13px; margin: 0; }
+  mat-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+    opacity: 0.45;
+  }
+
+  p { font-size: 14px; margin: 0; }
 }

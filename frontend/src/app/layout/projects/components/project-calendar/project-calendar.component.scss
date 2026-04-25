@@ -1,0 +1,231 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background-base);
+}
+
+.cal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.cal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 12px;
+  flex-shrink: 0;
+  background: var(--background-foreground);
+  border-bottom: 1px solid var(--foreground-divider);
+}
+
+.cal__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cal__month-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.cal__header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal__today-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 6px;
+
+  &:hover { color: var(--text-color); }
+  &[disabled] { opacity: 0.4; }
+}
+
+.cal__nav-btn {
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+
+  &:hover { color: var(--text-color); background: var(--background-hover); }
+  mat-icon { font-size: 20px; width: 20px; height: 20px; }
+}
+
+// ── Weekday labels ────────────────────────────────────────────────────────────
+.cal__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--foreground-divider);
+  background: var(--background-foreground);
+}
+
+.cal__weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 0;
+}
+
+// ── Grid ──────────────────────────────────────────────────────────────────────
+.cal__grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--foreground-divider);
+  border-left: 1px solid var(--foreground-divider);
+  border-right: 1px solid var(--foreground-divider);
+  border-bottom: 1px solid var(--foreground-divider);
+}
+
+.cal__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.cal__day {
+  background: var(--background-foreground);
+  min-height: 110px;
+  padding: 8px;
+  overflow: hidden;
+  position: relative;
+
+  &--today {
+    background: rgba(var(--color-primary), 0.03);
+  }
+
+  &--other-month {
+    background: var(--background-base);
+    opacity: 0.5;
+  }
+
+  &--empty {
+    background: var(--background-base);
+  }
+}
+
+// ── Day number ────────────────────────────────────────────────────────────────
+.cal__day-num {
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.cal__day-num span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.cal__day-num--today {
+  // Semantic today indicator — intentionally fixed
+  background: #ef4444 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+// ── Task chips ────────────────────────────────────────────────────────────────
+.cal__tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cal__task-chip {
+  display: flex;
+  align-items: center;
+  border-left: 3px solid;
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  transition: opacity 0.12s, transform 0.1s;
+
+  &:hover {
+    opacity: 0.85;
+    transform: translateX(1px);
+  }
+
+  &--done {
+    opacity: 0.45;
+    text-decoration: line-through;
+  }
+}
+
+.cal__task-chip-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal__task-more {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 4px;
+  cursor: pointer;
+}
+
+// ── Legend ────────────────────────────────────────────────────────────────────
+.cal__legend {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 24px;
+  border-top: 1px solid var(--foreground-divider);
+  background: var(--background-foreground);
+  flex-shrink: 0;
+}
+
+.cal__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+.cal__legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  // Semantic today red
+  &--today { background: #ef4444; }
+}
+
+.cal__legend-bar {
+  width: 14px;
+  height: 6px;
+  border-radius: 2px;
+  opacity: 0.7;
+}

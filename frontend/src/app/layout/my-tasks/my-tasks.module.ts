@@ -9,9 +9,6 @@ import { TaskSectionsComponent } from './components/task-sections/task-sections.
 import { TaskListComponent } from './components/task-list/task-list.component';
 import { TaskItemComponent } from './components/task-item/task-item.component';
 import { TaskFiltersComponent } from './components/task-filters/task-filters.component';
-import { TaskDetailsPanelComponent } from './components/task-details-panel/task-details-panel.component';
-
-
 @NgModule({
   declarations: [
     MyTasksMainComponent,
@@ -19,7 +16,7 @@ import { TaskDetailsPanelComponent } from './components/task-details-panel/task-
     TaskListComponent,
     TaskItemComponent,
     TaskFiltersComponent,
-    TaskDetailsPanelComponent,
+    // TaskDetailsPanelComponent is declared in SharedModule and available via import
   ],
   imports: [
     CommonModule,

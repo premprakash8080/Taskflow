@@ -1,66 +1,133 @@
-<div (mouseenter)="collapseOpenSidenav()"
-     (mouseleave)="collapseCloseSidenav()"
+<div class="asn-sidenav"
      [class.collapsed]="collapsed"
-     [class.open]="collapsed && collapsedOpen$ | async"
-     class="sidenav flex flex-col">
-  <div class="vex-sidenav-toolbar__container">
-    <div class="sidenav-toolbar flex-none flex items-center">
-      <img [src]="imageUrl$ | async" alt="Logo" class="w-6 select-none flex-none"/>
-      <h2 class="vex-sidenav-toolbar__headline flex-auto">{{ title$ | async }}</h2>
-      <button (click)="toggleCollapse()"
-              *ngIf="showCollapsePin$ | async"
-              class="-mr-4 leading-none flex-none hidden lg:block"
-              mat-icon-button
-              type="button">
-        <mat-icon *ngIf="!collapsed"
-                  class="icon-xs"
-                  svgIcon="mat:radio_button_checked"></mat-icon>
-        <mat-icon *ngIf="collapsed"
-                  class="icon-xs"
-                  svgIcon="mat:radio_button_unchecked"></mat-icon>
-      </button>
-    </div>
+     [class.open]="collapsed && (collapsedOpen$ | async)"
+     (mouseenter)="collapseOpenSidenav()"
+     (mouseleave)="collapseCloseSidenav()">
 
-    <div *ngIf="searchVisible$ | async" class="vex-sidenav-search__container">
-      <div class="vex-sidenav-search relative"
-           (click)="openSearch()"
-           matRipple
-           matRippleColor="var(--sidenav-item-ripple-color)">
-        <mat-icon class="flex-none vex-sidenav-search__icon" svgIcon="mat:search"></mat-icon>
-        <div class="flex-auto vex-sidenav-search__placeholder">Quick Search</div>
-        <div class="flex-none vex-sidenav-search__keybind">Ctrl K</div>
-      </div>
+  <!-- ── Workspace header ───────────────────────────── -->
+  <div class="asn-workspace">
+    <div class="asn-workspace__logo-wrap">
+      <img [src]="imageUrl$ | async" alt="Logo" class="asn-workspace__logo" />
     </div>
-
-    <div class="vex-sidenav-toolbar__divider"></div>
+    <span class="asn-workspace__name">{{ title$ | async }}</span>
+    <button *ngIf="showCollapsePin$ | async"
+            class="asn-collapse-btn"
+            (click)="toggleCollapse()"
+            mat-icon-button
+            type="button">
+      <mat-icon *ngIf="!collapsed" class="icon-xs" svgIcon="mat:radio_button_checked"></mat-icon>
+      <mat-icon *ngIf="collapsed"  class="icon-xs" svgIcon="mat:radio_button_unchecked"></mat-icon>
+    </button>
   </div>
 
-  <vex-scrollbar class="flex-1 flex flex-col">
-    <div class="pt-6 flex-1">
-      <vex-sidenav-item *ngFor="let item of items; trackBy: trackByRoute"
-                        [item]="item"
-                        [level]="0"></vex-sidenav-item>
+  <!-- ── Quick search ───────────────────────────────── -->
+  <div class="asn-search" (click)="openSearch()" matRipple matRippleColor="var(--sidenav-item-ripple-color)">
+    <mat-icon svgIcon="mat:search" class="asn-search__icon"></mat-icon>
+    <span class="asn-search__placeholder">Search…</span>
+    <kbd class="asn-search__kbd">⌘K</kbd>
+  </div>
+
+  <!-- ── Scrollable nav ─────────────────────────────── -->
+  <vex-scrollbar class="asn-scroll">
+
+    <!-- Primary nav -->
+    <nav class="asn-nav">
+      <a class="asn-item"
+         routerLink="/dashboard"
+         routerLinkActive="asn-item--active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+         [matTooltip]="collapsed ? 'Home' : ''" matTooltipPosition="right">
+        <mat-icon svgIcon="mat:home" class="asn-item__icon"></mat-icon>
+        <span class="asn-item__label">Home</span>
+      </a>
+
+      <a class="asn-item"
+         routerLink="/inbox"
+         routerLinkActive="asn-item--active"
+         matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+         [matTooltip]="collapsed ? 'Inbox' : ''" matTooltipPosition="right">
+        <mat-icon svgIcon="mat:inbox" class="asn-item__icon"></mat-icon>
+        <span class="asn-item__label">Inbox</span>
+        <span class="asn-item__badge">3</span>
+      </a>
+
+      <a class="asn-item"
+         routerLink="/my-tasks"
+         routerLinkActive="asn-item--active"
+         matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+         [matTooltip]="collapsed ? 'My Tasks' : ''" matTooltipPosition="right">
+        <mat-icon svgIcon="mat:check_circle_outline" class="asn-item__icon"></mat-icon>
+        <span class="asn-item__label">My Tasks</span>
+      </a>
+    </nav>
+
+    <!-- Divider -->
+    <div class="asn-divider"></div>
+
+    <!-- Work section -->
+    <div class="asn-section-group">
+      <a class="asn-item"
+         routerLink="/projects"
+         routerLinkActive="asn-item--active"
+         matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+         [matTooltip]="collapsed ? 'Projects' : ''" matTooltipPosition="right">
+        <mat-icon svgIcon="mat:folder_open" class="asn-item__icon"></mat-icon>
+        <span class="asn-item__label">Projects</span>
+      </a>
+
+      <a class="asn-item"
+         routerLink="/portfolios"
+         routerLinkActive="asn-item--active"
+         matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+         [matTooltip]="collapsed ? 'Portfolios' : ''" matTooltipPosition="right">
+        <mat-icon svgIcon="mat:assessment" class="asn-item__icon"></mat-icon>
+        <span class="asn-item__label">Portfolios</span>
+      </a>
     </div>
 
-    <div class="vex-sidenav-footer flex items-center justify-center opacity-20 px-6 py-6 select-none flex-none">
-      <img [src]="imageUrl$ | async" alt="Logo" class="w-8 select-none"/>
+    <!-- Divider -->
+    <div class="asn-divider"></div>
+
+    <!-- My Projects collapsible list -->
+    <div class="asn-section-group">
+      <div class="asn-section-header" (click)="projectsOpen = !projectsOpen">
+        <mat-icon class="asn-section-header__chevron"
+                  [class.open]="projectsOpen"
+                  svgIcon="mat:chevron_right"></mat-icon>
+        <span class="asn-section-header__label">My Projects</span>
+      </div>
+
+      <ng-container *ngIf="projectsOpen">
+        <a *ngFor="let project of projects$ | async"
+           class="asn-item asn-item--project"
+           [routerLink]="['/projects', project.id, 'list']"
+           routerLinkActive="asn-item--active"
+           matRipple matRippleColor="var(--sidenav-item-ripple-color)"
+           [matTooltip]="collapsed ? project.name : ''" matTooltipPosition="right">
+          <span class="asn-project-dot" [style.background]="project.color"></span>
+          <span class="asn-item__label">{{ project.name }}</span>
+        </a>
+      </ng-container>
     </div>
+
   </vex-scrollbar>
 
-  <div *ngIf="userVisible$ | async"
-       class="vex-sidenav-user__container flex-none">
-    <div #userProfileMenuOriginRef
+  <!-- ── Footer / User ─────────────────────────────── -->
+  <div class="asn-footer">
+    <div class="asn-footer__user"
+         #userProfileMenuOriginRef
          (click)="openProfileMenu(userProfileMenuOriginRef)"
-         [class.vex-sidenav-user--open]="userMenuOpen$ | async"
-         class="vex-sidenav-user flex items-center"
+         [class.asn-footer__user--open]="userMenuOpen$ | async"
          matRipple
          matRippleColor="var(--sidenav-item-ripple-color)">
-      <img alt="User Avatar" class="vex-sidenav-user__image flex-none" src="assets/img/avatars/1.jpg"/>
-      <div class="vex-sidenav-user__content flex-auto">
-        <div class="vex-sidenav-user__title">David Smith</div>
-        <div class="vex-sidenav-user__subtitle">Product Manager</div>
+      <img class="asn-footer__avatar" src="assets/img/demo/1.jpg" alt="User avatar" />
+      <div class="asn-footer__user-info">
+        <div class="asn-footer__user-name">David Smith</div>
+        <div class="asn-footer__user-role">Product Manager</div>
       </div>
-      <mat-icon class="vex-sidenav-user__dropdown-icon flex-none" svgIcon="mat:arrow_drop_down"></mat-icon>
+      <mat-icon class="asn-footer__dropdown-icon" svgIcon="mat:expand_more"></mat-icon>
     </div>
   </div>
+
 </div>

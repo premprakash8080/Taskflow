@@ -3,12 +3,12 @@ import { NavigationService } from '../../services/navigation.service';
 import { LayoutService } from '../../services/layout.service';
 import { ConfigService } from '../../config/config.service';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import { NavigationLink } from '../../interfaces/navigation-item.interface';
 import { PopoverService } from '../../components/popover/popover.service';
 import { Observable, of } from 'rxjs';
 import { UserMenuComponent } from '../../components/user-menu/user-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchModalComponent } from '../../components/search-modal/search-modal.component';
+import { ProjectsService } from 'src/app/layout/projects/service/projects.service';
 
 @Component({
   selector: 'vex-sidenav',
@@ -22,21 +22,22 @@ export class SidenavComponent implements OnInit {
   title$ = this.configService.config$.pipe(map(config => config.sidenav.title));
   imageUrl$ = this.configService.config$.pipe(map(config => config.sidenav.imageUrl));
   showCollapsePin$ = this.configService.config$.pipe(map(config => config.sidenav.showCollapsePin));
-  userVisible$ = this.configService.config$.pipe(map(config => config.sidenav.user.visible));
-  searchVisible$ = this.configService.config$.pipe(map(config => config.sidenav.search.visible));
 
   userMenuOpen$: Observable<boolean> = of(false);
 
-  items = this.navigationService.items;
+  projects$ = this.projectsService.projects$;
+  projectsOpen = true;
 
-  constructor(private navigationService: NavigationService,
-              private layoutService: LayoutService,
-              private configService: ConfigService,
-              private readonly popoverService: PopoverService,
-              private readonly dialog: MatDialog) { }
+  constructor(
+    private navigationService: NavigationService,
+    private layoutService: LayoutService,
+    private configService: ConfigService,
+    private readonly popoverService: PopoverService,
+    private readonly dialog: MatDialog,
+    private readonly projectsService: ProjectsService
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   collapseOpenSidenav() {
     this.layoutService.collapseOpenSidenav();
@@ -48,10 +49,6 @@ export class SidenavComponent implements OnInit {
 
   toggleCollapse() {
     this.collapsed ? this.layoutService.expandSidenav() : this.layoutService.collapseSidenav();
-  }
-
-  trackByRoute(index: number, item: NavigationLink): string {
-    return item.route;
   }
 
   openProfileMenu(origin: HTMLDivElement): void {
