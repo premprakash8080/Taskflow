@@ -1,0 +1,212 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--background-base);
+}
+
+.pm {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+// ── Page header ───────────────────────────────────────────────────────────────
+.pm__page-header {
+  margin-bottom: 24px;
+}
+
+.pm__page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 4px;
+}
+
+.pm__page-sub {
+  font-size: 13px;
+  color: var(--text-hint);
+  margin: 0;
+}
+
+// ── Composer ──────────────────────────────────────────────────────────────────
+.pm__composer {
+  display: flex;
+  gap: 12px;
+  background: var(--background-foreground);
+  border: 1px solid var(--foreground-divider);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 28px;
+}
+
+.pm__composer-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pm__composer-avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.pm__composer-input-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pm__composer-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-color);
+  font-family: inherit;
+  resize: none;
+  line-height: 1.5;
+
+  &::placeholder { color: var(--text-hint); }
+}
+
+.pm__composer-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pm__post-btn {
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0 16px;
+}
+
+// ── Feed ──────────────────────────────────────────────────────────────────────
+.pm__feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pm__message {
+  display: flex;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--foreground-divider);
+
+  &:last-child { border-bottom: none; }
+}
+
+.pm__msg-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pm__msg-avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.pm__msg-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pm__msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.pm__msg-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.pm__msg-project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.pm__msg-project-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pm__status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.pm__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pm__msg-time {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+.pm__msg-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.pm__feed-empty {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-hint);
+}

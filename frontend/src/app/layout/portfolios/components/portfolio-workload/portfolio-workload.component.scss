@@ -1,0 +1,257 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--background-base);
+  --pw-grid: 220px 100px 100px 80px 1fr; // default 2 projects; overridden by TS
+}
+
+.pw {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+// ── Page header ───────────────────────────────────────────────────────────────
+.pw__page-header {
+  margin-bottom: 28px;
+}
+
+.pw__page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 4px;
+}
+
+.pw__page-sub {
+  font-size: 13px;
+  color: var(--text-hint);
+  margin: 0;
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+.pw__table {
+  background: var(--background-foreground);
+  border: 1px solid var(--foreground-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pw__thead,
+.pw__row {
+  display: grid;
+  grid-template-columns: var(--pw-grid);
+  align-items: center;
+  padding: 0 20px;
+}
+
+.pw__thead {
+  min-height: 38px;
+  background: var(--background-base);
+  border-bottom: 1px solid var(--foreground-divider);
+}
+
+.pw__th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pw__th--proj {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pw__proj-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pw__proj-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pw__row {
+  min-height: 60px;
+  border-bottom: 1px solid var(--foreground-divider);
+  transition: background 0.1s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: var(--background-hover); }
+}
+
+.pw__td {
+  padding: 0 8px;
+}
+
+// Member cell
+.pw__td--member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pw__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pw__avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.pw__member-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pw__member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pw__member-done {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+// Per-project task count cell
+.pw__td--proj {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pw__task-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pw__task-empty {
+  font-size: 13px;
+  color: var(--text-hint);
+}
+
+// Total cell
+.pw__td--total {
+  text-align: center;
+}
+
+.pw__total-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+// Bar cell
+.pw__td--bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pw__bar-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--foreground-divider);
+  overflow: hidden;
+}
+
+.pw__bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.pw__bar-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 36px;
+  text-align: right;
+}
+
+// ── Legend ────────────────────────────────────────────────────────────────────
+.pw__legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 0 4px;
+}
+
+.pw__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-hint);
+}
+
+.pw__legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &--low  { background: #10b981; }
+  &--mid  { background: #f59e0b; }
+  &--high { background: #ef4444; }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.pw__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--text-hint);
+}
+
+.pw__empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
+  margin-bottom: 12px;
+}

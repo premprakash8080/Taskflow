@@ -1,0 +1,93 @@
+<div class="pw" *ngIf="portfolio">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="pw__page-header">
+    <div>
+      <h2 class="pw__page-title">Team workload</h2>
+      <p class="pw__page-sub">Task distribution across members in this portfolio's projects.</p>
+    </div>
+  </div>
+
+  <!-- ── Empty state ─────────────────────────────────────────────────────── -->
+  <div class="pw__empty" *ngIf="members.length === 0">
+    <mat-icon svgIcon="mat:people" class="pw__empty-icon"></mat-icon>
+    <p>No assigned tasks found across these projects.</p>
+  </div>
+
+  <!-- ── Workload table ───────────────────────────────────────────────────── -->
+  <div class="pw__table" *ngIf="members.length > 0">
+
+    <!-- Header row: member name + project columns -->
+    <div class="pw__thead">
+      <div class="pw__th pw__th--member">Member</div>
+      <div class="pw__th pw__th--proj" *ngFor="let project of projects">
+        <span class="pw__proj-dot" [style.background]="project.color"></span>
+        <span class="pw__proj-name">{{ project.name }}</span>
+      </div>
+      <div class="pw__th pw__th--total">Total</div>
+      <div class="pw__th pw__th--bar">Workload</div>
+    </div>
+
+    <!-- Member rows -->
+    <div class="pw__row" *ngFor="let member of members">
+
+      <!-- Member info -->
+      <div class="pw__td pw__td--member">
+        <div class="pw__avatar" [style.background]="avatarColor(member.assignee.id)">
+          <img [src]="member.assignee.imgUrl" [alt]="member.assignee.name"
+               class="pw__avatar-img"
+               (error)="$event.target['style'].display='none'" />
+          <span>{{ avatarInitials(member.assignee.name) }}</span>
+        </div>
+        <div class="pw__member-info">
+          <span class="pw__member-name">{{ member.assignee.name }}</span>
+          <span class="pw__member-done">{{ member.completedTasks }}/{{ member.totalTasks }} done</span>
+        </div>
+      </div>
+
+      <!-- Per-project counts -->
+      <div class="pw__td pw__td--proj" *ngFor="let breakdown of member.projectBreakdown">
+        <span class="pw__task-count" *ngIf="breakdown.taskCount > 0"
+              [style.background]="breakdown.project.color + '18'"
+              [style.color]="breakdown.project.color">
+          {{ breakdown.taskCount }}
+        </span>
+        <span class="pw__task-empty" *ngIf="breakdown.taskCount === 0">—</span>
+      </div>
+
+      <!-- Total -->
+      <div class="pw__td pw__td--total">
+        <strong class="pw__total-num">{{ member.totalTasks }}</strong>
+      </div>
+
+      <!-- Workload bar -->
+      <div class="pw__td pw__td--bar">
+        <div class="pw__bar-track">
+          <div class="pw__bar-fill"
+               [style.width.%]="workloadPct(member)"
+               [style.background]="workloadColor(member)"></div>
+        </div>
+        <span class="pw__bar-pct">{{ workloadPct(member) }}%</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── Legend ───────────────────────────────────────────────────────────── -->
+  <div class="pw__legend" *ngIf="members.length > 0">
+    <div class="pw__legend-item">
+      <span class="pw__legend-dot pw__legend-dot--low"></span>
+      <span>Low (&lt; 50%)</span>
+    </div>
+    <div class="pw__legend-item">
+      <span class="pw__legend-dot pw__legend-dot--mid"></span>
+      <span>Medium (50–80%)</span>
+    </div>
+    <div class="pw__legend-item">
+      <span class="pw__legend-dot pw__legend-dot--high"></span>
+      <span>High (&gt; 80%)</span>
+    </div>
+  </div>
+
+</div>

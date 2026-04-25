@@ -1,4 +1,4 @@
-import { Task, Project, Notification, BoardColumn, TaskAssignee } from '../app/core/models/task.model';
+import { Task, Project, Notification, BoardColumn, TaskAssignee, Portfolio } from '../app/core/models/task.model';
 
 const now = new Date();
 const daysAgo = (n: number) => new Date(now.getTime() - n * 86400000);
@@ -208,6 +208,29 @@ export const MOCK_BOARD_COLUMNS: BoardColumn[] = [
     tasks: [
       { ...MOCK_TASKS[8], sectionId: 'col_done' },
     ],
+  },
+];
+
+export const MOCK_PORTFOLIOS: Portfolio[] = [
+  {
+    id: 'pf1',
+    name: 'Product Launch',
+    color: '#6366f1',
+    description: 'Projects driving our Q3 product launch — design, engineering, and research.',
+    owner: MOCK_ASSIGNEES[0],
+    members: [MOCK_ASSIGNEES[0], MOCK_ASSIGNEES[1], MOCK_ASSIGNEES[2]],
+    projectIds: ['p1', 'p2'],
+    createdAt: daysAgo(30),
+  },
+  {
+    id: 'pf2',
+    name: 'Growth & Research',
+    color: '#10b981',
+    description: 'Marketing campaigns and user research initiatives for sustainable growth.',
+    owner: MOCK_ASSIGNEES[3],
+    members: [MOCK_ASSIGNEES[1], MOCK_ASSIGNEES[3], MOCK_ASSIGNEES[4]],
+    projectIds: ['p3', 'p4'],
+    createdAt: daysAgo(15),
   },
 ];
 

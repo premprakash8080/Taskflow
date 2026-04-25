@@ -145,33 +145,51 @@ export class AppComponent {
         children: [
           {
             type: 'link',
-            label: 'Website Redesign',
-            route: '/projects/proj-1/board',
+            label: 'Product Redesign',
+            route: '/projects/p1/overview',
             icon: 'mat:fiber_manual_record'
           },
           {
             type: 'link',
-            label: 'Mobile App',
-            route: '/projects/proj-2/board',
+            label: 'Tech Startup Board',
+            route: '/projects/p2/overview',
             icon: 'mat:fiber_manual_record'
           },
           {
             type: 'link',
-            label: 'Marketing Campaign',
-            route: '/projects/proj-3/board',
+            label: 'User Research',
+            route: '/projects/p3/overview',
             icon: 'mat:fiber_manual_record'
           },
           {
             type: 'link',
-            label: 'API Integration',
-            route: '/projects/proj-4/board',
+            label: 'Q3 Marketing Campaign',
+            route: '/projects/p4/overview',
+            icon: 'mat:fiber_manual_record'
+          }
+        ]
+      },
+      {
+        type: 'subheading',
+        label: 'My Portfolios',
+        children: [
+          {
+            type: 'link',
+            label: 'Product Launch',
+            route: '/portfolios/pf1/overview',
+            icon: 'mat:fiber_manual_record'
+          },
+          {
+            type: 'link',
+            label: 'Growth & Research',
+            route: '/portfolios/pf2/overview',
             icon: 'mat:fiber_manual_record'
           }
         ]
       },
       {
         type: 'link',
-        label: 'Portfolios',
+        label: 'All Portfolios',
         route: '/portfolios',
         icon: 'mat:assessment'
       }

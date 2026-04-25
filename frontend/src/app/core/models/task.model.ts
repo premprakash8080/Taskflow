@@ -82,3 +82,14 @@ export interface Notification {
   sender: TaskAssignee;
   createdAt: Date;
 }
+
+export interface Portfolio {
+  id: string;
+  name: string;
+  color: string;
+  description?: string;
+  owner: TaskAssignee;
+  members: TaskAssignee[];
+  projectIds: string[];
+  createdAt: Date;
+}

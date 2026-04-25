@@ -1,0 +1,140 @@
+<div class="po" *ngIf="portfolio">
+
+  <!-- ── Summary strip ─────────────────────────────────────────────────────── -->
+  <div class="po__summary">
+    <div class="po__summary-item">
+      <span class="po__summary-num">{{ projects.length }}</span>
+      <span class="po__summary-label">Projects</span>
+    </div>
+    <div class="po__summary-sep"></div>
+    <div class="po__summary-health">
+      <span class="po__health-dot" style="background:#10b981"></span>
+      <span class="po__summary-num po__summary-num--sm">{{ onTrackCount }}</span>
+      <span class="po__summary-label">On Track</span>
+    </div>
+    <div class="po__summary-health">
+      <span class="po__health-dot" style="background:#f59e0b"></span>
+      <span class="po__summary-num po__summary-num--sm">{{ atRiskCount }}</span>
+      <span class="po__summary-label">At Risk</span>
+    </div>
+    <div class="po__summary-health">
+      <span class="po__health-dot" style="background:#ef4444"></span>
+      <span class="po__summary-num po__summary-num--sm">{{ offTrackCount }}</span>
+      <span class="po__summary-label">Off Track</span>
+    </div>
+    <div class="po__summary-sep"></div>
+    <div class="po__summary-item">
+      <span class="po__summary-num po__summary-num--primary">{{ overallProgress }}%</span>
+      <span class="po__summary-label">Overall progress</span>
+    </div>
+  </div>
+
+  <!-- ── Table ──────────────────────────────────────────────────────────────── -->
+  <div class="po__body">
+
+    <!-- Header -->
+    <div class="po__table-head">
+      <div class="po__th po__th--name">Project</div>
+      <div class="po__th po__th--status">Status</div>
+      <div class="po__th po__th--owner">Owner</div>
+      <div class="po__th po__th--progress">Progress</div>
+      <div class="po__th po__th--tasks">Tasks</div>
+      <div class="po__th po__th--due">Due date</div>
+      <div class="po__th po__th--actions"></div>
+    </div>
+
+    <!-- Rows -->
+    <div class="po__row"
+         *ngFor="let project of projects"
+         [routerLink]="['/projects', project.id, 'overview']">
+
+      <!-- Project name -->
+      <div class="po__td po__td--name">
+        <span class="po__proj-dot" [style.background]="project.color"></span>
+        <span class="po__proj-name">{{ project.name }}</span>
+      </div>
+
+      <!-- Status badge -->
+      <div class="po__td po__td--status">
+        <span class="po__status-badge"
+              [style.color]="statusColor(project.status)"
+              [style.background]="statusColor(project.status) + '18'">
+          <span class="po__status-dot" [style.background]="statusColor(project.status)"></span>
+          {{ statusLabel(project.status) }}
+        </span>
+      </div>
+
+      <!-- Owner -->
+      <div class="po__td po__td--owner">
+        <ng-container *ngIf="project.members?.length">
+          <div class="po__owner-avatar"
+               [style.background]="avatarColor(project.members[0].id)">
+            <img [src]="project.members[0].imgUrl"
+                 [alt]="project.members[0].name"
+                 class="po__owner-avatar-img"
+                 (error)="$event.target['style'].display='none'" />
+            <span>{{ avatarInitials(project.members[0].name) }}</span>
+          </div>
+          <span class="po__owner-name">{{ project.members[0].name }}</span>
+        </ng-container>
+        <span class="po__owner-name" *ngIf="!project.members?.length">—</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="po__td po__td--progress">
+        <div class="po__progress-track">
+          <div class="po__progress-fill"
+               [style.width.%]="progressPct(project)"
+               [style.background]="project.color"></div>
+        </div>
+        <span class="po__progress-pct">{{ progressPct(project) }}%</span>
+      </div>
+
+      <!-- Tasks count -->
+      <div class="po__td po__td--tasks">
+        <span class="po__tasks-text">
+          {{ project.completedTaskCount }} / {{ project.taskCount }}
+        </span>
+      </div>
+
+      <!-- Due date -->
+      <div class="po__td po__td--due"
+           [class.po__td--overdue]="isOverdue(project.dueDate)">
+        <mat-icon svgIcon="mat:event" class="po__due-icon" *ngIf="project.dueDate"></mat-icon>
+        {{ project.dueDate ? (project.dueDate | date:'MMM d') : '—' }}
+      </div>
+
+      <!-- Actions -->
+      <div class="po__td po__td--actions">
+        <button mat-icon-button class="po__row-more"
+                (click)="$event.stopPropagation(); $event.preventDefault()">
+          <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Add project row -->
+    <div class="po__add-row">
+      <button mat-button class="po__add-btn">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        Add project
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Empty state -->
+  <div class="po__empty" *ngIf="projects.length === 0">
+    <div class="po__empty-icon-wrap">
+      <mat-icon svgIcon="mat:assessment"></mat-icon>
+    </div>
+    <h3 class="po__empty-title">No projects in this portfolio</h3>
+    <p class="po__empty-sub">Add projects to track their combined status and progress here.</p>
+    <button mat-flat-button color="primary" class="po__empty-btn">
+      <mat-icon svgIcon="mat:add"></mat-icon>
+      Add project
+    </button>
+  </div>
+
+</div>

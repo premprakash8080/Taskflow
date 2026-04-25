@@ -1,0 +1,62 @@
+<header class="pfh">
+
+  <!-- Breadcrumb -->
+  <div class="pfh__breadcrumb">
+    <a routerLink="/portfolios" class="pfh__breadcrumb-link">
+      <mat-icon svgIcon="mat:assessment" class="pfh__breadcrumb-icon"></mat-icon>
+      Portfolios
+    </a>
+    <mat-icon svgIcon="mat:chevron_right" class="pfh__breadcrumb-sep"></mat-icon>
+    <span class="pfh__breadcrumb-current">{{ portfolio.name }}</span>
+  </div>
+
+  <!-- Top row -->
+  <div class="pfh__top">
+    <div class="pfh__title-group">
+      <span class="pfh__color-dot" [style.background]="portfolio.color"></span>
+      <h1 class="pfh__title">{{ portfolio.name }}</h1>
+    </div>
+
+    <div class="pfh__actions">
+      <!-- Member avatars -->
+      <div class="pfh__avatar-stack">
+        <div class="pfh__avatar"
+             *ngFor="let m of (portfolio.members ?? []) | slice:0:4"
+             [style.background]="avatarColor(m.id)"
+             [matTooltip]="m.name">
+          <img [src]="m.imgUrl" [alt]="m.name"
+               class="pfh__avatar-img"
+               (error)="$event.target['style'].display='none'" />
+          <span>{{ avatarInitials(m.name) }}</span>
+        </div>
+        <span class="pfh__avatar pfh__avatar--more"
+              *ngIf="(portfolio.members?.length ?? 0) > 4">
+          +{{ portfolio.members.length - 4 }}
+        </span>
+      </div>
+
+      <button mat-stroked-button class="pfh__share-btn">
+        <mat-icon svgIcon="mat:person_add"></mat-icon>
+        Share
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="pfh__tabs">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="pfh__tab-bar">
+      <a mat-tab-link
+         *ngFor="let v of views"
+         [routerLink]="v.path"
+         routerLinkActive
+         #rla="routerLinkActive"
+         [active]="rla.isActive"
+         class="pfh__tab-link">
+        <mat-icon class="pfh__tab-icon" [svgIcon]="v.icon"></mat-icon>
+        {{ v.label }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+  </div>
+
+</header>

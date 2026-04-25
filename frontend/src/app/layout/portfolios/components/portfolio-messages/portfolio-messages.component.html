@@ -1,0 +1,76 @@
+<div class="pm" *ngIf="portfolio">
+
+  <!-- ── Page header ─────────────────────────────────────────────────────── -->
+  <div class="pm__page-header">
+    <h2 class="pm__page-title">Messages</h2>
+    <p class="pm__page-sub">Status updates from all projects in this portfolio.</p>
+  </div>
+
+  <!-- ── Compose ───────────────────────────────────────────────────────────── -->
+  <div class="pm__composer">
+    <div class="pm__composer-avatar" [style.background]="avatarColor('u1')">
+      <img src="assets/img/demo/1.jpg" alt="Me"
+           class="pm__composer-avatar-img"
+           (error)="$event.target['style'].display='none'" />
+      <span>DS</span>
+    </div>
+    <div class="pm__composer-input-wrap">
+      <textarea class="pm__composer-input"
+                rows="2"
+                placeholder="Post a portfolio-level update…"
+                [(ngModel)]="newBody">
+      </textarea>
+      <div class="pm__composer-footer">
+        <button mat-flat-button color="primary"
+                class="pm__post-btn"
+                [disabled]="!newBody.trim()"
+                (click)="postMessage()">
+          Post update
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Messages feed ─────────────────────────────────────────────────────── -->
+  <div class="pm__feed">
+
+    <div class="pm__message" *ngFor="let msg of messages">
+
+      <!-- Author avatar -->
+      <div class="pm__msg-avatar" [style.background]="avatarColor(msg.author.id)">
+        <img [src]="msg.author.imgUrl" [alt]="msg.author.name"
+             class="pm__msg-avatar-img"
+             (error)="$event.target['style'].display='none'" />
+        <span>{{ avatarInitials(msg.author.name) }}</span>
+      </div>
+
+      <!-- Content -->
+      <div class="pm__msg-content">
+        <div class="pm__msg-meta">
+          <span class="pm__msg-author">{{ msg.author.name }}</span>
+          <span class="pm__msg-project-tag"
+                [style.background]="msg.project.color + '18'"
+                [style.color]="msg.project.color">
+            <span class="pm__msg-project-dot" [style.background]="msg.project.color"></span>
+            {{ msg.project.name }}
+          </span>
+          <span class="pm__status-chip"
+                [style.color]="statusColor(msg.status)"
+                [style.background]="statusColor(msg.status) + '18'">
+            <span class="pm__status-dot" [style.background]="statusColor(msg.status)"></span>
+            {{ statusLabel(msg.status) }}
+          </span>
+          <span class="pm__msg-time">{{ timeAgo(msg.createdAt) }}</span>
+        </div>
+        <p class="pm__msg-body">{{ msg.body }}</p>
+      </div>
+
+    </div>
+
+    <div class="pm__feed-empty" *ngIf="messages.length === 0">
+      No messages yet. Post the first portfolio update above.
+    </div>
+
+  </div>
+
+</div>

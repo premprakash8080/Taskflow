@@ -1,0 +1,114 @@
+<div class="pfl">
+
+  <!-- ── Page header ─────────────────────────────────────────────────────── -->
+  <div class="pfl__header">
+    <div class="pfl__header-left">
+      <div class="pfl__header-icon-wrap">
+        <mat-icon svgIcon="mat:assessment" class="pfl__header-icon"></mat-icon>
+      </div>
+      <div>
+        <h1 class="pfl__page-title">My portfolios</h1>
+        <p class="pfl__page-sub">Track the status of multiple related projects in one place.</p>
+      </div>
+    </div>
+    <button mat-flat-button color="primary" class="pfl__new-btn">
+      <mat-icon svgIcon="mat:add"></mat-icon>
+      New portfolio
+    </button>
+  </div>
+
+  <!-- ── Portfolio cards grid ────────────────────────────────────────────── -->
+  <div class="pfl__grid">
+
+    <div class="pfl__card" *ngFor="let portfolio of portfolios$ | async"
+         (click)="openPortfolio(portfolio)">
+
+      <!-- Color accent bar -->
+      <div class="pfl__card-bar" [style.background]="portfolio.color"></div>
+
+      <!-- Card body -->
+      <div class="pfl__card-body">
+
+        <!-- Title row -->
+        <div class="pfl__card-title-row">
+          <span class="pfl__card-dot" [style.background]="portfolio.color"></span>
+          <h3 class="pfl__card-name">{{ portfolio.name }}</h3>
+        </div>
+
+        <p class="pfl__card-desc" *ngIf="portfolio.description">{{ portfolio.description }}</p>
+
+        <!-- Stats strip -->
+        <div class="pfl__card-stats">
+          <div class="pfl__stat">
+            <span class="pfl__stat-num">{{ projectsFor(portfolio).length }}</span>
+            <span class="pfl__stat-label">Projects</span>
+          </div>
+          <div class="pfl__stat">
+            <span class="pfl__stat-num pfl__stat-num--progress">{{ overallProgress(portfolio) }}%</span>
+            <span class="pfl__stat-label">Complete</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="pfl__card-progress-track">
+          <div class="pfl__card-progress-fill"
+               [style.width.%]="overallProgress(portfolio)"
+               [style.background]="portfolio.color"></div>
+        </div>
+
+        <!-- Health pills -->
+        <div class="pfl__card-health">
+          <span class="pfl__health-pill pfl__health-pill--on" *ngIf="onTrackCount(portfolio) > 0">
+            <span class="pfl__health-dot" style="background:#10b981"></span>
+            {{ onTrackCount(portfolio) }} on track
+          </span>
+          <span class="pfl__health-pill pfl__health-pill--risk" *ngIf="atRiskCount(portfolio) > 0">
+            <span class="pfl__health-dot" style="background:#f59e0b"></span>
+            {{ atRiskCount(portfolio) }} at risk
+          </span>
+          <span class="pfl__health-pill pfl__health-pill--off" *ngIf="offTrackCount(portfolio) > 0">
+            <span class="pfl__health-dot" style="background:#ef4444"></span>
+            {{ offTrackCount(portfolio) }} off track
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Card footer -->
+      <div class="pfl__card-footer">
+        <!-- Member avatars -->
+        <div class="pfl__card-members">
+          <div class="pfl__member-avatar"
+               *ngFor="let m of (portfolio.members | slice:0:4)"
+               [style.background]="avatarColor(m.id)"
+               [matTooltip]="m.name">
+            <img [src]="m.imgUrl" [alt]="m.name"
+                 class="pfl__member-avatar-img"
+                 (error)="$event.target['style'].display='none'" />
+            <span>{{ avatarInitials(m.name) }}</span>
+          </div>
+          <span class="pfl__member-more" *ngIf="(portfolio.members?.length ?? 0) > 4">
+            +{{ portfolio.members.length - 4 }}
+          </span>
+        </div>
+        <button mat-icon-button class="pfl__card-more" (click)="$event.stopPropagation()">
+          <mat-icon svgIcon="mat:more_horiz"></mat-icon>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Empty state card -->
+    <div class="pfl__empty" *ngIf="(portfolios$ | async)?.length === 0">
+      <mat-icon svgIcon="mat:assessment" class="pfl__empty-icon"></mat-icon>
+      <h3 class="pfl__empty-title">No portfolios yet</h3>
+      <p class="pfl__empty-sub">Create a portfolio to track multiple related projects in one view.</p>
+      <button mat-flat-button color="primary">
+        <mat-icon svgIcon="mat:add"></mat-icon>
+        New portfolio
+      </button>
+    </div>
+
+  </div>
+
+</div>
