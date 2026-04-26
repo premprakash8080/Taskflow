@@ -1,5 +1,4 @@
-import moment from 'moment';
-import imageCompression from 'browser-image-compression';
+// import moment from 'moment';
 import { Observable, from } from 'rxjs';
 import { ACCESS_TOKEN } from 'src/app/core/constants/global.constant';
 
@@ -8,12 +7,12 @@ export function IsEmptyObject(obj: any) {
   else return false;
 }
 
-export function GetDate(date?: any, format: string = 'YYYY-MM-DD HH:mm:ss'): string {
-  let jsonDate;
-  if (date) jsonDate = new Date(date);
-  else jsonDate = new Date();
-  return moment(jsonDate).format(format);
-}
+// export function GetDate(date?: any, format: string = 'YYYY-MM-DD HH:mm:ss'): string {
+//   let jsonDate;
+//   if (date) jsonDate = new Date(date);
+//   else jsonDate = new Date();
+//   return moment(jsonDate).format(format);
+// }
 
 export function IsNullOrEmpty(string: any) {
   return !string || string === '';
@@ -52,12 +51,12 @@ export function formatDate(input: any): string {
   return `${year}-${month}-${day}`;
 }
 
-export function GetDateOnly(date?: any, format: string = 'YYYY-MM-DD'): string {
-  let jsonDate;
-  if (date) jsonDate = new Date(date);
-  else jsonDate = new Date();
-  return moment(jsonDate).format(format);
-}
+// export function GetDateOnly(date?: any, format: string = 'YYYY-MM-DD'): string {
+//   let jsonDate;
+//   if (date) jsonDate = new Date(date);
+//   else jsonDate = new Date();
+//   return moment(jsonDate).format(format);
+// }
 
 export function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
   b64Data = b64Data.split('base64,')[1];
@@ -303,23 +302,6 @@ export function findUpcomingDate(dateInput: any): string {
 }
 
 
-export function compressImage(file: File, originalFileName: string, originalFileType: string, maxWidthHight: number = 250, maxSize: number = 1): Observable<any> {
-  const compressImagePromise = async (): Promise<File> => {
-    try {
-      const compressedBlob = await imageCompression(file, {
-        maxSizeMB: maxSize,
-        maxWidthOrHeight: maxWidthHight,
-        useWebWorker: true,
-      });
-      return new File([compressedBlob], originalFileName, { type: originalFileType });
-    } catch (error) {
-      console.error('Image compression error:', error);
-      throw new Error('Failed to compress image.');
-    }
-  };
-
-  return from(compressImagePromise());
-}
 
 
 export function getResumeTemplateMargin(isMultiPage) {

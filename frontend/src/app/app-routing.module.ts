@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CustomLayoutComponent } from './custom-layout/custom-layout.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -10,6 +11,7 @@ const routes: Routes = [
   {
     path: '',
     component: CustomLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: 'dashboard',  loadChildren: () => import('./layout/dashboard/dashboard.module').then(m => m.DashboardModule) },
       { path: 'inbox',      loadChildren: () => import('./layout/inbox/inbox.module').then(m => m.InboxModule) },
