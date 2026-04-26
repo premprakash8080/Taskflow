@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const database = require("../config/database");
+const {TABLE_NAME_WORKSPACEMEMBER} = require("../config/table_names");
 
-const WorkspaceMember = sequelize.define('WorkspaceMember', {
+const WorkspaceMember = database.define(TABLE_NAME_WORKSPACEMEMBER, {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -25,7 +26,7 @@ const WorkspaceMember = sequelize.define('WorkspaceMember', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'workspace_members',
+  tableName: TABLE_NAME_WORKSPACEMEMBER,
   timestamps: false,
 });
 

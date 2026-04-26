@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
+const database = require("../config/database");;
 
-const Notification = sequelize.define('Notification', {
+const Notification = database.define('Notification', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -30,7 +30,6 @@ const Notification = sequelize.define('Notification', {
 }, {
   tableName: 'notifications',
   timestamps: true,
-  updatedAt: false,
 });
 
 module.exports = Notification;
