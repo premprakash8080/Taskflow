@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { AuthenticationService } from '../../service/auth.service';
+import { UserSessionService } from 'src/app/shared/services/user-session.service';
 
 @Component({
   selector: 'vex-register',
@@ -13,14 +15,16 @@ import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation'
 })
 export class RegisterComponent implements OnInit {
 
-  form: UntypedFormGroup;
+  form!: UntypedFormGroup;
 
   inputType = 'password';
   visible = false;
 
   constructor(private router: Router,
               private fb: UntypedFormBuilder,
-              private cd: ChangeDetectorRef
+              private authenticationService: AuthenticationService,
+              private cd: ChangeDetectorRef,
+              private userSessionService: UserSessionService
   ) { }
 
   ngOnInit() {
@@ -33,7 +37,22 @@ export class RegisterComponent implements OnInit {
   }
 
   send() {
-    this.router.navigate(['/']);
+    if (this.form.invalid) {
+      return;
+    }
+    this.authenticationService.registerUser(
+        this.form.value.name,
+        this.form.value.email,
+        this.form.value.password,
+      ).subscribe((res: any) => {
+        if (res.token) {
+          this.userSessionService.accessToken = res.token;
+          this.userSessionService.userSession = res.user;
+          this.router.navigate(['/']);
+        }
+      });
+
+    
   }
 
   toggleVisibility() {

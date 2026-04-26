@@ -54,4 +54,19 @@ export class AuthenticationService {
     this.userSessionService.rememberMe = false;
   }
 
+    public registerUser(name: string, email: string, password: string) {
+    let param = {
+      name,
+      email,
+      password,
+    };
+
+    return this.httpService.post(ENDPOINTS.Register, param);
+  }
+
+   public verifyToken(token: any) {
+    let params = { token: token };
+    return this.httpService.post(ENDPOINTS.verifyToken, params);
+  }
+
 }

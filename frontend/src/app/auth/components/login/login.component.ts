@@ -3,6 +3,8 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { AuthenticationService } from '../../service/auth.service';
+import { UserSessionService } from 'src/app/shared/services/user-session.service';
 
 @Component({
   selector: 'vex-login',
@@ -15,7 +17,7 @@ import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation'
 })
 export class LoginComponent implements OnInit {
 
-  form: UntypedFormGroup;
+  form!: UntypedFormGroup;
 
   inputType = 'password';
   visible = false;
@@ -23,7 +25,9 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router,
               private fb: UntypedFormBuilder,
               private cd: ChangeDetectorRef,
-              private snackbar: MatSnackBar
+              private snackbar: MatSnackBar,
+              private authenticationService: AuthenticationService,
+              private userSessionService: UserSessionService
   ) {}
 
   ngOnInit() {
@@ -34,9 +38,22 @@ export class LoginComponent implements OnInit {
   }
 
   send() {
-    this.router.navigate(['/']);
-    this.snackbar.open('Lucky you! Looks like you didn\'t need a password or email address! For a real application we provide validators to prevent this. ;)', 'LOL THANKS', {
-      duration: 10000
+    if (this.form.invalid) {
+      return;
+    }
+    this.authenticationService.Login(
+      this.form.value.email,
+      this.form.value.password,
+      ''
+    ).subscribe((res: any) => {
+      if (res.token) {
+        this.userSessionService.accessToken = res.token;
+        this.userSessionService.userSession = res.user;
+        this.router.navigate(['/']);
+      } else {
+        this.snackbar.open(res.message || 'Login failed. Please try again.', 'OK', { duration: 4000 });
+        this.cd.markForCheck();
+      }
     });
   }
 
