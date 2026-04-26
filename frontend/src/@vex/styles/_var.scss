@@ -2,7 +2,7 @@
 @use 'sass:map';
 @import "@angular/material/theming";
 
-$sidenav-background: #1a202e !default;
+$sidenav-background: #2A2C2E !default;
 
 $config: mat.define-typography-config(
   $font-family: var(--font),
