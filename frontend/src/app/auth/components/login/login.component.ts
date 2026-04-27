@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
   if (res.token) {
     this.userSessionService.accessToken = res.token;
     this.userSessionService.userSession = res.user;
+    this.userSessionService.userWorkspace = res.workspace;
     this.router.navigate(['/']);
   } else {
     this.snackbar.open(res.message || 'Login failed.', 'OK', { duration: 4000 });

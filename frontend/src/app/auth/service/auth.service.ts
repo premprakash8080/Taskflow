@@ -68,8 +68,6 @@ export class AuthenticationService {
     return this.httpService.post(ENDPOINTS.verifyToken, params);
   }
 
-  public getTeamMembers() {
-  return this.httpService.get(ENDPOINTS.ListMembers);
-}
+
 
 }

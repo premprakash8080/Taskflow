@@ -19,21 +19,21 @@ export class ProjectsService {
   addTaskRequest$  = this.addTaskRequestSubject.asObservable();
 
   constructor(private httpService: HttpService) {  // ⬅️ Add
-    this.loadProjects();  // ⬅️ App start hote hi projects load karo
+    // this.loadProjects();  // ⬅️ App start hote hi projects load karo
   }
 
   // ⬅️ API se projects load karo
-  loadProjects(workspaceId?: number): void {
-    const params = workspaceId ? { workspace_id: workspaceId } : {};
-    this.httpService.get(ENDPOINTS.ListProjects, params).subscribe({
-      next: (res: any) => {
-        this.projectsSubject.next(res.projects);
-      },
-      error: (err: any) => {
-        console.error('Failed to load projects', err);
-      }
-    });
-  }
+  // loadProjects(workspaceId?: number): void {
+  //   const params = workspaceId ? { workspace_id: workspaceId } : {};
+  //   this.httpService.get(ENDPOINTS.ListProjects, params).subscribe({
+  //     next: (res: any) => {
+  //       this.projectsSubject.next(res.projects);
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Failed to load projects', err);
+  //     }
+  //   });
+  // }
 
   // ⬅️ API se project create karo
   createProject(data: any): Observable<any> {

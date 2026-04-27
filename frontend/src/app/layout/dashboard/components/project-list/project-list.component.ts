@@ -1,16 +1,29 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { Project } from 'src/app/core/models/task.model';
+import { DashboardService } from '../../service/dashboard.service';
+import { UserSessionService } from 'src/app/shared/services/user-session.service';
 
 @Component({
   selector: 'vex-project-list',
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss']
 })
-export class ProjectListComponent {
+export class ProjectListComponent implements OnInit {
   @Input() projects: Project[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private dashboardService: DashboardService,
+    private userSessionService: UserSessionService,
+  ) { }
+
+  ngOnInit(): void {
+    const session = this.userSessionService.userSession;
+
+
+    this.GetProjectsByWorkspace();
+  }
 
   goToProject(project: Project): void {
     this.router.navigate(['/projects', project.id, 'overview']);
@@ -34,4 +47,18 @@ export class ProjectListComponent {
     };
     return map[status] ?? '#94a3b8';
   }
+
+
+  GetProjectsByWorkspace(): void {
+    this.dashboardService.GetProjectsByWorkspace().subscribe({
+      next: (res: any) => {
+
+        console.log("res projects", res)
+      },
+      error: (err: any) => {
+        console.error('Failed to load team members', err);
+      }
+    });
+  }
+
 }

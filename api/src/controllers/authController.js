@@ -1,6 +1,45 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models/index');
+const Workspace = require("../models/workspaceModel");
+const WorkspaceMember = require("../models/workspaceMemberModel");
+const { Op } = require("sequelize");
+
+const generateSlug = (name) => {
+    return name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") + "-" + Date.now();
+};
+
+const createDefaultWorkspaceIfNotExists = async (user) => {
+    const existingMembership = await WorkspaceMember.findOne({
+        where: { user_id: user.id },
+    });
+
+    if (existingMembership) {
+        return await Workspace.findByPk(existingMembership.workspace_id);
+    }
+
+    const workspaceName = `${user.name}'s Workspace`;
+    const slug = generateSlug(workspaceName);
+
+    const workspace = await Workspace.create({
+        name: workspaceName,
+        slug: slug,
+        owner_id: user.id,
+    });
+
+    await WorkspaceMember.create({
+        workspace_id: workspace.id,
+        user_id: user.id,
+        role: "admin",
+    });
+
+    return workspace;
+};
+
+
 //Register 
 const register = async (req, res) => {
     try {
@@ -46,13 +85,10 @@ const login = async (req, res) => {
         const user = await User.findOne({
             where: { email }
         });
-        console.log('User found:', user);
         if (!user) {
-            console.log('User not found');
             return res.status(400).json({ message: 'Invalid email or password' });
         }
         const isMatch = await bcrypt.compare(password, user.password_hash);
-        console.log('Password match:', isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: ' Invalid email or password' })
         };
@@ -63,6 +99,8 @@ const login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
+
+        const workspace = await createDefaultWorkspaceIfNotExists(user);
         return res.status(200).json({
             message: 'Login successful.',
             token,
@@ -71,6 +109,7 @@ const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
             },
+            workspace:workspace,
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error.', error: error.message });

@@ -14,7 +14,7 @@ const {
 } = require('../controllers/projectController');
 
 // Project routes
-router.get('/', authMiddleware, listProjects);
+router.get('/getProjectsByWorkspace', authMiddleware, listProjects);
 router.post('/', authMiddleware, createProject);
 router.get('/:projectId', authMiddleware, getProject);
 router.put('/:projectId', authMiddleware, updateProject);

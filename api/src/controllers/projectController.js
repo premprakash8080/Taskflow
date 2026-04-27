@@ -4,29 +4,28 @@ const { Project, ProjectMember, User } = require('../models/index');
 // List Projects
 // ─────────────────────────────────────────
 const listProjects = async (req, res) => {
-  try {
-    const { workspace_id } = req.query; // ⬅️ Query param se lo
+    try {
+        const { workspace_id } = req.query;
 
-    const whereClause = {};
-    if (workspace_id) {
-      whereClause.workspace_id = workspace_id;
-    } else {
-      // Agar workspace_id nahi diya toh us user ke sab projects lao
-      whereClause.owner_id = req.user.id;
+        const whereClause = {};
+        if (workspace_id) {
+            whereClause.workspace_id = workspace_id;
+        } else {
+            whereClause.owner_id = req.user.id;
+        }
+
+        const projects = await Project.findAll({
+            where: whereClause,
+            include: [
+                { model: User, as: 'owner', attributes: ['id', 'name', 'avatar_url'] },
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        return res.status(200).json({ projects });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error.', error: error.message });
     }
-
-    const projects = await Project.findAll({
-      where: whereClause,
-      include: [
-        { model: User, as: 'owner', attributes: ['id', 'name', 'avatar_url'] },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
-
-    return res.status(200).json({ projects });
-  } catch (error) {
-    return res.status(500).json({ message: 'Server error.', error: error.message });
-  }
 };
 // ─────────────────────────────────────────
 // Create Project
@@ -34,7 +33,7 @@ const listProjects = async (req, res) => {
 const createProject = async (req, res) => {
     try {
         const { name, description, color, due_date, workspace_id } = req.body;
-    console.log('Create project body:', req.body); // ⬅️ Add
+        console.log('Create project body:', req.body); // ⬅️ Add
 
         if (!name || !workspace_id) {
             return res.status(400).json({ message: 'Name and workspace_id are required.' });
@@ -50,7 +49,7 @@ const createProject = async (req, res) => {
             owner_id: req.user.id,
             status: 'active',
         });
-    console.log('Project created:', project); // ⬅️ Add
+        console.log('Project created:', project); // ⬅️ Add
 
         // 2. Creator ko admin member banao
         await ProjectMember.create({
@@ -64,7 +63,7 @@ const createProject = async (req, res) => {
             project,
         });
     } catch (error) {
-            console.error('Create project error:', error.message); // ⬅️ Add
+        console.error('Create project error:', error.message); // ⬅️ Add
         return res.status(500).json({ message: 'Server error.', error: error.message });
     }
 };

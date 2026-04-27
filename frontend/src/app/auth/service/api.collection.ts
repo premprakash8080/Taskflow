@@ -14,8 +14,6 @@ export const ENDPOINTS = {
   // User/Profile
   GetProfile:     `${BASE}/api/users/profile`,
   UpdateProfile:  `${BASE}/api/users/profile`,
-  ListMembers:    `${BASE}/api/users`,
-  InviteMember:   `${BASE}/api/users/invite`,
   UpdateUserRole: (userId: number) => `${BASE}/api/users/${userId}/role`,
 
   // Notifications
