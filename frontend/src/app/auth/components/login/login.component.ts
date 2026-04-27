@@ -42,19 +42,18 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.authenticationService.Login(
-      this.form.value.email,
-      this.form.value.password,
-      ''
-    ).subscribe((res: any) => {
-      if (res.token) {
-        this.userSessionService.accessToken = res.token;
-        this.userSessionService.userSession = res.user;
-        this.router.navigate(['/']);
-      } else {
-        this.snackbar.open(res.message || 'Login failed. Please try again.', 'OK', { duration: 4000 });
-        this.cd.markForCheck();
-      }
-    });
+  this.form.value.email,
+  this.form.value.password,
+).subscribe((res: any) => {
+  if (res.token) {
+    this.userSessionService.accessToken = res.token;
+    this.userSessionService.userSession = res.user;
+    this.router.navigate(['/']);
+  } else {
+    this.snackbar.open(res.message || 'Login failed.', 'OK', { duration: 4000 });
+    this.cd.markForCheck();
+  }
+});
   }
 
   toggleVisibility() {

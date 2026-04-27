@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map, tap } from 'rxjs';
 import { Project, Task, BoardColumn } from 'src/app/core/models/task.model';
-import { MOCK_PROJECTS, MOCK_TASKS, MOCK_BOARD_COLUMNS } from 'src/static-data/taskflow-data';
+import { MOCK_BOARD_COLUMNS, MOCK_TASKS } from 'src/static-data/taskflow-data';
+import { HttpService } from 'src/app/shared/services/http.service';
+import { ENDPOINTS } from 'src/app/auth/service/api.collection';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {
-  private projectsSubject = new BehaviorSubject<Project[]>(MOCK_PROJECTS);
+  private projectsSubject = new BehaviorSubject<Project[]>([]);  // ⬅️ Empty — API se aayega
   private columnsSubject  = new BehaviorSubject<BoardColumn[]>(MOCK_BOARD_COLUMNS);
   private tasksSubject    = new BehaviorSubject<Task[]>(MOCK_TASKS);
-
-  // Shared selected-task state — child views write here; parent drawer reads it.
   private selectedTaskSubject = new BehaviorSubject<Task | null>(null);
-
-  // Signal from the header "Add task" button to whichever view is active.
   private addTaskRequestSubject = new Subject<void>();
 
   projects$        = this.projectsSubject.asObservable();
@@ -20,13 +18,60 @@ export class ProjectsService {
   selectedTask$    = this.selectedTaskSubject.asObservable();
   addTaskRequest$  = this.addTaskRequestSubject.asObservable();
 
-  /** Called by the project header "Add task" button. */
+  constructor(private httpService: HttpService) {  // ⬅️ Add
+    this.loadProjects();  // ⬅️ App start hote hi projects load karo
+  }
+
+  // ⬅️ API se projects load karo
+  loadProjects(workspaceId?: number): void {
+    const params = workspaceId ? { workspace_id: workspaceId } : {};
+    this.httpService.get(ENDPOINTS.ListProjects, params).subscribe({
+      next: (res: any) => {
+        this.projectsSubject.next(res.projects);
+      },
+      error: (err: any) => {
+        console.error('Failed to load projects', err);
+      }
+    });
+  }
+
+  // ⬅️ API se project create karo
+  createProject(data: any): Observable<any> {
+    return this.httpService.post(ENDPOINTS.CreateProject, data).pipe(
+      tap((res: any) => {
+        // Naya project list mein add karo
+        const current = this.projectsSubject.value;
+        this.projectsSubject.next([res.project, ...current]);
+      })
+    );
+  }
+
+  // ⬅️ API se project delete karo
+  deleteProject(projectId: number): Observable<any> {
+    return this.httpService.delete(ENDPOINTS.DeleteProject(projectId)).pipe(
+      tap(() => {
+        const current = this.projectsSubject.value.filter((p: any) => p.id !== projectId);
+        this.projectsSubject.next(current);
+      })
+    );
+  }
+
+  // ⬅️ API se project members lo
+  getProjectMembers(projectId: number): Observable<any> {
+    return this.httpService.get(ENDPOINTS.GetProjectMembers(projectId));
+  }
+
+  // ⬅️ API se project metrics lo
+  getProjectMetrics(projectId: number): Observable<any> {
+    return this.httpService.get(ENDPOINTS.GetProjectMetrics(projectId));
+  }
+
   requestAddTask(): void {
     this.addTaskRequestSubject.next();
   }
 
   getProject(id: string): Observable<Project | undefined> {
-    return this.projects$.pipe(map(ps => ps.find(p => p.id === id)));
+    return this.projects$.pipe(map(ps => ps.find((p: any) => p.id === +id)));
   }
 
   getTasksForProject(projectId: string): Observable<Task[]> {
@@ -39,16 +84,13 @@ export class ProjectsService {
     return this.columns$;
   }
 
-  /** Called by any child view when the user clicks a task row / card. */
   selectTask(task: Task | null): void {
     this.selectedTaskSubject.next(task);
   }
 
-  /** Update a task (e.g. after editing in the detail panel). */
   updateTask(updated: Task): void {
     const tasks = this.tasksSubject.value.map(t => t.id === updated.id ? updated : t);
     this.tasksSubject.next(tasks);
-    // Keep selected task in sync
     if (this.selectedTaskSubject.value?.id === updated.id) {
       this.selectedTaskSubject.next(updated);
     }
@@ -69,7 +111,6 @@ export class ProjectsService {
     const movedTask = { ...task, sectionId: currentColId };
     currCol.tasks.splice(currentIndex, 0, movedTask);
     this.columnsSubject.next(cols);
-    // Keep tasksSubject in sync so list/overview/timeline stay consistent
     this.tasksSubject.next(
       this.tasksSubject.value.map(t => t.id === movedTask.id ? movedTask : t)
     );
@@ -91,7 +132,6 @@ export class ProjectsService {
       updatedAt: now,
     };
     this.tasksSubject.next([...this.tasksSubject.value, newTask]);
-    // Keep columnsSubject in sync so board view sees new tasks immediately
     const cols = this.columnsSubject.value.map(c =>
       c.id === sectionId ? { ...c, tasks: [...c.tasks, newTask] } : c
     );

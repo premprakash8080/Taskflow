@@ -6,17 +6,28 @@ import { IsEmptyObject } from "src/app/core/utilities/common.function";
 })
 
 export class SessionService {
+    
     public setItem(key: string, value: any): void {
-        localStorage.setItem(key, JSON.stringify(value));
+        // ⬅️ String hai toh directly store karo
+        if (typeof value === 'string') {
+            localStorage.setItem(key, value);
+        } else {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
     }
 
     public getItem(key: string): any {
         try {
-            if (localStorage.getItem(key) != "null") {
-                const value = JSON.parse(localStorage.getItem(key) || '{}')
-                return IsEmptyObject(value) ? null : value;
+            const raw = localStorage.getItem(key);
+            if (raw === null || raw === 'null') return null;
+            try {
+                // ⬅️ JSON parse try karo
+                const parsed = JSON.parse(raw);
+                return IsEmptyObject(parsed) ? null : parsed;
+            } catch {
+                // ⬅️ Parse fail ho toh raw string return karo
+                return raw;
             }
-            return null;
         } catch {
             return null;
         }

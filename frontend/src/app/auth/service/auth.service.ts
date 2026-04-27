@@ -28,9 +28,8 @@ export class AuthenticationService {
 
  
 
-  public Login(email: string, password: string, type: string) {
+  public Login(email: string, password: string) {
     let param = {
-      type,
       email,
       password,
     };
@@ -68,5 +67,9 @@ export class AuthenticationService {
     let params = { token: token };
     return this.httpService.post(ENDPOINTS.verifyToken, params);
   }
+
+  public getTeamMembers() {
+  return this.httpService.get(ENDPOINTS.ListMembers);
+}
 
 }

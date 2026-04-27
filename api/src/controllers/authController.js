@@ -44,22 +44,26 @@ const register = async (req, res) => {
 
 
 const login = async (req, res) => {
+    console.log('Login req.body:', req.body); // ⬅️ Add karo
     try {
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.log('Validation failed');
             return res.status(400).json({ message: 'Email and Password are Required' });
         }
 
         const user = await User.findOne({
             where: { email }
         });
+        console.log('User found:', user);
         if (!user) {
+            console.log('User not found');
             return res.status(400).json({ message: 'Invalid email or password' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password_hash);
-
+        console.log('Password match:', isMatch);
         if (!isMatch) {
             return res.status(401).json({ message: ' Invalid email or password' })
         };

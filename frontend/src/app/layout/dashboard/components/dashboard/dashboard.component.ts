@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Task, Project } from 'src/app/core/models/task.model';
 import { DashboardService } from '../../service/dashboard.service';
 import { CreateTaskModalComponent } from '../create-task-modal/create-task-modal.component';
+import { UserSessionService } from 'src/app/shared/services/user-session.service';
+import { AuthenticationService } from 'src/app/auth/service/auth.service';
 
 type TaskTab = 'upcoming' | 'overdue' | 'completed';
 
@@ -26,28 +28,44 @@ export class DashboardComponent implements OnInit {
   activeTab: TaskTab = 'upcoming';
   greeting = this.getGreeting();
   today = new Date();
-
-  people: Person[] = [
-    { name: 'madhurikalaiwe',  role: 'Designer',     imgUrl: 'assets/img/avatars/1.jpg', initials: 'M', color: '#6366f1' },
-    { name: 'Shreya Parekh',   role: 'Developer',    imgUrl: 'assets/img/avatars/2.jpg', initials: 'S', color: '#10b981' },
-    { name: 'Azan Hazan Khan', role: 'PM',           imgUrl: 'assets/img/avatars/3.jpg', initials: 'A', color: '#f59e0b' },
-    { name: 'Shilpa Kancharu', role: 'QA',           imgUrl: 'assets/img/avatars/4.jpg', initials: 'S', color: '#ef4444' },
-    { name: 'Emmanuel Reality',role: 'Backend',      imgUrl: 'assets/img/avatars/5.jpg', initials: 'E', color: '#8b5cf6' },
-    { name: 'Saurabh P',       role: 'DevOps',       imgUrl: 'assets/img/avatars/1.jpg', initials: 'S', color: '#06b6d4' },
-    { name: 'Biswajit Datta',  role: 'Frontend',     imgUrl: 'assets/img/avatars/2.jpg', initials: 'B', color: '#f97316' },
-    { name: 'Kumar Aditya',    role: 'Designer',     imgUrl: 'assets/img/avatars/3.jpg', initials: 'K', color: '#84cc16' },
-    { name: 'Aman Shahid',     role: 'Analyst',      imgUrl: 'assets/img/avatars/4.jpg', initials: 'A', color: '#ec4899' },
-  ];
+  currentUserName: string= '';
+  people: Person[]= [];
 
   constructor(
     private dashboardService: DashboardService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private userSessionService: UserSessionService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.dashboardService.tasks$.subscribe(t => this.allTasks = t);
     this.dashboardService.projects$.subscribe(p => this.projects = p);
+
+    const session = this.userSessionService.userSession;
+    this.currentUserName = session?.name || 'User';
+
+    this.loadTeamMembers();
+  }
+
+  loadTeamMembers(): void {
+    this.authService.getTeamMembers().subscribe({
+      next: (res: any) => {
+        console.log('team member response:', res);
+        const colors = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#84cc16','#ec4899'];
+        this.people = res.members.map((member: any, index: number) => ({
+          name: member.name,
+          role: member.email,
+          initials: member.name.charAt(0).toUpperCase(),
+          color: colors[index % colors.length],
+          imgUrl: member.avatar_url || ''
+        }));
+      },
+      error: (err: any) => {
+        console.error('Failed to load team members', err);
+      }
+    });
   }
 
   get filteredTasks(): Task[] {

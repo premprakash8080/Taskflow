@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 import { AuthenticationService } from '../../service/auth.service';
 import { UserSessionService } from 'src/app/shared/services/user-session.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'vex-register',
@@ -21,10 +22,11 @@ export class RegisterComponent implements OnInit {
   visible = false;
 
   constructor(private router: Router,
-              private fb: UntypedFormBuilder,
-              private authenticationService: AuthenticationService,
-              private cd: ChangeDetectorRef,
-              private userSessionService: UserSessionService
+    private fb: UntypedFormBuilder,
+    private authenticationService: AuthenticationService,
+    private cd: ChangeDetectorRef,
+    private userSessionService: UserSessionService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -40,19 +42,29 @@ export class RegisterComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+
+    if (this.form.value.password !== this.form.value.passwordConfirm) {
+      this.snackbar.open('Passwords do not match!', 'OK', { duration: 4000 });
+      return;
+    }
     this.authenticationService.registerUser(
-        this.form.value.name,
-        this.form.value.email,
-        this.form.value.password,
-      ).subscribe((res: any) => {
+      this.form.value.name,
+      this.form.value.email,
+      this.form.value.password,
+    ).subscribe({
+      next: (res: any) => {
         if (res.token) {
           this.userSessionService.accessToken = res.token;
           this.userSessionService.userSession = res.user;
           this.router.navigate(['/']);
         }
-      });
-
-    
+      },
+      error: (err: any) => {
+        const message = err?.error?.message || 'Registration failed. Please try again.';
+        this.snackbar.open(message, 'OK', { duration: 4000 });
+        this.cd.markForCheck();
+      }
+    });
   }
 
   toggleVisibility() {

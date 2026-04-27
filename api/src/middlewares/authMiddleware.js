@@ -5,6 +5,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     // 1. Token lo request ke header se
     const authHeader = req.headers['authorization'];
+      console.log('Auth Header:', authHeader); // ⬅️ Add
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -12,9 +13,11 @@ const authMiddleware = async (req, res, next) => {
 
     // 2. "Bearer <token>" se sirf token nikalo
     const token = authHeader.split(' ')[1];
+    console.log('Token:', token); // ⬅️ Add
 
     // 3. Token verify karo
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+     console.log('Decoded:', decoded); // ⬅️ Add
 
     // 4. DB se user dhundo
     const user = await User.findByPk(decoded.id);
