@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject, map, tap } from 'rxjs';
 import { Project, Task, BoardColumn } from 'src/app/core/models/task.model';
 import { MOCK_BOARD_COLUMNS, MOCK_TASKS } from 'src/static-data/taskflow-data';
 import { HttpService } from 'src/app/shared/services/http.service';
-import { ENDPOINTS } from 'src/app/auth/service/api.collection';
+import { ENDPOINTS } from './api.collection';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectsService {
