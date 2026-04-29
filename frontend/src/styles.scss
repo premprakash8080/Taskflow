@@ -15,6 +15,13 @@
   in Chrome/Firefox DevTools
 */
 
+// ─── Create Project dialog panel ─────────────────────────────────────────────
+.create-project-dialog .mat-mdc-dialog-surface {
+  border-radius: 16px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+  overflow: hidden;
+}
+
 /**
   Uncomment the below code and adjust the values to fit your colors, the application will automatically adjust
  */

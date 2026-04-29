@@ -1,7 +1,54 @@
 .vex-user-menu {
   @apply bg-foreground shadow-lg border border-divider rounded py-2;
+  min-width: 220px;
 }
 
+// ─── User info header ─────────────────────────────────────────────────────────
+.vex-user-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px 12px;
+
+  &__avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__email {
+    font-size: 11px;
+    color: var(--text-hint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+}
+
+// ─── Menu items ───────────────────────────────────────────────────────────────
 .vex-user-menu-item {
   @apply relative flex items-center gap-4 px-2 mx-2 py-2 rounded hover:bg-primary/10 cursor-pointer transition duration-100 ease-out select-none h-10;
 
@@ -10,21 +57,25 @@
       @apply text-primary;
     }
   }
+
+  &--logout {
+    margin-top: 2px;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.08) !important;
+
+      .vex-user-menu-item__icon,
+      .vex-user-menu-item__label {
+        color: #ef4444;
+      }
+    }
+  }
 }
 
 .vex-user-menu-item__label {
   @apply flex-auto font-medium transition duration-100 ease-out;
 }
 
-.vex-user-menu-item__badge {
-  @apply px-2 py-1 rounded bg-primary/10 text-primary text-2xs font-semibold flex-none;
-}
-
 .vex-user-menu-item__icon {
   @apply flex-none transition duration-100 ease-out;
 }
-
-.vex-user-menu-item__dropdown-icon {
-
-}
-

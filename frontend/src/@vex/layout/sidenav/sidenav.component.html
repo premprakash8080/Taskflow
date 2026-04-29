@@ -121,10 +121,12 @@
          [class.asn-footer__user--open]="userMenuOpen$ | async"
          matRipple
          matRippleColor="var(--sidenav-item-ripple-color)">
-      <img class="asn-footer__avatar" src="assets/img/demo/1.jpg" alt="User avatar" />
+      <div class="asn-footer__avatar-initials" [style.background]="currentUser.color">
+        {{ currentUser.initials }}
+      </div>
       <div class="asn-footer__user-info">
-        <div class="asn-footer__user-name">David Smith</div>
-        <div class="asn-footer__user-role">Product Manager</div>
+        <div class="asn-footer__user-name">{{ currentUser.name }}</div>
+        <div class="asn-footer__user-role">{{ currentUser.email }}</div>
       </div>
       <mat-icon class="asn-footer__dropdown-icon" svgIcon="mat:expand_more"></mat-icon>
     </div>

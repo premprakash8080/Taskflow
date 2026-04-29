@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Task, Project } from 'src/app/core/models/task.model';
 import { DashboardService } from '../../service/dashboard.service';
 import { CreateTaskModalComponent } from '../create-task-modal/create-task-modal.component';
+import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { UserSessionService } from 'src/app/shared/services/user-session.service';
 import { AuthenticationService } from 'src/app/auth/service/auth.service';
 
@@ -132,6 +133,28 @@ export class DashboardComponent implements OnInit {
 
   openCreateTask(): void {
     this.dialog.open(CreateTaskModalComponent, { width: '560px' });
+  }
+
+  openCreateProject(): void {
+    const ref = this.dialog.open(CreateProjectModalComponent, {
+      width: '568px',
+      maxWidth: '100vw',
+      panelClass: 'create-project-dialog',
+    });
+    ref.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.dashboardService.createProject(result).subscribe({
+        next: (res: any) => {
+          const newProject = {
+            name: res.project?.name ?? result.name,
+            initials: (res.project?.name ?? result.name).charAt(0).toUpperCase(),
+            color: res.project?.color ?? result.color,
+          };
+          this.projects = [newProject as any, ...this.projects];
+        },
+        error: (err: any) => console.error('Failed to create project', err),
+      });
+    });
   }
 
   projectInitials(name: string): string {

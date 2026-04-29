@@ -9,6 +9,7 @@ import { UserMenuComponent } from '../../components/user-menu/user-menu.componen
 import { MatDialog } from '@angular/material/dialog';
 import { SearchModalComponent } from '../../components/search-modal/search-modal.component';
 import { ProjectsService } from 'src/app/layout/projects/service/projects.service';
+import { UserSessionService } from 'src/app/shared/services/user-session.service';
 
 @Component({
   selector: 'vex-sidenav',
@@ -28,16 +29,31 @@ export class SidenavComponent implements OnInit {
   projects$ = this.projectsService.projects$;
   projectsOpen = true;
 
+  currentUser = { name: 'User', email: '', initials: 'U', color: '#6366f1' };
+
+  private readonly avatarColors = [
+    '#6366f1', '#10b981', '#f59e0b', '#ef4444',
+    '#8b5cf6', '#06b6d4', '#f97316', '#ec4899',
+  ];
+
   constructor(
     private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,
     private readonly popoverService: PopoverService,
     private readonly dialog: MatDialog,
-    private readonly projectsService: ProjectsService
+    private readonly projectsService: ProjectsService,
+    private readonly userSessionService: UserSessionService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const session = this.userSessionService.userSession;
+    const name    = session?.name  || 'User';
+    const email   = session?.email || '';
+    const initials = name.trim().split(/\s+/).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
+    const colorIdx = name.split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0) % this.avatarColors.length;
+    this.currentUser = { name, email, initials, color: this.avatarColors[colorIdx] };
+  }
 
   collapseOpenSidenav() {
     this.layoutService.collapseOpenSidenav();

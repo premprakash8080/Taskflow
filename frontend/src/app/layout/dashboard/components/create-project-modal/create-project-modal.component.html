@@ -1,0 +1,82 @@
+<div mat-dialog-title class="modal-header">
+  <div class="modal-header__icon-wrap">
+    <mat-icon svgIcon="mat:folder_open"></mat-icon>
+  </div>
+  <h2 class="modal-header__title">Create Project</h2>
+</div>
+
+<mat-dialog-content [formGroup]="form" class="modal-content">
+
+  <!-- Live preview -->
+  <div class="project-preview">
+    <div class="project-preview__icon" [style.background]="selectedColor">
+      {{ nameInitials }}
+    </div>
+    <div class="project-preview__meta">
+      <span class="project-preview__name">
+        {{ form.get('name')?.value || 'Project name' }}
+      </span>
+      <span class="project-preview__sub">New project</span>
+    </div>
+  </div>
+
+  <!-- Project name -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Project name</mat-label>
+    <input matInput formControlName="name" placeholder="e.g. Website Redesign" autofocus>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">Project name is required</mat-error>
+  </mat-form-field>
+
+  <!-- Description -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" rows="3"
+              placeholder="What is this project about?"></textarea>
+  </mat-form-field>
+
+  <!-- Color picker -->
+  <div class="color-picker-section">
+    <span class="color-picker-section__label">Project color</span>
+    <div class="color-swatches">
+      <button
+        *ngFor="let c of colors"
+        type="button"
+        class="color-swatch"
+        [style.background]="c.value"
+        [class.color-swatch--active]="selectedColor === c.value"
+        [attr.aria-label]="c.label"
+        (click)="selectColor(c.value)"
+      >
+        <mat-icon *ngIf="selectedColor === c.value" svgIcon="mat:check"></mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Status + Due date -->
+  <div class="modal-row">
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let s of statuses" [value]="s.value">
+          {{ s.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex-1">
+      <mat-label>Due date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="modal-footer">
+  <button mat-button class="btn-cancel" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" class="btn-primary"
+          (click)="submit()" [disabled]="form.invalid">
+    Create Project
+  </button>
+</mat-dialog-actions>

@@ -68,4 +68,8 @@ export class DashboardService {
     return this.httpService.get(ENDPOINTS.GetProjectsByWorkspace);
   }
 
+  public createProject(payload: { name: string; description: string; color: string; status: string; dueDate: Date | null }) {
+    return this.httpService.post(ENDPOINTS.CreateProject, payload);
+  }
+
 }

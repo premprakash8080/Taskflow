@@ -9,6 +9,7 @@ import { TaskBoardComponent } from './components/task-board/task-board.component
 import { TaskItemComponent } from './components/task-item/task-item.component';
 import { ActivityPanelComponent } from './components/activity-panel/activity-panel.component';
 import { CreateTaskModalComponent } from './components/create-task-modal/create-task-modal.component';
+import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { CreateTaskModalComponent } from './components/create-task-modal/create-
     TaskItemComponent,
     ActivityPanelComponent,
     CreateTaskModalComponent,
+    CreateProjectModalComponent,
   ],
   imports: [
     CommonModule,

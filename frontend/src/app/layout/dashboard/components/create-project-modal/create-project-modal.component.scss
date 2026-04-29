@@ -1,0 +1,215 @@
+.w-full { width: 100%; }
+.flex-1 { flex: 1; }
+
+// ─── Dialog host overrides ─────────────────────────────────────────────────────
+// Push border-radius + shadow onto the Material dialog panel
+:host {
+  display: block;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 24px 0;
+  margin-bottom: 4px;
+
+  &__icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(var(--color-primary-rgb), 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: rgb(var(--color-primary-rgb));
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: -0.2px;
+  }
+}
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+mat-dialog-content.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 20px 24px 8px !important;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
+  // Fix input height + radius on all outline fields
+  ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 48px;
+    padding-top: 12px !important;
+    padding-bottom: 4px !important;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading,
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-radius: 8px !important;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading  { border-radius: 8px 0 0 8px !important; }
+  ::ng-deep .mdc-notched-outline__trailing { border-radius: 0 8px 8px 0 !important; }
+
+  // Textarea
+  textarea.mat-mdc-input-element {
+    min-height: 100px;
+    padding: 0;
+    resize: none;
+    line-height: 1.5;
+  }
+}
+
+// ─── Live preview strip ────────────────────────────────────────────────────────
+.project-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--background-base);
+  border: 1px solid var(--foreground-divider);
+  border-radius: 10px;
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+    letter-spacing: 0.5px;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    line-height: 1.2;
+  }
+
+  &__sub {
+    font-size: 11px;
+    color: var(--text-hint);
+  }
+}
+
+// ─── Color picker ─────────────────────────────────────────────────────────────
+.color-picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+}
+
+.color-swatches {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.color-swatch {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #fff;
+  }
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &--active {
+    border-color: var(--foreground-divider);
+    box-shadow: 0 0 0 2px var(--background-foreground), 0 0 0 4px currentColor;
+  }
+}
+
+// ─── Two-column row (status + due date) ──────────────────────────────────────
+.modal-row {
+  display: flex;
+  gap: 12px;
+
+  mat-form-field { flex: 1; }
+}
+
+// ─── Footer buttons ───────────────────────────────────────────────────────────
+mat-dialog-actions.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 24px 20px !important;
+  margin: 0;
+  min-height: unset;
+}
+
+.btn-cancel {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.btn-primary {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 8px !important;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

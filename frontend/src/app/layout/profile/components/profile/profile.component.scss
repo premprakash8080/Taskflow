@@ -1,0 +1,223 @@
+// ─── Page shell ───────────────────────────────────────────────────────────────
+.profile-page {
+  padding: 32px;
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 100%;
+}
+
+// ─── Page header ─────────────────────────────────────────────────────────────
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  &__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: -0.3px;
+  }
+}
+
+// ─── Theme toggle button ──────────────────────────────────────────────────────
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--foreground-divider);
+  border-radius: 8px;
+  background: var(--background-foreground);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background 0.15s ease, border-color 0.15s ease;
+  outline: none;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: var(--background-hover);
+    border-color: rgba(var(--color-primary-rgb), 0.4);
+    color: var(--text-color);
+  }
+}
+
+// ─── Loading skeleton ─────────────────────────────────────────────────────────
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+%shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--background-base) 25%,
+    var(--background-hover) 50%,
+    var(--background-base) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+.profile-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px;
+  background: var(--background-foreground);
+  border-radius: 12px;
+  border: 1px solid var(--foreground-divider);
+
+  &__avatar {
+    @extend %shimmer;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__line {
+    @extend %shimmer;
+    height: 14px;
+
+    &--wide { width: 60%; }
+    &--mid  { width: 40%; }
+  }
+}
+
+// ─── Profile card ─────────────────────────────────────────────────────────────
+.profile-card {
+  background: var(--background-foreground);
+  border-radius: 12px;
+  border: 1px solid var(--foreground-divider);
+  overflow: hidden;
+
+  // ── Hero section ─────────────────────────────────────
+  &__hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 28px 24px;
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  &__hero-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: -0.2px;
+  }
+
+  &__role {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  &__workspace {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-hint);
+    margin-top: 2px;
+  }
+
+  &__workspace-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  // ── Details section ──────────────────────────────────
+  &__details {
+    padding: 20px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.profile-divider {
+  height: 1px;
+  background: var(--foreground-divider);
+  margin: 0 28px;
+}
+
+// ─── Field rows ───────────────────────────────────────────────────────────────
+.profile-field {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--foreground-divider);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 180px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    opacity: 0.7;
+  }
+
+  &__value {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+}

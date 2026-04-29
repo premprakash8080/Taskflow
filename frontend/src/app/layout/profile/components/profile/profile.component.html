@@ -1,0 +1,84 @@
+<div class="profile-page">
+
+  <!-- Header -->
+  <div class="profile-header">
+    <h1 class="profile-header__title">My Profile</h1>
+    <button class="theme-toggle-btn"
+            (click)="toggleTheme()"
+            [attr.aria-label]="(isDark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'"
+            matRipple>
+      <mat-icon *ngIf="isDark$ | async" svgIcon="mat:light_mode"></mat-icon>
+      <mat-icon *ngIf="!(isDark$ | async)" svgIcon="mat:dark_mode"></mat-icon>
+      <span>{{ (isDark$ | async) ? 'Light mode' : 'Dark mode' }}</span>
+    </button>
+  </div>
+
+  <!-- Loading shimmer -->
+  <div *ngIf="loading" class="profile-skeleton">
+    <div class="profile-skeleton__avatar"></div>
+    <div class="profile-skeleton__lines">
+      <div class="profile-skeleton__line profile-skeleton__line--wide"></div>
+      <div class="profile-skeleton__line profile-skeleton__line--mid"></div>
+    </div>
+  </div>
+
+  <!-- Profile card -->
+  <div *ngIf="!loading" class="profile-card">
+
+    <!-- Avatar + name -->
+    <div class="profile-card__hero">
+      <div class="profile-card__avatar" [style.background]="avatarColor">
+        {{ initials }}
+      </div>
+      <div class="profile-card__hero-info">
+        <h2 class="profile-card__name">{{ name }}</h2>
+        <span *ngIf="role" class="profile-card__role">{{ role }}</span>
+        <span *ngIf="workspaceName" class="profile-card__workspace">
+          <mat-icon svgIcon="mat:business" class="profile-card__workspace-icon"></mat-icon>
+          {{ workspaceName }}
+        </span>
+      </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <!-- Details -->
+    <div class="profile-card__details">
+
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <mat-icon svgIcon="mat:person" class="profile-field__icon"></mat-icon>
+          Full Name
+        </span>
+        <span class="profile-field__value">{{ name }}</span>
+      </div>
+
+      <div class="profile-field">
+        <span class="profile-field__label">
+          <mat-icon svgIcon="mat:email" class="profile-field__icon"></mat-icon>
+          Email Address
+        </span>
+        <span class="profile-field__value">{{ email || '—' }}</span>
+      </div>
+
+      <div *ngIf="role" class="profile-field">
+        <span class="profile-field__label">
+          <mat-icon svgIcon="mat:badge" class="profile-field__icon"></mat-icon>
+          Role
+        </span>
+        <span class="profile-field__value">{{ role }}</span>
+      </div>
+
+      <div *ngIf="workspaceName" class="profile-field">
+        <span class="profile-field__label">
+          <mat-icon svgIcon="mat:business" class="profile-field__icon"></mat-icon>
+          Workspace
+        </span>
+        <span class="profile-field__value">{{ workspaceName }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
