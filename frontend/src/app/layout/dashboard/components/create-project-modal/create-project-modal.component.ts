@@ -19,7 +19,7 @@ const PROJECT_COLORS = [
   selector: 'vex-create-project-modal',
   templateUrl: './create-project-modal.component.html',
   styleUrls: ['./create-project-modal.component.scss']
-})
+})       
 export class CreateProjectModalComponent implements OnInit {
   form!: FormGroup;
   colors = PROJECT_COLORS;

@@ -4,7 +4,7 @@ const BASE = environment.apiBaseUrl;
 
 export const ENDPOINTS = {
 
-  ListProjects:         `${BASE}/api/projects`,
+  ListProjects:         `${BASE}/api/projects/getProjectsByWorkspace`,
   CreateProject:        `${BASE}/api/projects`,
   GetProject:           (projectId: number) => `${BASE}/api/projects/${projectId}`,
   UpdateProject:        (projectId: number) => `${BASE}/api/projects/${projectId}`,
@@ -13,4 +13,9 @@ export const ENDPOINTS = {
   AddProjectMember:     (projectId: number) => `${BASE}/api/projects/${projectId}/members`,
   RemoveProjectMember:  (projectId: number, userId: number) => `${BASE}/api/projects/${projectId}/members/${userId}`,
   GetProjectMetrics:    (projectId: number) => `${BASE}/api/projects/${projectId}/metrics`,
+
+  ListTasks:            `${BASE}/api/tasks`,
+  CreateTask:           `${BASE}/api/tasks`,
+  UpdateTask:           (taskId: string | number) => `${BASE}/api/tasks/${taskId}`,
+  DeleteTask:           (taskId: string | number) => `${BASE}/api/tasks/${taskId}`,
 };

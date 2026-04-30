@@ -188,10 +188,10 @@
       <div class="ov__widget">
         <div class="ov__widget-header">
           <span class="ov__widget-title">Team members</span>
-          <span class="ov__widget-count">{{ (project.members?.length ?? 0) }}</span>
+          <span class="ov__widget-count">{{ projectMembers.length }}</span>
         </div>
         <div class="ov__member-list">
-          <div class="ov__member-row" *ngFor="let m of (project.members ?? []); let i = index">
+          <div class="ov__member-row" *ngFor="let m of projectMembers; let i = index">
             <div class="ov__member-avatar" [style.background]="avatarColor(m.id)">
               <img [src]="m.imgUrl" [alt]="m.name"
                    class="ov__member-avatar-img"

@@ -5,14 +5,17 @@ const { User, WorkspaceMember, Workspace } = require('../models/index');
 
 const getProfile = async (req, res) => {
     try {
+        const user = {
+            id: req.user.id,
+            name: req.user.name,
+            email: req.user.email,
+            avatar_url: req.user.avatar_url,
+            is_active: req.user.is_active,
+        };
+
         return res.status(200).json({
-            User: {
-                id: req.user.id,
-                name: req.user.name,
-                email: req.user.email,
-                avatar_url: req.user.avatar_url,
-                is_active: req.user.is_active,
-            },
+            user,
+            User: user,
         })
     } catch (error) {
         return res.status(500).json({ message: 'Server error.', error: error.message });

@@ -52,8 +52,7 @@ export class ProjectListComponent implements OnInit {
   GetProjectsByWorkspace(): void {
     this.dashboardService.GetProjectsByWorkspace().subscribe({
       next: (res: any) => {
-
-        console.log("res projects", res)
+        this.projects = res.projects;
       },
       error: (err: any) => {
         console.error('Failed to load team members', err);

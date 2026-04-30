@@ -16,7 +16,7 @@ const Project = database.define('Project', {
     allowNull: true,
   },
   status: {
-    type: DataTypes.ENUM('active', 'on_track', 'at_risk', 'completed', 'archived'),
+    type: DataTypes.ENUM('active', 'on_track', 'at_risk', 'off_track', 'completed', 'archived'),
     defaultValue: 'active',
   },
   color: {

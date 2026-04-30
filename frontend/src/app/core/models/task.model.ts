@@ -50,16 +50,20 @@ export interface TaskSection {
 }
 
 export interface Project {
-  id: string;
+  id: any;
   name: string;
   color: string;
   status: ProjectStatus;
   description?: string;
   members: TaskAssignee[];
   dueDate?: Date;
+  due_date?: Date;
   taskCount: number;
   completedTaskCount: number;
   createdAt: Date;
+  owner_id?: number;
+  workspace_id?: number;
+  owner?: any;
 }
 
 export interface BoardColumn {

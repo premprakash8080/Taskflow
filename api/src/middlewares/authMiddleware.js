@@ -3,23 +3,20 @@ const { User } = require('../models/index');
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // 1. Token lo request ke header se
     const authHeader = req.headers['authorization'];
-      console.log('Auth Header:', authHeader); // ⬅️ Add
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
-    // 2. "Bearer <token>" se sirf token nikalo
     const token = authHeader.split(' ')[1];
-    console.log('Token:', token); // ⬅️ Add
+    const secret = process.env.JWT_SECRET || process.env.JWT_PRIVATE_KEY;
 
-    // 3. Token verify karo
-    const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-     console.log('Decoded:', decoded); // ⬅️ Add
+    if (!secret) {
+      return res.status(500).json({ message: 'JWT secret is not configured.' });
+    }
 
-    // 4. DB se user dhundo
+    const decoded = jwt.verify(token, secret);
     const user = await User.findByPk(decoded.id);
 
     if (!user) {
@@ -30,7 +27,6 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'Account is deactivated.' });
     }
 
-    // 5. User ko request mein daalo aur aage bhejo
     req.user = user;
     next();
 

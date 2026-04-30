@@ -5,5 +5,7 @@ export const ENDPOINTS = {
   InviteMember: `${BASE}/api/users/invite`,
 
   GetProjectsByWorkspace: `${BASE}/api/projects/getProjectsByWorkspace`,
-  CreateProject: `${BASE}/api/projects/create`,
+  CreateProject: `${BASE}/api/projects`,
+  ListTasks: `${BASE}/api/tasks`,
+  CreateTask: `${BASE}/api/tasks`,
 };

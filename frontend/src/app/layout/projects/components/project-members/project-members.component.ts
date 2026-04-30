@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, switchMap, combineLatest } from 'rxjs';
-import { Project, Task, TaskAssignee } from 'src/app/core/models/task.model';
+import { Subscription, switchMap } from 'rxjs';
+import { Project, Task } from 'src/app/core/models/task.model';
 import { ProjectsService } from '../../service/projects.service';
 
 export interface MemberRow {
-  assignee: TaskAssignee;
+  assignee: any;
   role: 'Owner' | 'Member';
   taskCount: number;
   completedCount: number;
@@ -20,11 +20,12 @@ const ROLE_COLORS: Record<string, string> = {
   selector: 'vex-project-members',
   templateUrl: './project-members.component.html',
   styleUrls: ['./project-members.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMembersComponent implements OnInit, OnDestroy {
 
   project: Project | undefined;
+  projectId = '';
   members: MemberRow[] = [];
   inviteEmail = '';
   showInvite = false;
@@ -40,14 +41,25 @@ export class ProjectMembersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subs.add(
       this.route.parent!.params.pipe(
-        switchMap(params => combineLatest([
-          this.projectsService.getProject(params['projectId']),
-          this.projectsService.getTasksForProject(params['projectId']),
-        ]))
-      ).subscribe(([project, tasks]) => {
-        this.project = project;
-        this.buildMembers(project, tasks);
-        this.cd.markForCheck();
+        switchMap(params => {
+          const projectId = +params['projectId'];
+          this.projectId = String(projectId);
+          return this.projectsService.getProjectMembers(projectId);
+        })
+      ).subscribe((res: any) => {
+        this.members = res.members.map((m: any) => ({
+          assignee: {
+            id: String(m.User.id),
+            name: m.User.name,
+            imgUrl: m.User.avatar_url || '',
+          },
+          role: m.role === 'admin' ? 'Owner' : 'Member',
+          taskCount: 0,
+          completedCount: 0,
+        }));
+        this.members = [...this.members];
+
+        this.cd.detectChanges();
       })
     );
   }
@@ -56,19 +68,14 @@ export class ProjectMembersComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  private buildMembers(project?: Project, tasks: Task[] = []): void {
-    if (!project) return;
-    this.members = project.members.map((assignee, idx) => ({
-      assignee,
-      role: idx === 0 ? 'Owner' : 'Member',
-      taskCount: tasks.filter(t => t.assignee?.id === assignee.id).length,
-      completedCount: tasks.filter(t => t.assignee?.id === assignee.id && t.completed).length,
-    }));
-  }
-
   removeMember(member: MemberRow): void {
     if (member.role === 'Owner') return;
-    this.projectsService.removeProjectMember(this.project!.id, member.assignee.id);
+    this.projectsService.deleteProjectMember(this.projectId, member.assignee.id).subscribe({
+      next: () => {
+        this.members = this.members.filter(m => m.assignee.id !== member.assignee.id);
+      },
+      error: (err: any) => console.error('Failed to remove member', err),
+    });
   }
 
   toggleInvite(): void {
@@ -77,7 +84,33 @@ export class ProjectMembersComponent implements OnInit, OnDestroy {
   }
 
   sendInvite(): void {
-    // UI-only: in a real app would call an API
+    const email = this.inviteEmail.trim();
+    if (!email || !this.projectId) return;
+
+    this.projectsService.addProjectMember(this.projectId, email).subscribe({
+      next: (res: any) => {
+        const member = res.member;
+        this.members = [
+          ...this.members,
+          {
+            assignee: {
+              id: String(member.User.id),
+              name: member.User.name,
+              imgUrl: member.User.avatar_url || '',
+            },
+            role: member.role === 'admin' ? 'Owner' : 'Member',
+            taskCount: 0,
+            completedCount: 0,
+          },
+        ];
+        this.inviteEmail = '';
+        this.showInvite = false;
+      },
+      error: (err: any) => console.error('Failed to invite member', err),
+    });
+  }
+
+  clearInvite(): void {
     this.inviteEmail = '';
     this.showInvite = false;
   }
@@ -87,7 +120,7 @@ export class ProjectMembersComponent implements OnInit, OnDestroy {
   }
 
   avatarInitials(name: string): string {
-    return name.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+    return name.split(' ').map((p: string) => p[0]).slice(0, 2).join('').toUpperCase();
   }
 
   avatarColor(id: string): string {

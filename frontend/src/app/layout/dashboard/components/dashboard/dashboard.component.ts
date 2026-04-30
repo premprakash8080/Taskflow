@@ -42,19 +42,19 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashboardService.tasks$.subscribe(t => this.allTasks = t);
-    // this.dashboardService.projects$.subscribe(p => this.projects = p);
+    this.dashboardService.projects$.subscribe(p => this.projects = p);
 
     const session = this.userSessionService.userSession;
     this.currentUserName = session?.name || 'User';
 
     this.loadTeamMembers();
     this.GetProjectsByWorkspace();
+    this.dashboardService.loadTasks();
   }
 
   loadTeamMembers(): void {
     this.dashboardService.getTeamMembers().subscribe({
       next: (res: any) => {
-        console.log('team member response:', res);
         const colors = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#84cc16','#ec4899'];
         this.people = res.members.map((member: any, index: number) => ({
           name: member.name,
@@ -74,12 +74,15 @@ export class DashboardComponent implements OnInit {
   GetProjectsByWorkspace(): void {
     this.dashboardService.GetProjectsByWorkspace().subscribe({
       next: (res: any) => {
-
-        console.log("res projects", res)
         this.projects = res.projects.map((project: any, index: number) => ({
+          id: project.id,
           name: project.name,
           initials: project.name.charAt(0).toUpperCase(),
           color: project.color,
+          status: project.status,
+          dueDate: project.due_date ? new Date(project.due_date) : undefined,
+          taskCount: project.taskCount || 0,
+          completedTaskCount: project.completedTaskCount || 0,
         }));
       },
       error: (err: any) => {
@@ -132,7 +135,13 @@ export class DashboardComponent implements OnInit {
   }
 
   openCreateTask(): void {
-    this.dialog.open(CreateTaskModalComponent, { width: '560px' });
+    const ref = this.dialog.open(CreateTaskModalComponent, { width: '560px' });
+    ref.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.dashboardService.createTask(result).subscribe({
+        error: (err: any) => console.error('Failed to create task', err),
+      });
+    });
   }
 
   openCreateProject(): void {

@@ -28,6 +28,7 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
   newUpdateBody = '';
   editingBrief = false;
   briefDraft = '';
+  projectMembers: any[] = [];
 
   private subs = new Subscription();
 
@@ -38,24 +39,38 @@ export class ProjectOverviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subs.add(
-      this.route.parent!.params.pipe(
-        switchMap(params => combineLatest([
-          this.projectsService.getProject(params['projectId']),
-          this.projectsService.getTasksForProject(params['projectId']),
-        ]))
-      ).subscribe(([project, tasks]) => {
-        const projectChanged = !this.project || this.project.id !== project?.id;
-        this.project = project;
-        this.tasks = tasks;
-        if (projectChanged) {
-          this.briefDraft = project?.description ?? '';
-          this.loadMockUpdates(project);
-        }
-        this.cd.markForCheck();
+  this.subs.add(
+    this.route.parent!.params.pipe(
+      switchMap(params => {
+        const projectId = params['projectId'];
+
+        // ⬅️ Members load karo
+        this.projectsService.getProjectMembers(+projectId).subscribe((res: any) => {
+          this.projectMembers = res.members.map((m: any) => ({
+            id: String(m.User.id),
+            name: m.User.name,
+            imgUrl: m.User.avatar_url || '',
+          }));
+          this.cd.markForCheck();
+        });
+
+        return combineLatest([
+          this.projectsService.getProject(projectId),
+          this.projectsService.getTasksForProject(projectId),
+        ]);
       })
-    );
-  }
+    ).subscribe(([project, tasks]) => {
+      const projectChanged = !this.project || this.project.id !== project?.id;
+      this.project = project;
+      this.tasks = tasks;
+      if (projectChanged) {
+        this.briefDraft = project?.description ?? '';
+        this.loadMockUpdates(project);
+      }
+      this.cd.markForCheck();
+    })
+  );
+}
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();

@@ -38,8 +38,9 @@ export class UserSessionService {
     set userSession(userSession: any) {
         this.sessionService.setItem(USER_SESSION, userSession);
     }
-    set userWorkspace(userSession: any) {
-        this.sessionService.setItem(USER_SESSION, userSession);
+    set userWorkspace(workspace: any) {
+        const currentSession = this.userSession || {};
+        this.sessionService.setItem(USER_SESSION, { ...currentSession, workspace });
     }
 
     get userSession(): any {

@@ -12,6 +12,8 @@ const generateSlug = (name) => {
         .replace(/(^-|-$)/g, "") + "-" + Date.now();
 };
 
+const jwtSecret = () => process.env.JWT_SECRET || process.env.JWT_PRIVATE_KEY;
+
 const createDefaultWorkspaceIfNotExists = async (user) => {
     const existingMembership = await WorkspaceMember.findOne({
         where: { user_id: user.id },
@@ -53,11 +55,12 @@ const register = async (req, res) => {
         }
         const password_hash = await bcrypt.hash(password, 10);
         const user = await User.create({ name, email, password_hash });
+        const workspace = await createDefaultWorkspaceIfNotExists(user);
         const token = jwt.sign(
             {
                 id: user.id, email: user.email
             },
-            process.env.JWT_SECRET,
+            jwtSecret(),
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
         return res.status(201).json({
@@ -68,6 +71,7 @@ const register = async (req, res) => {
                 name: user.name,
                 email: user.email,
             },
+            workspace,
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
@@ -75,11 +79,9 @@ const register = async (req, res) => {
 };
 // Login
 const login = async (req, res) => {
-    console.log('Login req.body:', req.body); // ⬅️ Add karo
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            console.log('Validation failed');
             return res.status(400).json({ message: 'Email and Password are Required' });
         }
         const user = await User.findOne({
@@ -96,7 +98,7 @@ const login = async (req, res) => {
             {
                 id: user.id, email: user.email
             },
-            process.env.JWT_SECRET,
+            jwtSecret(),
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
 
@@ -139,4 +141,40 @@ const getCurrentUser = async (req, res) => {
         return res.status(500).json({ message: 'Server error.', error: error.message });
     }
 };
-module.exports = { register, login, logout, getCurrentUser };
+
+const verifyToken = async (req, res) => {
+    try {
+        const token = req.body?.token || req.headers.authorization?.split(' ')[1];
+        const secret = jwtSecret();
+
+        if (!token) {
+            return res.status(400).json({ valid: false, message: 'Token is required.' });
+        }
+
+        if (!secret) {
+            return res.status(500).json({ valid: false, message: 'JWT secret is not configured.' });
+        }
+
+        const decoded = jwt.verify(token, secret);
+        const user = await User.findByPk(decoded.id);
+
+        if (!user || !user.is_active) {
+            return res.status(401).json({ valid: false, message: 'Invalid token.' });
+        }
+
+        return res.status(200).json({
+            valid: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar_url: user.avatar_url,
+                is_active: user.is_active,
+            },
+        });
+    } catch (error) {
+        return res.status(401).json({ valid: false, message: 'Invalid or expired token.' });
+    }
+};
+
+module.exports = { register, login, logout, getCurrentUser, verifyToken };

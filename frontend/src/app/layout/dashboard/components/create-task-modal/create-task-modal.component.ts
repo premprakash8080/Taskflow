@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { TaskAssignee } from 'src/app/core/models/task.model';
-import { MOCK_ASSIGNEES, MOCK_PROJECTS } from 'src/static-data/taskflow-data';
+import { Project, TaskAssignee } from 'src/app/core/models/task.model';
+import { DashboardService } from '../../service/dashboard.service';
 
 @Component({
   selector: 'vex-create-task-modal',
@@ -11,13 +11,14 @@ import { MOCK_ASSIGNEES, MOCK_PROJECTS } from 'src/static-data/taskflow-data';
 })
 export class CreateTaskModalComponent implements OnInit {
   form!: FormGroup;
-  assignees: TaskAssignee[] = MOCK_ASSIGNEES;
-  projects = MOCK_PROJECTS;
+  assignees: TaskAssignee[] = [];
+  projects: Project[] = [];
   priorities = ['none', 'low', 'medium', 'high'];
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<CreateTaskModalComponent>
+    private dialogRef: MatDialogRef<CreateTaskModalComponent>,
+    private dashboardService: DashboardService,
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +29,31 @@ export class CreateTaskModalComponent implements OnInit {
       dueDate:     [null],
       assigneeId:  [null],
       projectId:   [null],
+    });
+
+    this.dashboardService.getTeamMembers().subscribe({
+      next: (res: any) => {
+        this.assignees = res.members.map((member: any) => ({
+          id: String(member.id),
+          name: member.name,
+          imgUrl: member.avatar_url || '',
+        }));
+      },
+      error: (err: any) => console.error('Failed to load assignees', err),
+    });
+
+    this.dashboardService.GetProjectsByWorkspace().subscribe({
+      next: (res: any) => {
+        this.projects = res.projects.map((project: any) => ({
+          ...project,
+          dueDate: project.due_date ? new Date(project.due_date) : undefined,
+          members: project.members || [],
+          taskCount: project.taskCount || 0,
+          completedTaskCount: project.completedTaskCount || 0,
+          createdAt: project.createdAt ? new Date(project.createdAt) : new Date(),
+        }));
+      },
+      error: (err: any) => console.error('Failed to load projects', err),
     });
   }
 

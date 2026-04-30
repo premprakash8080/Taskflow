@@ -4,6 +4,7 @@ const WorkspaceMember = require('./workspaceMemberModel');
 const Notification = require('./notificationModel');
 const ProjectMember = require('./projectMemberModel');
 const Project = require('./projectModel');
+const Task = require('./taskModel');
 
 // User aur Workspace → Many to Many (WorkspaceMember ke through)
 User.belongsToMany(Workspace, {
@@ -54,5 +55,10 @@ Project.belongsToMany(User, {
 ProjectMember.belongsTo(User, { foreignKey: 'user_id' });
 ProjectMember.belongsTo(Project, { foreignKey: 'project_id' });
 
+Project.hasMany(Task, { foreignKey: 'project_id' });
+Task.belongsTo(Project, { foreignKey: 'project_id' });
 
-module.exports = { User, Workspace, WorkspaceMember, Notification, Project, ProjectMember };
+User.hasMany(Task, { foreignKey: 'assignee_id', as: 'assignedTasks' });
+Task.belongsTo(User, { foreignKey: 'assignee_id', as: 'assignee' });
+
+module.exports = { User, Workspace, WorkspaceMember, Notification, Project, ProjectMember, Task };

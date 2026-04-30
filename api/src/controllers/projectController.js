@@ -1,4 +1,5 @@
-const { Project, ProjectMember, User } = require('../models/index');
+const { Op } = require('sequelize');
+const { Project, ProjectMember, User, Task } = require('../models/index');
 
 // ─────────────────────────────────────────
 // List Projects
@@ -32,8 +33,7 @@ const listProjects = async (req, res) => {
 // ─────────────────────────────────────────
 const createProject = async (req, res) => {
     try {
-        const { name, description, color, due_date, workspace_id } = req.body;
-        console.log('Create project body:', req.body); // ⬅️ Add
+        const { name, description, color, due_date, workspace_id, status } = req.body;
 
         if (!name || !workspace_id) {
             return res.status(400).json({ message: 'Name and workspace_id are required.' });
@@ -47,11 +47,8 @@ const createProject = async (req, res) => {
             due_date,
             workspace_id,
             owner_id: req.user.id,
-            status: 'active',
+            status: status || 'on_track',
         });
-        console.log('Project created:', project); // ⬅️ Add
-
-        // 2. Creator ko admin member banao
         await ProjectMember.create({
             project_id: project.id,
             user_id: req.user.id,
@@ -63,7 +60,6 @@ const createProject = async (req, res) => {
             project,
         });
     } catch (error) {
-        console.error('Create project error:', error.message); // ⬅️ Add
         return res.status(500).json({ message: 'Server error.', error: error.message });
     }
 };
@@ -182,15 +178,24 @@ const getProjectMembers = async (req, res) => {
 const addProjectMember = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { user_id, role } = req.body;
+        const { user_id, email, role } = req.body;
+        let memberUserId = user_id;
 
-        if (!user_id) {
-            return res.status(400).json({ message: 'user_id is required.' });
+        if (!memberUserId && email) {
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found for this email.' });
+            }
+            memberUserId = user.id;
+        }
+
+        if (!memberUserId) {
+            return res.status(400).json({ message: 'user_id or email is required.' });
         }
 
         // Already member hai?
         const existing = await ProjectMember.findOne({
-            where: { project_id: projectId, user_id },
+            where: { project_id: projectId, user_id: memberUserId },
         });
 
         if (existing) {
@@ -199,13 +204,19 @@ const addProjectMember = async (req, res) => {
 
         const member = await ProjectMember.create({
             project_id: projectId,
-            user_id,
+            user_id: memberUserId,
             role: role || 'member',
+        });
+
+        const created = await ProjectMember.findByPk(member.id, {
+            include: [
+                { model: User, attributes: ['id', 'name', 'email', 'avatar_url'] },
+            ],
         });
 
         return res.status(201).json({
             message: 'Member added successfully.',
-            member,
+            member: created,
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error.', error: error.message });
@@ -242,13 +253,33 @@ const getProjectMetrics = async (req, res) => {
     try {
         const { projectId } = req.params;
 
-        // Phase 3 mein tasks aayenge — abhi placeholder
+        const now = new Date();
+        const weekEnd = new Date();
+        weekEnd.setDate(now.getDate() + 7);
+
+        const totalTasks = await Task.count({ where: { project_id: projectId } });
+        const completedTasks = await Task.count({ where: { project_id: projectId, completed: true } });
+        const overdueTasks = await Task.count({
+            where: {
+                project_id: projectId,
+                completed: false,
+                due_date: { [Op.lt]: now },
+            },
+        });
+        const dueThisWeek = await Task.count({
+            where: {
+                project_id: projectId,
+                completed: false,
+                due_date: { [Op.between]: [now, weekEnd] },
+            },
+        });
+
         const metrics = {
-            total_tasks: 0,
-            completed_tasks: 0,
-            overdue_tasks: 0,
-            due_this_week: 0,
-            progress_percentage: 0,
+            total_tasks: totalTasks,
+            completed_tasks: completedTasks,
+            overdue_tasks: overdueTasks,
+            due_this_week: dueThisWeek,
+            progress_percentage: totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0,
         };
 
         return res.status(200).json({ metrics });
